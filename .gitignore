@@ -17,6 +17,7 @@ node_modules/
 !tsconfig.json
 !tsconfig*.json
 !firebase.json
+!packages/config/typescript/*.json
 
 # Build Output
 .next/
