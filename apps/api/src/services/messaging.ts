@@ -11,9 +11,11 @@ export const sendPushNotification = async (token: string, title: string, body: s
 
   try {
     const response = await admin.messaging().send(message);
+    // eslint-disable-next-line no-console
     console.log('Successfully sent message:', response);
     return response;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error sending message:', error);
     throw error;
   }

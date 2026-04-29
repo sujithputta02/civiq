@@ -11,7 +11,9 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
+import { useAssessmentStore } from '@/store/useAssessmentStore';
 
 interface AuthContextType {
   user: User | null;
@@ -43,10 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (currentUser) {
         try {
-          const { doc, getDoc } = await import('firebase/firestore');
-          const { db } = await import('@/lib/firebase');
-          const { useAssessmentStore } = await import('@/store/useAssessmentStore');
-          
           const docRef = doc(db, 'users', currentUser.uid);
           const docSnap = await getDoc(docRef);
           
@@ -62,7 +60,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
              // If they don't have data in Firestore, but they DO have it locally (just completed it), save it up.
              const localState = useAssessmentStore.getState();
              if (localState.data && localState.data.isComplete) {
-               const { setDoc } = await import('firebase/firestore');
                await setDoc(docRef, {
                  assessment: localState.data,
                  timeline: localState.timeline,
@@ -78,9 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       } else {
         // Logged out, reset store
-        import('@/store/useAssessmentStore').then(({ useAssessmentStore }) => {
-          useAssessmentStore.getState().reset();
-        });
+        useAssessmentStore.getState().reset();
       }
       
       setLoading(false);

@@ -1,6 +1,5 @@
 import { PubSub, Message } from '@google-cloud/pubsub';
 import { adminDb } from './services/admin';
-import * as admin from 'firebase-admin';
 
 const pubSubClient = new PubSub();
 
@@ -11,10 +10,12 @@ export const startMythVerificationWorker = async () => {
   try {
     // Ensure Topic exists
     const [topic] = await pubSubClient.topic(topicName).get({ autoCreate: true });
+    // eslint-disable-next-line no-console
     console.log(`Topic ${topic.name} is ready.`);
 
     // Ensure Subscription exists
     const [subscription] = await topic.subscription(subscriptionName).get({ autoCreate: true });
+    // eslint-disable-next-line no-console
     console.log(`Subscription ${subscription.name} is ready.`);
 
     // Message handler
@@ -23,6 +24,7 @@ export const startMythVerificationWorker = async () => {
       const dataStr = message.data.toString();
       const payload = JSON.parse(dataStr);
       
+      // eslint-disable-next-line no-console
       console.log(`Worker received myth verification:`, payload.classification);
 
       // We want to aggregate statistics about verifications.
@@ -32,7 +34,7 @@ export const startMythVerificationWorker = async () => {
       
       await adminDb.runTransaction(async (t) => {
         const doc = await t.get(statsRef);
-        let data = doc.data() || {
+        const data = doc.data() || {
           totalQueries: 0,
           trueCount: 0,
           falseCount: 0,
@@ -63,11 +65,13 @@ export const startMythVerificationWorker = async () => {
         t.set(statsRef, data, { merge: true });
       });
 
+      // eslint-disable-next-line no-console
       console.log(`Worker successfully updated aggregates/myth_stats`);
       
       // "Ack" (acknowledge receipt of) the message
       message.ack();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`Worker failed to process message ${message.id}:`, error);
       // Nack the message to tell Pub/Sub to retry it
       message.nack();
@@ -78,11 +82,14 @@ export const startMythVerificationWorker = async () => {
     subscription.on('message', messageHandler);
     
     subscription.on('error', (error) => {
+      // eslint-disable-next-line no-console
       console.error(`Pub/Sub Subscription Error:`, error);
     });
 
+    // eslint-disable-next-line no-console
     console.log(`Pub/Sub Worker listening on ${subscriptionName}...`);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to initialize Pub/Sub infrastructure:', error);
   }
 };

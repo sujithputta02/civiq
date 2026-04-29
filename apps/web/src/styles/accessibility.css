@@ -1,0 +1,714 @@
+/**
+ * Accessibility Styles
+ * WCAG 2.1 AA Compliance
+ */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles - high contrast */
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable animations */
+  .animate-spin,
+  .animate-bounce,
+  .animate-pulse,
+  .animate-fade-in {
+    animation: none !important;
+  }
+
+  /* Disable transitions */
+  .transition-all,
+  .transition-colors,
+  .transition-opacity,
+  .transition-transform {
+    transition: none !important;
+  }
+
+  /* Disable transforms */
+  .scale-110,
+  .hover\:scale-\[1\.01\]:hover {
+    transform: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  :root {
+    --color-primary: #000080;
+    --color-secondary: #000000;
+    --color-accent: #0000ff;
+    --color-background: #ffffff;
+    --color-border: #000000;
+  }
+
+  body {
+    color: #000000;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    border-width: 2px;
+    border-color: #000000;
+  }
+
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline-width: 4px;
+    outline-color: #0000ff;
+  }
+
+  /* Increase text contrast */
+  .text-secondary {
+    color: #333333 !important;
+  }
+
+  .text-slate-500 {
+    color: #333333 !important;
+  }
+
+  .text-slate-600 {
+    color: #000000 !important;
+  }
+
+  /* Increase border contrast */
+  .border-slate-200 {
+    border-color: #000000 !important;
+  }
+
+  .border-white\/30 {
+    border-color: #000000 !important;
+  }
+
+  /* Glass morphism adjustments for contrast */
+  .bg-white\/40,
+  .bg-white\/50 {
+    background-color: #ffffff !important;
+    border-color: #000000 !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-color: #444444;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #999999;
+  }
+
+  button {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-color: #444444;
+  }
+
+  button:hover {
+    background-color: #3a3a3a;
+  }
+}
+
+/* Large text mode (for users with low vision) */
+@media (prefers-reduced-data: no-preference) {
+  @supports (font-size-adjust: ex-height 0.5) {
+    body {
+      font-size-adjust: ex-height 0.5;
+    }
+  }
+}
+
+/* Touch target sizing - minimum 44x44px */
+button,
+a[role="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+textarea {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Ensure proper spacing for touch targets */
+button + button,
+a[role="button"] + a[role="button"] {
+  margin-left: 8px;
+}
+
+/* Skip link styling */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #2563eb;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Ensure color is not the only means of conveying information */
+.text-red-600::before,
+.text-green-600::before,
+.text-yellow-600::before,
+.text-blue-600::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.text-red-600::before {
+  background-color: #dc2626;
+}
+
+.text-green-600::before {
+  background-color: #16a34a;
+}
+
+.text-yellow-600::before {
+  background-color: #ca8a04;
+}
+
+.text-blue-600::before {
+  background-color: #2563eb;
+}
+
+/* Ensure form labels are properly associated */
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* Ensure proper heading hierarchy */
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.875rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+}
+
+h4 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.625rem;
+}
+
+h5 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+h6 {
+  font-size: 0.875rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Ensure proper link styling */
+a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+a:visited {
+  color: #7c3aed;
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+a:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Ensure proper list styling */
+ul,
+ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Ensure proper table styling */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f3f4f6;
+  font-weight: bold;
+}
+
+/* Ensure proper code styling */
+code,
+pre {
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+code {
+  padding: 2px 4px;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+/* Ensure proper blockquote styling */
+blockquote {
+  border-left: 4px solid #2563eb;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+/* Ensure proper image styling */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure proper video styling */
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure proper iframe styling */
+iframe {
+  max-width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+/* Ensure proper form styling */
+form {
+  margin-bottom: 1rem;
+}
+
+fieldset {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+legend {
+  padding: 0 0.5rem;
+  font-weight: bold;
+}
+
+/* Ensure proper error message styling */
+[role="alert"] {
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 4px solid;
+}
+
+[role="alert"].error {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+[role="alert"].success {
+  background-color: #dcfce7;
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+[role="alert"].warning {
+  background-color: #fef3c7;
+  border-color: #ca8a04;
+  color: #92400e;
+}
+
+[role="alert"].info {
+  background-color: #dbeafe;
+  border-color: #2563eb;
+  color: #1e40af;
+}
+
+/* Ensure proper loading indicator styling */
+[aria-busy="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Ensure proper disabled state styling */
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ensure proper readonly state styling */
+[readonly],
+[aria-readonly="true"] {
+  background-color: #f3f4f6;
+  cursor: default;
+}
+
+/* Ensure proper invalid state styling */
+[aria-invalid="true"] {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+/* Ensure proper required field styling */
+[required]::after {
+  content: ' *';
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* Ensure proper optional field styling */
+[aria-required="false"]::after {
+  content: ' (optional)';
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Ensure proper live region styling */
+[role="status"],
+[role="alert"],
+[aria-live] {
+  position: relative;
+}
+
+/* Ensure proper landmark styling */
+[role="main"],
+[role="navigation"],
+[role="contentinfo"],
+[role="complementary"] {
+  display: block;
+}
+
+/* Ensure proper dialog styling */
+[role="dialog"] {
+  position: fixed;
+  z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+/* Ensure proper tooltip styling */
+[role="tooltip"] {
+  background-color: #1f2937;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  z-index: 1000;
+}
+
+/* Ensure proper menu styling */
+[role="menu"],
+[role="menubar"] {
+  display: flex;
+  gap: 0.5rem;
+}
+
+[role="menuitem"] {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+[role="menuitem"]:hover,
+[role="menuitem"][aria-selected="true"] {
+  background-color: #e5e7eb;
+}
+
+/* Ensure proper tab styling */
+[role="tablist"] {
+  display: flex;
+  border-bottom: 2px solid #d1d5db;
+  gap: 0.5rem;
+}
+
+[role="tab"] {
+  padding: 0.75rem 1rem;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+[role="tab"][aria-selected="true"] {
+  border-bottom-color: #2563eb;
+  color: #2563eb;
+}
+
+[role="tabpanel"] {
+  padding: 1rem 0;
+}
+
+/* Ensure proper progressbar styling */
+[role="progressbar"] {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+[role="progressbar"]::after {
+  content: '';
+  display: block;
+  height: 100%;
+  background-color: #2563eb;
+  width: var(--progress, 0%);
+  transition: width 0.3s ease;
+}
+
+/* Ensure proper slider styling */
+[role="slider"] {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Ensure proper spinbutton styling */
+[role="spinbutton"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+[role="spinbutton"] button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure proper combobox styling */
+[role="combobox"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+[role="combobox"] input {
+  flex: 1;
+}
+
+[role="combobox"] button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure proper listbox styling */
+[role="listbox"] {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+[role="option"] {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+[role="option"]:hover,
+[role="option"][aria-selected="true"] {
+  background-color: #e5e7eb;
+}
+
+/* Ensure proper tree styling */
+[role="tree"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+[role="treeitem"] {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+[role="treeitem"]:hover,
+[role="treeitem"][aria-selected="true"] {
+  background-color: #e5e7eb;
+}
+
+/* Ensure proper grid styling */
+[role="grid"] {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+[role="row"] {
+  display: contents;
+}
+
+[role="gridcell"] {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+}
+
+/* Ensure proper search styling */
+[role="search"] {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+[role="search"] input {
+  flex: 1;
+}
+
+/* Ensure proper doc styling */
+[role="doc-abstract"],
+[role="doc-acknowledgments"],
+[role="doc-afterword"],
+[role="doc-appendix"],
+[role="doc-backlink"],
+[role="doc-biblioentry"],
+[role="doc-bibliography"],
+[role="doc-biblioref"],
+[role="doc-chapter"],
+[role="doc-colophon"],
+[role="doc-conclusion"],
+[role="doc-cover"],
+[role="doc-credit"],
+[role="doc-credits"],
+[role="doc-dedication"],
+[role="doc-endnote"],
+[role="doc-endnotes"],
+[role="doc-epigraph"],
+[role="doc-epilogue"],
+[role="doc-errata"],
+[role="doc-example"],
+[role="doc-footnote"],
+[role="doc-foreword"],
+[role="doc-glossary"],
+[role="doc-glossref"],
+[role="doc-index"],
+[role="doc-introduction"],
+[role="doc-noteref"],
+[role="doc-notice"],
+[role="doc-pagebreak"],
+[role="doc-pagelist"],
+[role="doc-part"],
+[role="doc-preface"],
+[role="doc-prologue"],
+[role="doc-pullquote"],
+[role="doc-qna"],
+[role="doc-subtitle"],
+[role="doc-tip"],
+[role="doc-toc"] {
+  display: block;
+  margin-bottom: 1rem;
+}

@@ -4,7 +4,7 @@ import { PubSub } from '@google-cloud/pubsub';
 // For production in Cloud Run, it inherits the service account automatically.
 const pubSubClient = new PubSub();
 
-export const publishMythVerification = async (claim: string, result: any) => {
+export const publishMythVerification = async (claim: string, result: Record<string, unknown>) => {
   const topicName = 'myth_verifications';
 
   try {
@@ -14,8 +14,10 @@ export const publishMythVerification = async (claim: string, result: any) => {
     const [topic] = await pubSubClient.topic(topicName).get({ autoCreate: true });
     const messageId = await topic.publishMessage({ data: dataBuffer });
       
+    // eslint-disable-next-line no-console
     console.log(`Message ${messageId} published to ${topicName}`);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(`Received error while publishing to ${topicName}:`, error);
   }
 };

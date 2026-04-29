@@ -5,24 +5,29 @@ const bigquery = new BigQuery();
 const datasetId = 'civiq_analytics';
 const tableId = 'events';
 
-export const logToBigQuery = async (eventType: string, payload: any) => {
+export const logToBigQuery = async (eventType: string, payload: Record<string, unknown>) => {
   try {
     const dataset = bigquery.dataset(datasetId);
     const table = dataset.table(tableId);
 
     // Check if dataset exists, if not create it
     const [datasetExists] = await dataset.exists();
+    // eslint-disable-next-line no-console
     console.log(`[BigQuery Debug] datasetExists = ${datasetExists}`);
     if (!datasetExists) {
+      // eslint-disable-next-line no-console
       console.log(`Dataset ${datasetId} not found. Creating it...`);
       await bigquery.createDataset(datasetId, { location: 'US' });
+      // eslint-disable-next-line no-console
       console.log(`Dataset ${datasetId} created successfully.`);
     }
     
     // Check if table exists, if not create it
     const [tableExists] = await table.exists();
+    // eslint-disable-next-line no-console
     console.log(`[BigQuery Debug] tableExists = ${tableExists}`);
     if (!tableExists) {
+      // eslint-disable-next-line no-console
       console.log(`Table ${tableId} not found. Creating it...`);
       const schema = [
         { name: 'event_type', type: 'STRING', mode: 'REQUIRED' },
@@ -30,6 +35,7 @@ export const logToBigQuery = async (eventType: string, payload: any) => {
         { name: 'timestamp', type: 'TIMESTAMP', mode: 'REQUIRED' }
       ];
       await dataset.createTable(tableId, { schema });
+      // eslint-disable-next-line no-console
       console.log(`Table ${tableId} created successfully.`);
     }
 
@@ -41,9 +47,11 @@ export const logToBigQuery = async (eventType: string, payload: any) => {
 
     // Streaming insert
     await table.insert([row]);
+    // eslint-disable-next-line no-console
     console.log(`[BigQuery] Logged ${eventType} successfully.`);
   } catch (error) {
     // Safe logging fallback. Will gracefully fail if BQ tables aren't pre-provisioned
+    // eslint-disable-next-line no-console
     console.warn(`[BigQuery Safe Fallback] Event ${eventType} could not be inserted:`, error);
   }
 };

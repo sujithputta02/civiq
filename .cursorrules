@@ -1,0 +1,81 @@
+# Civiq Security Guidelines
+
+You are an expert, security-conscious senior developer. While writing code, prioritize security over speed.
+
+## Core Security Principles
+
+1. **Never hardcode API keys or secrets**
+   - All sensitive data must come from environment variables
+   - Use `.env` files locally, managed secrets in production
+   - Never commit `.env` files or credential files to git
+
+2. **Always validate and sanitize user input**
+   - Use Zod schemas for all API inputs
+   - Sanitize strings before using in prompts or database queries
+   - Validate file uploads (MIME type, size, content)
+   - Escape user input in system prompts to prevent injection
+
+3. **Prefer established managed services over custom implementations**
+   - Use Firebase Auth (already implemented) - don't build custom auth
+   - Use Firestore security rules for data access control
+   - Use Cloud Run for API deployment with built-in security
+
+4. **Implement authentication on all API endpoints**
+   - Verify Firebase ID tokens on backend
+   - Never trust userId from request body alone
+   - Use middleware to enforce auth on protected routes
+
+5. **Implement rate limiting**
+   - Protect endpoints that call external APIs (Gemini, Tavily, OpenRouter)
+   - Prevent abuse and API quota exhaustion
+   - Use express-rate-limit middleware
+
+6. **Secure API design**
+   - Implement API versioning (/api/v1/)
+   - Use restrictive CORS (specific origins, not '*')
+   - Set proper CSP headers (not 'unsafe-inline' or 'unsafe-eval')
+   - Return minimal error details (no stack traces to clients)
+
+7. **Data protection**
+   - Encrypt sensitive data at rest (chat history, user data)
+   - Use HTTPS only (enforced in production)
+   - Implement audit logging for sensitive operations
+   - Follow principle of least privilege for service accounts
+
+8. **Dependency security**
+   - Keep dependencies up to date
+   - Review new dependencies for security issues
+   - Use npm audit regularly
+   - Prefer well-maintained, popular packages
+
+## API Security Checklist
+
+Before deploying any endpoint:
+- [ ] Verify Firebase ID token
+- [ ] Validate input with Zod schema
+- [ ] Implement rate limiting if calling external APIs
+- [ ] Sanitize user input before using in prompts
+- [ ] Return appropriate HTTP status codes
+- [ ] Log security-relevant events
+- [ ] Test with invalid/malicious input
+
+## Frontend Security Checklist
+
+Before deploying frontend code:
+- [ ] Never store secrets in localStorage/sessionStorage
+- [ ] Use Firebase Auth for authentication
+- [ ] Validate user input before sending to API
+- [ ] Sanitize HTML content (use libraries like DOMPurify if needed)
+- [ ] Use Content Security Policy headers
+- [ ] Implement CSRF protection for state-changing operations
+
+## Deployment Security
+
+- [ ] All secrets in environment variables (not in code)
+- [ ] Service account keys stored securely (not in repo)
+- [ ] Firestore security rules enforced
+- [ ] HTTPS enabled
+- [ ] CORS restricted to known origins
+- [ ] Rate limiting enabled
+- [ ] Audit logging enabled
+- [ ] Regular security updates applied

@@ -1,0 +1,141 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type checking
+        run: npm run typecheck
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Format check
+        run: npx prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Generate coverage report
+        run: npm run test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          echo "🧪 Checking test coverage thresholds..."
+          
+          # Extract coverage metrics from coverage-final.json
+          LINES=$(jq '.total.lines.pct' apps/api/coverage/coverage-final.json)
+          FUNCTIONS=$(jq '.total.functions.pct' apps/api/coverage/coverage-final.json)
+          BRANCHES=$(jq '.total.branches.pct' apps/api/coverage/coverage-final.json)
+          STATEMENTS=$(jq '.total.statements.pct' apps/api/coverage/coverage-final.json)
+          
+          echo "Coverage Results:"
+          echo "  Lines: ${LINES}%"
+          echo "  Functions: ${FUNCTIONS}%"
+          echo "  Branches: ${BRANCHES}%"
+          echo "  Statements: ${STATEMENTS}%"
+          
+          # Check thresholds
+          LINES_THRESHOLD=90
+          FUNCTIONS_THRESHOLD=90
+          BRANCHES_THRESHOLD=85
+          STATEMENTS_THRESHOLD=90
+          
+          FAILED=0
+          
+          if (( $(echo "$LINES < $LINES_THRESHOLD" | bc -l) )); then
+            echo "❌ Lines coverage ${LINES}% is below threshold ${LINES_THRESHOLD}%"
+            FAILED=1
+          else
+            echo "✅ Lines coverage ${LINES}% meets threshold"
+          fi
+          
+          if (( $(echo "$FUNCTIONS < $FUNCTIONS_THRESHOLD" | bc -l) )); then
+            echo "❌ Functions coverage ${FUNCTIONS}% is below threshold ${FUNCTIONS_THRESHOLD}%"
+            FAILED=1
+          else
+            echo "✅ Functions coverage ${FUNCTIONS}% meets threshold"
+          fi
+          
+          if (( $(echo "$BRANCHES < $BRANCHES_THRESHOLD" | bc -l) )); then
+            echo "❌ Branches coverage ${BRANCHES}% is below threshold ${BRANCHES_THRESHOLD}%"
+            FAILED=1
+          else
+            echo "✅ Branches coverage ${BRANCHES}% meets threshold"
+          fi
+          
+          if (( $(echo "$STATEMENTS < $STATEMENTS_THRESHOLD" | bc -l) )); then
+            echo "❌ Statements coverage ${STATEMENTS}% is below threshold ${STATEMENTS_THRESHOLD}%"
+            FAILED=1
+          else
+            echo "✅ Statements coverage ${STATEMENTS}% meets threshold"
+          fi
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "🔴 Coverage thresholds not met!"
+            exit 1
+          else
+            echo ""
+            echo "🟢 All coverage thresholds met!"
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./apps/api/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('apps/api/coverage/coverage-final.json', 'utf8'));
+            const total = coverage.total;
+            
+            const comment = `## 🧪 Test Coverage Report
+            
+            | Metric | Coverage | Target |
+            |--------|----------|--------|
+            | Lines | ${total.lines.pct.toFixed(2)}% | 90% |
+            | Functions | ${total.functions.pct.toFixed(2)}% | 90% |
+            | Branches | ${total.branches.pct.toFixed(2)}% | 85% |
+            | Statements | ${total.statements.pct.toFixed(2)}% | 90% |
+            
+            ${total.lines.pct >= 90 ? '✅' : '❌'} Lines coverage
+            ${total.functions.pct >= 90 ? '✅' : '❌'} Functions coverage
+            ${total.branches.pct >= 85 ? '✅' : '❌'} Branches coverage
+            ${total.statements.pct >= 90 ? '✅' : '❌'} Statements coverage
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

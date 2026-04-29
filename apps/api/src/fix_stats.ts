@@ -7,6 +7,7 @@ async function fixStats() {
   const doc = await statsRef.get();
   
   if (!doc.exists) {
+    // eslint-disable-next-line no-console
     console.log('No stats found');
     return;
   }
@@ -35,7 +36,11 @@ async function fixStats() {
     totalQueries: recentQueries.length
   });
   
+  // eslint-disable-next-line no-console
   console.log('Stats fixed! True:', trueCount, 'False:', falseCount, 'Mixed:', mixedCount);
 }
 
-fixStats().catch(console.error);
+fixStats().catch((err) => {
+  // eslint-disable-next-line no-console
+  console.error(err);
+});
