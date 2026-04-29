@@ -25,7 +25,10 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
       searchContext =
         'Real-time context from the web:\n' +
         searchResponse.results
-          .map((r: { title: string; content: string; url: string }) => `- ${r.title}: ${r.content} (${r.url})`)
+          .map(
+            (r: { title: string; content: string; url: string }) =>
+              `- ${r.title}: ${r.content} (${r.url})`
+          )
           .join('\n') +
         '\n\n';
     }
@@ -160,7 +163,10 @@ export async function chatAssistant(
       searchContext =
         'Real-time context from the web:\n' +
         searchResponse.results
-          .map((r: { title: string; content: string; url: string }) => `- ${r.title}: ${r.content} (${r.url})`)
+          .map(
+            (r: { title: string; content: string; url: string }) =>
+              `- ${r.title}: ${r.content} (${r.url})`
+          )
           .join('\n') +
         '\n\n';
     }
