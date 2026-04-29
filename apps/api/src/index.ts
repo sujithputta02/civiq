@@ -498,7 +498,12 @@ app.listen(port, async () => {
   // Start the Pub/Sub background worker (lazy loaded)
   try {
     const worker = await getWorkerModule();
-    await worker.startMythVerificationWorker();
+    const startWorker = worker.startMythVerificationWorker || worker.default?.startMythVerificationWorker;
+    if (typeof startWorker === 'function') {
+      await startWorker();
+    } else {
+      throw new Error('startMythVerificationWorker is not a function');
+    }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Failed to start Pub/Sub worker. Ensure ADC is configured:', err);
