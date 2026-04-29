@@ -1,0 +1,48 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --background: #F5F7FB;
+  --foreground: #0F172A;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-xl border border-white/30 shadow-glass rounded-3xl overflow-hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.2) 100%);
+  }
+
+  .glass-morphism {
+    @apply backdrop-blur-md bg-white/30 border border-white/20;
+  }
+
+  .luminous-rim {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  .refractive-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-600;
+  }
+}
+
+/* Custom scrollbar for glass surfaces */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/50 rounded-full backdrop-blur-sm;
+}

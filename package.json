@@ -1,0 +1,20 @@
+{
+  "name": "civiq",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"web,api\" -c \"cyan,magenta\" \"npm run dev -w apps/web\" \"npm run dev -w apps/api\"",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}
