@@ -17,7 +17,6 @@ node_modules/
 !tsconfig.json
 !tsconfig*.json
 !firebase.json
-!firebase-messaging-sw.js
 
 # Build Output
 .next/
@@ -25,3 +24,6 @@ dist/
 out/
 build/
 .turbo/
+
+# Background Worker Ignore
+apps/web/public/firebase-messaging-sw.js
