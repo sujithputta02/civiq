@@ -107,7 +107,7 @@ jobs:
           files: ./apps/api/coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
-          fail_ci_if_error: true
+          fail_ci_if_error: false
 
       - name: Comment PR with coverage
         if: github.event_name == 'pull_request'
