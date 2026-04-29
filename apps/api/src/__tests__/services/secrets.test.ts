@@ -140,7 +140,7 @@ describe('Secrets Service', () => {
 
   describe('maskSecret', () => {
     it('BEST CASE: should mask long secret', () => {
-      const secret = 'AIzaSyDxCJeDXxYQxNh_Rs2haavlEFZeWLFQHEE';
+      const secret = 'AIzaSyDxDummyKeyForTestingPurposesOnly';
       const masked = maskSecret(secret, 4);
       expect(masked).toBe('AIza****');
     });
@@ -201,7 +201,7 @@ describe('Secrets Service', () => {
 
   describe('isValidApiKey', () => {
     it('BEST CASE: should validate valid API key', () => {
-      const result = isValidApiKey('AIzaSyDxCJeDXxYQxNh_Rs2haavlEFZeWLFQHEE');
+      const result = isValidApiKey('AIzaSyDxDummyKeyForTestingPurposesOnly');
       expect(result).toBe(true);
     });
 
@@ -216,7 +216,7 @@ describe('Secrets Service', () => {
     });
 
     it('should reject key with invalid characters', () => {
-      const result = isValidApiKey('AIzaSyDxCJeDXxYQxNh_Rs2haavlEFZeWLFQHEE!@#$');
+      const result = isValidApiKey('AIzaSyDxDummyKeyForTestingPurposesOnly!@#$');
       expect(result).toBe(false);
     });
 
@@ -339,9 +339,9 @@ describe('Secrets Service', () => {
 
   describe('Security Tests', () => {
     it('should not expose full secret in logs', () => {
-      const secret = 'AIzaSyDxCJeDXxYQxNh_Rs2haavlEFZeWLFQHEE';
+      const secret = 'AIzaSyDxDummyKeyForTestingPurposesOnly';
       const masked = maskSecret(secret, 4);
-      expect(masked).not.toContain('CJeDXxYQxNh_Rs2haavlEFZeWLFQHEE');
+      expect(masked).not.toContain('DummyKeyForTestingPurposesOnly');
     });
 
     it('should validate API key format', () => {

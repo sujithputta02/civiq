@@ -1,10 +1,13 @@
 import { tavily } from '@tavily/core';
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 async function runTest() {
   // eslint-disable-next-line no-console
   console.log('Testing Tavily API...');
   try {
-    const tvly = tavily({ apiKey: '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' });
+    const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
     const response = await tvly.search('upcoming elections in India', { searchDepth: 'basic', maxResults: 1 });
     // eslint-disable-next-line no-console
     console.log('SUCCESS! Tavily search results:', JSON.stringify(response.results, null, 2));
