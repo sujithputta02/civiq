@@ -24,7 +24,9 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       searchContext =
         'Real-time context from the web:\n' +
-        searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') +
+        searchResponse.results
+          .map((r: { title: string; content: string; url: string }) => `- ${r.title}: ${r.content} (${r.url})`)
+          .join('\n') +
         '\n\n';
     }
   } catch (searchErr) {
@@ -157,7 +159,9 @@ export async function chatAssistant(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       searchContext =
         'Real-time context from the web:\n' +
-        searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') +
+        searchResponse.results
+          .map((r: { title: string; content: string; url: string }) => `- ${r.title}: ${r.content} (${r.url})`)
+          .join('\n') +
         '\n\n';
     }
   } catch (searchErr) {

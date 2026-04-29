@@ -233,7 +233,7 @@ describe('Audit Service', () => {
       await logSecurityEvent(
         'SESSION_HIJACKING_ATTEMPT',
         'user123',
-        { fingerprint_mismatch: true },
+        { fingerprintMismatch: true },
         'CRITICAL'
       );
 
@@ -511,7 +511,7 @@ describe('Audit Service', () => {
       await logSecurityEvent(
         'SESSION_HIJACKING_ATTEMPT',
         'user123',
-        { fingerprint_mismatch: true },
+        { fingerprintMismatch: true },
         'CRITICAL'
       );
 
