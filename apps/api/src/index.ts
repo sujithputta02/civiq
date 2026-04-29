@@ -498,7 +498,8 @@ app.listen(port, async () => {
   // Start the Pub/Sub background worker (lazy loaded)
   try {
     const worker = await getWorkerModule();
-    const startWorker = worker.startMythVerificationWorker || worker.default?.startMythVerificationWorker;
+    const startWorker =
+      worker.startMythVerificationWorker || worker.default?.startMythVerificationWorker;
     if (typeof startWorker === 'function') {
       await startWorker();
     } else {
