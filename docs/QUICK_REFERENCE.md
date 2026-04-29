@@ -20,6 +20,7 @@ npm run dev:api      # API (http://localhost:3005)
 ### Environment Variables
 
 **Web App** (`apps/web/.env.local`):
+
 ```env
 # Firebase
 NEXT_PUBLIC_FIREBASE_API_KEY=your_key
@@ -38,6 +39,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3005
 ```
 
 **API** (`apps/api/.env`):
+
 ```env
 # Firebase
 FIREBASE_PROJECT_ID=your_project
@@ -144,6 +146,7 @@ npm run test
    - Edit API key > Add "Firebase Cloud Messaging API"
 
 3. **Set Environment Variable**
+
    ```env
    NEXT_PUBLIC_VAPID_KEY=your_87_char_key
    ```
@@ -157,7 +160,7 @@ import { useNotifications } from '@/hooks/useNotifications';
 
 function MyComponent() {
   const { requestPermission, isSupported, error } = useNotifications();
-  
+
   return (
     <button onClick={requestPermission} disabled={!isSupported}>
       Enable Notifications
@@ -209,6 +212,7 @@ npm run build:api
 ### Environment Variables (Production)
 
 Set all `NEXT_PUBLIC_*` variables in your hosting platform:
+
 - Vercel
 - Firebase Hosting
 - AWS Amplify
@@ -287,13 +291,13 @@ firebase functions:log
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| 401 FCM error | Add Firebase Cloud Messaging API to API key |
-| CORS error | Check API CORS configuration |
-| Auth failed | Check Firebase credentials |
-| Tests failing | Run `npm run test:run` to see details |
-| Build error | Check TypeScript errors: `npm run type-check` |
+| Issue         | Solution                                      |
+| ------------- | --------------------------------------------- |
+| 401 FCM error | Add Firebase Cloud Messaging API to API key   |
+| CORS error    | Check API CORS configuration                  |
+| Auth failed   | Check Firebase credentials                    |
+| Tests failing | Run `npm run test:run` to see details         |
+| Build error   | Check TypeScript errors: `npm run type-check` |
 
 ## 📞 Support
 
@@ -327,13 +331,13 @@ firebase functions:log
 
 ## 🎯 Key Metrics
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Test Coverage | 100% | ✅ 502/502 |
-| Security | 100% | ✅ 12 layers |
-| Accessibility | WCAG 2.1 AA | ✅ 100% |
-| Performance | Lighthouse 90+ | ⏳ TBD |
-| Uptime | 99.9% | ⏳ TBD |
+| Metric        | Target         | Status       |
+| ------------- | -------------- | ------------ |
+| Test Coverage | 100%           | ✅ 502/502   |
+| Security      | 100%           | ✅ 12 layers |
+| Accessibility | WCAG 2.1 AA    | ✅ 100%      |
+| Performance   | Lighthouse 90+ | ⏳ TBD       |
+| Uptime        | 99.9%          | ⏳ TBD       |
 
 ---
 

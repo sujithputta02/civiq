@@ -2,11 +2,17 @@
 
 import React from 'react';
 import { useAccessibilityContext } from '@/hooks/useAccessibility';
-import { AccessibleButton, AccessibleCheckbox, AccessibleRadioGroup, AccessibleSelect } from './AccessibleComponents';
+import {
+  AccessibleButton,
+  AccessibleCheckbox,
+  AccessibleRadioGroup,
+  AccessibleSelect,
+} from './AccessibleComponents';
 import { GlassCard } from '@civiq/ui';
 
 export function AccessibilitySettings() {
-  const { preferences, updatePreference, resetPreferences, announcePreferenceChange } = useAccessibilityContext();
+  const { preferences, updatePreference, resetPreferences, announcePreferenceChange } =
+    useAccessibilityContext();
 
   const handleFontSizeChange = (size: 'normal' | 'large' | 'extra-large') => {
     updatePreference('fontSize', size);
@@ -14,7 +20,9 @@ export function AccessibilitySettings() {
     announcePreferenceChange(`Font size changed to ${sizeLabel}`);
   };
 
-  const handleColorBlindModeChange = (mode: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia') => {
+  const handleColorBlindModeChange = (
+    mode: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia'
+  ) => {
     updatePreference('colorBlindMode', mode);
     const modeLabel = mode === 'none' ? 'None' : mode.charAt(0).toUpperCase() + mode.slice(1);
     announcePreferenceChange(`Color blind mode changed to ${modeLabel}`);
@@ -45,9 +53,7 @@ export function AccessibilitySettings() {
             checked={preferences.reducedMotion}
             onChange={(e) => {
               updatePreference('reducedMotion', e.target.checked);
-              announcePreferenceChange(
-                e.target.checked ? 'Motion reduced' : 'Motion enabled'
-              );
+              announcePreferenceChange(e.target.checked ? 'Motion reduced' : 'Motion enabled');
             }}
           />
         </div>
@@ -162,13 +168,16 @@ export function AccessibilitySettings() {
         <h3 className="text-lg font-semibold mb-3">Accessibility Information</h3>
         <ul className="space-y-2 text-sm text-slate-700">
           <li>
-            <strong>Keyboard Navigation:</strong> Use Tab to navigate, Enter/Space to activate, Arrow keys for menus
+            <strong>Keyboard Navigation:</strong> Use Tab to navigate, Enter/Space to activate,
+            Arrow keys for menus
           </li>
           <li>
-            <strong>Screen Readers:</strong> All content is labeled and structured for screen reader compatibility
+            <strong>Screen Readers:</strong> All content is labeled and structured for screen reader
+            compatibility
           </li>
           <li>
-            <strong>Color Contrast:</strong> All text meets WCAG AA standards (4.5:1 for normal text)
+            <strong>Color Contrast:</strong> All text meets WCAG AA standards (4.5:1 for normal
+            text)
           </li>
           <li>
             <strong>Text Resizing:</strong> You can zoom up to 200% without loss of functionality
@@ -183,7 +192,8 @@ export function AccessibilitySettings() {
       <GlassCard className="p-6">
         <h3 className="text-lg font-semibold mb-3">Need Help?</h3>
         <p className="text-slate-600 mb-4">
-          If you encounter any accessibility issues or have suggestions for improvement, please contact us.
+          If you encounter any accessibility issues or have suggestions for improvement, please
+          contact us.
         </p>
         <AccessibleButton
           onClick={() => {

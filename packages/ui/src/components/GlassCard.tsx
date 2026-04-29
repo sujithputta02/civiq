@@ -11,11 +11,11 @@ interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   intensity?: 'low' | 'medium' | 'high';
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ 
-  children, 
-  className, 
+export const GlassCard: React.FC<GlassCardProps> = ({
+  children,
+  className,
   intensity = 'medium',
-  ...props 
+  ...props
 }) => {
   const intensityStyles = {
     low: 'bg-white/20 backdrop-blur-sm',
@@ -24,11 +24,11 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={cn(
-        "rounded-3xl border border-white/30 shadow-glass overflow-hidden transition-all duration-300",
+        'rounded-3xl border border-white/30 shadow-glass overflow-hidden transition-all duration-300',
         intensityStyles[intensity],
-        "luminous-rim",
+        'luminous-rim',
         className
       )}
       {...props}

@@ -242,7 +242,8 @@ describe('Sanitization Utils - Edge Cases', () => {
     });
 
     it('sanitizeHtml with multiple attack vectors', () => {
-      const worst = '<script>alert(1)</script><img src=x onerror="alert(2)"><iframe src="javascript:alert(3)"></iframe>';
+      const worst =
+        '<script>alert(1)</script><img src=x onerror="alert(2)"><iframe src="javascript:alert(3)"></iframe>';
       const result = sanitizeHtml(worst);
       expect(result).not.toContain('<script>');
       expect(result).not.toContain('onerror');

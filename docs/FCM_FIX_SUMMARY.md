@@ -30,12 +30,12 @@ The hook now returns:
 
 ```typescript
 {
-  token: string | null;              // FCM token if obtained
-  isSupported: boolean;              // Browser supports notifications
-  isPermissionGranted: boolean;      // User granted permission
-  isLoading: boolean;                // Request in progress
-  error: string | null;              // Error message if any
-  requestPermission: () => Promise;  // Function to request permission
+  token: string | null; // FCM token if obtained
+  isSupported: boolean; // Browser supports notifications
+  isPermissionGranted: boolean; // User granted permission
+  isLoading: boolean; // Request in progress
+  error: string | null; // Error message if any
+  requestPermission: () => Promise; // Function to request permission
 }
 ```
 
@@ -80,6 +80,7 @@ Notifications are safely disabled. To enable:
    - Click "Save"
 
 7. **Restart your development server**
+
    ```bash
    npm run dev
    ```
@@ -105,6 +106,7 @@ After the fix, you should see in the browser console:
 ### `apps/web/src/hooks/useNotifications.ts`
 
 **Changes:**
+
 - Added `NotificationState` interface for better state management
 - Implemented comprehensive error handling
 - Added support detection
@@ -115,6 +117,7 @@ After the fix, you should see in the browser console:
 - Better user feedback
 
 **Key Improvements:**
+
 ```typescript
 // Before: Simple try-catch
 try {
@@ -135,9 +138,11 @@ try {
   setState((prev) => ({ ...prev, token: currentToken }));
 } catch (fcmError: any) {
   const errorCode = fcmError?.code || fcmError?.message || '';
-  
+
   if (errorCode.includes('messaging/token-subscribe-failed')) {
-    console.warn(`⚠️ FCM subscription failed: ${errorMsg}\n\nThis is likely due to:\n1. API Key restrictions...`);
+    console.warn(
+      `⚠️ FCM subscription failed: ${errorMsg}\n\nThis is likely due to:\n1. API Key restrictions...`
+    );
     setState((prev) => ({
       ...prev,
       isLoading: false,
@@ -145,7 +150,7 @@ try {
     }));
     return;
   }
-  
+
   console.error(`❌ FCM Error (${errorCode}):`, errorMsg);
   setState((prev) => ({
     ...prev,
@@ -160,6 +165,7 @@ try {
 ### `docs/FCM_SETUP.md`
 
 Complete setup guide including:
+
 - Prerequisites
 - Step-by-step VAPID key setup
 - API key permission configuration
@@ -191,6 +197,7 @@ npm run dev
 ### 2. Send Test Notification
 
 From Firebase Console:
+
 1. Go to Messaging
 2. Create new campaign
 3. Send test message to your user
@@ -199,6 +206,7 @@ From Firebase Console:
 ### 3. Verify in Firestore
 
 Check that FCM token was saved:
+
 1. Go to Firebase Console > Firestore
 2. Open `users` collection
 3. Find your user document

@@ -8,13 +8,13 @@ export function sanitizeInput(input: string): string {
   }
 
   return input
-    .replace(/\\/g, '\\\\')      // Escape backslashes
-    .replace(/"/g, '\\"')        // Escape double quotes
-    .replace(/'/g, "\\'")        // Escape single quotes
-    .replace(/\n/g, '\\n')       // Escape newlines
-    .replace(/\r/g, '\\r')       // Escape carriage returns
-    .replace(/\t/g, '\\t')       // Escape tabs
-    .replace(/\0/g, '\\0');      // Escape null bytes
+    .replace(/\\/g, '\\\\') // Escape backslashes
+    .replace(/"/g, '\\"') // Escape double quotes
+    .replace(/'/g, "\\'") // Escape single quotes
+    .replace(/\n/g, '\\n') // Escape newlines
+    .replace(/\r/g, '\\r') // Escape carriage returns
+    .replace(/\t/g, '\\t') // Escape tabs
+    .replace(/\0/g, '\\0'); // Escape null bytes
 }
 
 /**
@@ -27,9 +27,9 @@ export function sanitizeHtml(html: string): string {
   }
 
   return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')  // Remove script tags
-    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')                          // Remove event handlers
-    .replace(/javascript:/gi, '')                                          // Remove javascript: protocol
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '') // Remove event handlers
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, ''); // Remove iframe tags
 }
 

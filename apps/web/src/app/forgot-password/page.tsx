@@ -11,7 +11,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const { resetPassword } = useAuth();
 
   const handleResetSubmit = async (e: React.FormEvent) => {
@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     setError('');
     setMessage('');
     setIsSubmitting(true);
-    
+
     try {
       await resetPassword(email);
       setMessage('Check your inbox for further instructions.');
@@ -61,8 +61,8 @@ export default function ForgotPasswordPage() {
             <label className="text-sm font-medium text-slate-700 ml-1">Email address</label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -72,11 +72,7 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
 
-          <RefractiveButton 
-            type="submit" 
-            className="w-full" 
-            disabled={isSubmitting}
-          >
+          <RefractiveButton type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? 'Sending instructions...' : 'Reset Password'}
           </RefractiveButton>
         </form>

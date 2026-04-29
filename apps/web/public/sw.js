@@ -1,11 +1,6 @@
 // Service Worker for offline support and caching
 const CACHE_NAME = 'civiq-v1';
-const STATIC_ASSETS = [
-  '/',
-  '/globals.css',
-  '/next.svg',
-  '/vercel.svg',
-];
+const STATIC_ASSETS = ['/', '/globals.css', '/next.svg', '/vercel.svg'];
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {

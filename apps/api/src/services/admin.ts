@@ -9,5 +9,5 @@ if (!admin.apps.length) {
 
 // Instantiate Firestore directly to support the named database "civiq"
 export const adminDb = new Firestore({
-  databaseId: 'civiq'
+  databaseId: 'civiq',
 });

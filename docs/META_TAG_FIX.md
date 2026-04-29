@@ -13,10 +13,11 @@ The `apple-mobile-web-app-capable` meta tag is deprecated in favor of the standa
 Updated `apps/web/src/app/layout.tsx` to:
 
 1. **Replace deprecated meta tag** in the `<head>` section:
+
    ```html
    <!-- Before (deprecated) -->
    <meta name="apple-mobile-web-app-capable" content="yes" />
-   
+
    <!-- After (standard) -->
    <meta name="mobile-web-app-capable" content="yes" />
    ```
@@ -27,10 +28,10 @@ Updated `apps/web/src/app/layout.tsx` to:
      // ... other metadata
      appleWebApp: {
        capable: true,
-       statusBarStyle: "black-translucent",
+       statusBarStyle: 'black-translucent',
      },
      other: {
-       "mobile-web-app-capable": "yes",
+       'mobile-web-app-capable': 'yes',
      },
    };
    ```
@@ -40,10 +41,12 @@ Updated `apps/web/src/app/layout.tsx` to:
 ### File: `apps/web/src/app/layout.tsx`
 
 **Metadata Object:**
+
 - Added `other` property with `"mobile-web-app-capable": "yes"`
 - Kept `appleWebApp` for Apple-specific settings
 
 **Head Section:**
+
 - Replaced `<meta name="apple-mobile-web-app-capable" content="yes" />` with `<meta name="mobile-web-app-capable" content="yes" />`
 - Kept `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />`
 
@@ -59,7 +62,10 @@ Updated `apps/web/src/app/layout.tsx` to:
 <meta name="theme-color" content="#2563eb" />
 
 <!-- Viewport settings -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes"
+/>
 ```
 
 ### Apple-Specific Meta Tags (Still Supported)
@@ -77,13 +83,13 @@ Updated `apps/web/src/app/layout.tsx` to:
 
 ## Browser Support
 
-| Browser | Support |
-|---------|---------|
-| Chrome | ✅ Full support |
+| Browser | Support         |
+| ------- | --------------- |
+| Chrome  | ✅ Full support |
 | Firefox | ✅ Full support |
-| Safari | ✅ Full support |
-| Edge | ✅ Full support |
-| Opera | ✅ Full support |
+| Safari  | ✅ Full support |
+| Edge    | ✅ Full support |
+| Opera   | ✅ Full support |
 
 ## PWA Compatibility
 
@@ -107,17 +113,20 @@ After the fix, you should see:
 ## Testing
 
 ### Desktop Browser
+
 1. Open DevTools (F12)
 2. Go to Console tab
 3. No warnings about deprecated meta tags
 
 ### Mobile Browser
+
 1. Open app on mobile device
 2. Add to home screen
 3. Verify app launches in standalone mode
 4. Verify status bar styling
 
 ### PWA Testing
+
 ```bash
 # Use Lighthouse to audit PWA compliance
 npm run audit:pwa

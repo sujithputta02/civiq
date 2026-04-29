@@ -21,7 +21,7 @@ export const logToBigQuery = async (eventType: string, payload: Record<string, u
       // eslint-disable-next-line no-console
       console.log(`Dataset ${datasetId} created successfully.`);
     }
-    
+
     // Check if table exists, if not create it
     const [tableExists] = await table.exists();
     // eslint-disable-next-line no-console
@@ -32,7 +32,7 @@ export const logToBigQuery = async (eventType: string, payload: Record<string, u
       const schema = [
         { name: 'event_type', type: 'STRING', mode: 'REQUIRED' },
         { name: 'payload', type: 'STRING', mode: 'NULLABLE' },
-        { name: 'timestamp', type: 'TIMESTAMP', mode: 'REQUIRED' }
+        { name: 'timestamp', type: 'TIMESTAMP', mode: 'REQUIRED' },
       ];
       await dataset.createTable(tableId, { schema });
       // eslint-disable-next-line no-console
@@ -42,7 +42,7 @@ export const logToBigQuery = async (eventType: string, payload: Record<string, u
     const row = {
       event_type: eventType,
       payload: JSON.stringify(payload),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Streaming insert

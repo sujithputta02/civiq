@@ -77,24 +77,24 @@ export function useAccessibility() {
   }, []);
 
   // Save preferences to localStorage
-  const savePreferences = useCallback((newPreferences: Partial<AccessibilityPreferences>) => {
-    const updated = { ...preferences, ...newPreferences };
-    setPreferences(updated);
+  const savePreferences = useCallback(
+    (newPreferences: Partial<AccessibilityPreferences>) => {
+      const updated = { ...preferences, ...newPreferences };
+      setPreferences(updated);
 
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      announceToScreenReader('Accessibility preferences updated');
-    } catch (error) {
-      console.error('Failed to save accessibility preferences:', error);
-    }
-  }, [preferences]);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        announceToScreenReader('Accessibility preferences updated');
+      } catch (error) {
+        console.error('Failed to save accessibility preferences:', error);
+      }
+    },
+    [preferences]
+  );
 
   // Update individual preference
   const updatePreference = useCallback(
-    <K extends keyof AccessibilityPreferences>(
-      key: K,
-      value: AccessibilityPreferences[K]
-    ) => {
+    <K extends keyof AccessibilityPreferences>(key: K, value: AccessibilityPreferences[K]) => {
       savePreferences({ [key]: value });
     },
     [savePreferences]
@@ -118,7 +118,12 @@ export function useAccessibility() {
     const root = document.documentElement;
 
     // Font size
-    root.style.fontSize = preferences.fontSize === 'large' ? '18px' : preferences.fontSize === 'extra-large' ? '20px' : '16px';
+    root.style.fontSize =
+      preferences.fontSize === 'large'
+        ? '18px'
+        : preferences.fontSize === 'extra-large'
+          ? '20px'
+          : '16px';
 
     // Dark mode
     if (preferences.darkMode) {
@@ -152,7 +157,11 @@ export function useAccessibility() {
     if (preferences.colorBlindMode !== 'none') {
       root.classList.add(`color-blind-${preferences.colorBlindMode}`);
     } else {
-      root.classList.remove('color-blind-protanopia', 'color-blind-deuteranopia', 'color-blind-tritanopia');
+      root.classList.remove(
+        'color-blind-protanopia',
+        'color-blind-deuteranopia',
+        'color-blind-tritanopia'
+      );
     }
   }, [preferences, isLoaded]);
 
@@ -176,15 +185,15 @@ export function useAccessibility() {
 /**
  * Context for accessibility preferences
  */
-export const AccessibilityContext = React.createContext<ReturnType<typeof useAccessibility> | null>(null);
+export const AccessibilityContext = React.createContext<ReturnType<typeof useAccessibility> | null>(
+  null
+);
 
 export function AccessibilityProvider({ children }: { children: React.ReactNode }) {
   const accessibility = useAccessibility();
 
   return (
-    <AccessibilityContext.Provider value={accessibility}>
-      {children}
-    </AccessibilityContext.Provider>
+    <AccessibilityContext.Provider value={accessibility}>{children}</AccessibilityContext.Provider>
   );
 }
 

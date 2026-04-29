@@ -8,7 +8,7 @@ This document explicitly outlines the technical traceability, accessibility chec
 
 ```mermaid
 graph TD
-    Client["Next.js Web Client"] 
+    Client["Next.js Web Client"]
     API["Express Node Backend (Google Cloud Run)"]
     Auth["Firebase Auth"]
     DB[("Cloud Firestore")]
@@ -27,17 +27,18 @@ graph TD
 
 ## 2. Requirement-to-Feature Traceability Matrix
 
-| Challenge Directive | Integrated Module | Structural Access Point |
-| :--- | :--- | :--- |
-| **Eligibility Verification** | Onboarding Questionnaires | `/assessment` |
-| **Personalized Schedules** | Dashboard Progress bars | `/dashboard` |
-| **Verification Logic** | Verification Pipelines | `/verify` |
-| **Simulation** | Interactive modules | `/simulation` |
+| Challenge Directive          | Integrated Module         | Structural Access Point |
+| :--------------------------- | :------------------------ | :---------------------- |
+| **Eligibility Verification** | Onboarding Questionnaires | `/assessment`           |
+| **Personalized Schedules**   | Dashboard Progress bars   | `/dashboard`            |
+| **Verification Logic**       | Verification Pipelines    | `/verify`               |
+| **Simulation**               | Interactive modules       | `/simulation`           |
 
 ---
 
 ## 3. Comprehensive Accessibility Audits (A11y Compliance)
 
 The user endpoints incorporate WCAG 2.1 compliance features natively:
+
 - **Screen Reader Mapping:** Structural landmarks applied.
 - **Contrast Ratios:** Complies with modern safety minimums.

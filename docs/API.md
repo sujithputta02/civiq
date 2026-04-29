@@ -36,6 +36,7 @@ Verify a claim about elections using AI and web search.
 **Rate Limit**: 10 requests per 15 minutes
 
 **Request Body**:
+
 ```json
 {
   "claim": "string (required)",
@@ -44,6 +45,7 @@ Verify a claim about elections using AI and web search.
 ```
 
 **Response**:
+
 ```json
 {
   "classification": "VERIFIED | UNVERIFIED | MISLEADING | FALSE",
@@ -53,6 +55,7 @@ Verify a claim about elections using AI and web search.
 ```
 
 **Example**:
+
 ```bash
 curl -X POST https://civiq-api/api/v1/verify \
   -H "Authorization: Bearer <token>" \
@@ -70,6 +73,7 @@ Send a message to the AI assistant for election guidance.
 **Rate Limit**: 30 requests per minute
 
 **Request Body**:
+
 ```json
 {
   "userId": "string (required)",
@@ -83,6 +87,7 @@ Send a message to the AI assistant for election guidance.
 ```
 
 **Response**:
+
 ```json
 {
   "reply": "string"
@@ -99,9 +104,11 @@ Retrieve chat history for the authenticated user.
 **Rate Limit**: No limit
 
 **Query Parameters**:
+
 - `userId` (required): The user's Firebase UID
 
 **Response**:
+
 ```json
 {
   "history": [
@@ -122,6 +129,7 @@ Clear the user's session.
 **Authentication**: Required
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -139,9 +147,11 @@ Send deadline reminders to users (Cloud Scheduler only).
 **Rate Limit**: 1 request per hour
 
 **Headers**:
+
 - `X-Cloud-Scheduler-Secret`: Cloud Scheduler secret
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -159,6 +169,7 @@ Get aggregated myth verification statistics.
 **Rate Limit**: No limit
 
 **Response**:
+
 ```json
 {
   "totalQueries": 1000,

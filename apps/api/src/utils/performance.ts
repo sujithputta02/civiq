@@ -15,11 +15,7 @@ const MAX_METRICS = 1000;
 /**
  * Record a performance metric
  */
-export function recordMetric(
-  name: string,
-  duration: number,
-  tags?: Record<string, string>
-): void {
+export function recordMetric(name: string, duration: number, tags?: Record<string, string>): void {
   metrics.push({
     name,
     duration,
@@ -58,11 +54,7 @@ export async function measureAsync<T>(
 /**
  * Measure synchronous function execution time
  */
-export function measureSync<T>(
-  name: string,
-  fn: () => T,
-  tags?: Record<string, string>
-): T {
+export function measureSync<T>(name: string, fn: () => T, tags?: Record<string, string>): T {
   const start = performance.now();
   try {
     return fn();
@@ -83,9 +75,7 @@ export function getStats(name?: string): {
   p95Duration: number;
   p99Duration: number;
 } {
-  const filtered = name
-    ? metrics.filter((m) => m.name === name)
-    : metrics;
+  const filtered = name ? metrics.filter((m) => m.name === name) : metrics;
 
   if (filtered.length === 0) {
     return {

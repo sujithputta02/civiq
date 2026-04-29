@@ -39,13 +39,9 @@ export function OptimizedImage({
         sizes={sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
         quality={75}
         onLoadingComplete={() => setIsLoading(false)}
-        className={`transition-opacity duration-300 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
       />
-      {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-      )}
+      {isLoading && <div className="absolute inset-0 bg-gray-200 animate-pulse" />}
     </div>
   );
 }

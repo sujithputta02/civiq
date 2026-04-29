@@ -29,13 +29,10 @@ export function generateDeviceFingerprint(req: Request): string {
     req.headers['user-agent'] || '',
     req.headers['accept-language'] || '',
     req.headers['accept-encoding'] || '',
-    req.ip || (req.socket?.remoteAddress) || '',
+    req.ip || req.socket?.remoteAddress || '',
   ];
 
-  const fingerprint = crypto
-    .createHash('sha256')
-    .update(components.join('|'))
-    .digest('hex');
+  const fingerprint = crypto.createHash('sha256').update(components.join('|')).digest('hex');
 
   return fingerprint;
 }
@@ -73,7 +70,9 @@ export function validateSessionFingerprint(
   // Check if IP address changed significantly (allow some variance for mobile users)
   const ipChanged = storedFingerprint.ipAddress !== (req.ip || '');
   if (ipChanged) {
-    console.warn(`IP address changed for user ${userId}: ${storedFingerprint.ipAddress} -> ${req.ip}`);
+    console.warn(
+      `IP address changed for user ${userId}: ${storedFingerprint.ipAddress} -> ${req.ip}`
+    );
     // Don't fail immediately, but log for monitoring
   }
 
@@ -92,11 +91,7 @@ export function validateSessionFingerprint(
 /**
  * Middleware to validate session security
  */
-export function validateSessionSecurity(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function validateSessionSecurity(req: Request, res: Response, next: NextFunction): void {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = (req as any).user as { uid: string } | undefined;

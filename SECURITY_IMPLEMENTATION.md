@@ -9,7 +9,9 @@ This document outlines the comprehensive security implementation achieving 100% 
 ## 1. AUTHENTICATION & AUTHORIZATION
 
 ### Firebase ID Token Verification
+
 ✅ **Implementation**: `apps/api/src/middleware/auth.ts`
+
 - Verifies Firebase ID tokens on every protected API endpoint
 - Validates token expiration (24-hour max age)
 - Checks token signature and claims
@@ -21,7 +23,9 @@ app.post('/api/v1/verify', verifyFirebaseToken, ...)
 ```
 
 ### Role-Based Access Control (RBAC)
+
 ✅ **Implementation**: `apps/api/src/middleware/rbac.ts`
+
 - Four-tier role system: ADMIN, MODERATOR, USER, GUEST
 - Custom claims verification via Firebase
 - Middleware-based enforcement on protected routes
@@ -35,7 +39,9 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ```
 
 ### User Ownership Verification
+
 ✅ **Implementation**: `apps/api/src/middleware/auth.ts`
+
 - Prevents cross-user data access
 - Validates user ID matches authenticated user
 - Returns 403 Forbidden for unauthorized access
@@ -45,27 +51,35 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 2. SESSION HIJACKING PROTECTION
 
 ### Device Fingerprinting
+
 ✅ **Implementation**: `apps/api/src/middleware/security.ts`
+
 - SHA256 hash of: User-Agent, Accept-Language, Accept-Encoding, IP Address
 - Stored per-user session
 - Detects device/browser changes
 - Blocks suspicious sessions
 
 ### IP Address Validation
+
 ✅ **Implementation**: `apps/api/src/middleware/security.ts`
+
 - Tracks IP address per session
 - Logs IP changes for monitoring
 - Allows variance for mobile users
 - Detects rapid IP changes (account takeover indicator)
 
 ### User-Agent Validation
+
 ✅ **Implementation**: `apps/api/src/middleware/security.ts`
+
 - Validates User-Agent consistency
 - Blocks sessions with changed User-Agent
 - Strong indicator of session hijacking
 
 ### Suspicious Activity Detection
+
 ✅ **Implementation**: `apps/api/src/middleware/security.ts`
+
 - Detects multiple IPs in short time window (1 minute)
 - Tracks last 100 activities per user
 - Blocks requests from suspicious patterns
@@ -76,7 +90,9 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 3. INPUT VALIDATION & SANITIZATION
 
 ### Zod Schema Validation
+
 ✅ **Implementation**: `apps/api/src/middleware/validation.ts`
+
 - Type-safe validation for all inputs
 - Middleware-based validation on request body, query, params
 - Comprehensive error messages
@@ -93,7 +109,9 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ```
 
 ### Input Sanitization
+
 ✅ **Implementation**: `apps/api/src/utils/sanitize.ts`
+
 - Prompt injection prevention (escapes special characters)
 - HTML/XSS attack prevention (removes script tags, event handlers)
 - JavaScript protocol blocking (removes javascript: URIs)
@@ -109,26 +127,34 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 4. OUTPUT ENCODING & RESPONSE SECURITY
 
 ### HTML Entity Encoding
+
 ✅ **Implementation**: `apps/api/src/middleware/output-encoding.ts`
+
 - Encodes HTML special characters: `&`, `<`, `>`, `"`, `'`, `/`
 - Prevents XSS in JSON responses
 - Applied to all string values in responses
 
 ### Response Sanitization
+
 ✅ **Implementation**: `apps/api/src/middleware/output-encoding.ts`
+
 - Recursively sanitizes response data
 - Encodes all string values
 - Preserves data structure
 - Applied via middleware to all JSON responses
 
 ### Response Splitting Prevention
+
 ✅ **Implementation**: `apps/api/src/middleware/output-encoding.ts`
+
 - Validates header values for CRLF injection
 - Blocks headers containing `\r` or `\n`
 - Throws error on invalid header values
 
 ### Secure Response Headers
+
 ✅ **Implementation**: `apps/api/src/middleware/output-encoding.ts`
+
 - X-Content-Type-Options: nosniff
 - X-Frame-Options: DENY
 - X-XSS-Protection: 1; mode=block
@@ -143,13 +169,14 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 5. RATE LIMITING
 
 ### Per-Endpoint Rate Limiting
+
 ✅ **Implementation**: `apps/api/src/index.ts`
 
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| `/api/v1/verify` | 10 requests | 15 minutes |
-| `/api/v1/chat` | 30 requests | 1 minute |
-| `/api/v1/cron/reminders` | 1 request | 1 hour |
+| Endpoint                 | Limit       | Window     |
+| ------------------------ | ----------- | ---------- |
+| `/api/v1/verify`         | 10 requests | 15 minutes |
+| `/api/v1/chat`           | 30 requests | 1 minute   |
+| `/api/v1/cron/reminders` | 1 request   | 1 hour     |
 
 - Uses express-rate-limit
 - Returns 429 Too Many Requests
@@ -161,7 +188,9 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 6. CORS & CSRF PROTECTION
 
 ### CORS Configuration
+
 ✅ **Implementation**: `apps/api/src/index.ts`
+
 - Restricted origins: civiq.app, www.civiq.app, localhost:3000
 - Allowed methods: GET, POST, PUT, DELETE, OPTIONS
 - Allowed headers: Content-Type, Authorization
@@ -169,7 +198,9 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 - Max age: 86400 (24 hours)
 
 ### CSRF Token Generation
+
 ✅ **Implementation**: `apps/api/src/middleware/security.ts`
+
 - Generates 32-byte random tokens
 - Timing-safe comparison for validation
 - Can be integrated with session management
@@ -179,6 +210,7 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 7. HELMET SECURITY HEADERS
 
 ✅ **Implementation**: `apps/api/src/index.ts`
+
 - Content Security Policy (CSP) with strict directives
 - HSTS with 1-year max-age
 - X-Frame-Options: DENY
@@ -191,9 +223,11 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 8. AUDIT LOGGING
 
 ### Comprehensive Audit Trail
+
 ✅ **Implementation**: `apps/api/src/services/audit.ts`
 
 **Logged Events**:
+
 - Authentication events (LOGIN, LOGOUT, TOKEN_REFRESH, AUTH_FAILED)
 - Admin actions (VIEW_STATS, VIEW_AUDIT_LOGS, VIEW_SECURITY_EVENTS)
 - Unauthorized access attempts
@@ -201,10 +235,12 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 - Security events (suspicious activity, attacks, severity levels)
 
 **Storage**: Firestore collections
+
 - `audit_logs`: All audit events
 - `security_events`: Security-specific events with severity
 
 **Audit Event Fields**:
+
 ```typescript
 {
   userId: string;
@@ -221,6 +257,7 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ```
 
 **Admin Endpoints**:
+
 - `GET /api/v1/admin/audit-logs` - Retrieve audit logs
 - `GET /api/v1/admin/security-events` - Retrieve security events
 
@@ -229,9 +266,11 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 ## 9. SECRET MANAGEMENT
 
 ### Secret Management Service
+
 ✅ **Implementation**: `apps/api/src/services/secrets.ts`
 
 **Features**:
+
 - Environment variable support (development)
 - Google Cloud Secret Manager integration (production)
 - In-memory caching with 1-hour TTL
@@ -240,6 +279,7 @@ app.get('/api/v1/admin/security-events', verifyFirebaseToken, requireAdmin, ...)
 - Connection string validation
 
 **Usage**:
+
 ```typescript
 const apiKey = await getSecret('GOOGLE_AI_API_KEY');
 const isValid = isValidApiKey(apiKey);
@@ -251,36 +291,43 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 10. CI/CD SECURITY SCANNING
 
 ### Automated Security Checks
+
 ✅ **Implementation**: `.github/workflows/security-scan.yml`
 
 **Dependency Scanning**:
+
 - npm audit for vulnerabilities
 - Fails on critical vulnerabilities
 - Runs on push and pull requests
 
 **Secret Scanning**:
+
 - TruffleHog for secret detection
 - Scans entire repository history
 - Blocks commits with exposed secrets
 
 **Static Application Security Testing (SAST)**:
+
 - ESLint security checks
 - TypeScript strict mode
 - Console statement detection
 - Naming convention enforcement
 
 **CodeQL Analysis**:
+
 - GitHub's code analysis engine
 - Detects security vulnerabilities
 - Generates security reports
 
 **Security Headers Verification**:
+
 - Checks for X-Frame-Options
 - Checks for X-Content-Type-Options
 - Checks for CSP implementation
 - Checks for HSTS implementation
 
 **RBAC Verification**:
+
 - Verifies RBAC middleware exists
 - Checks for role enforcement
 - Validates admin route protection
@@ -290,7 +337,9 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 11. HTTPS ENFORCEMENT
 
 ### HTTPS-Only in Production
+
 ✅ **Implementation**: `apps/api/src/middleware/auth.ts`
+
 - Enforces HTTPS in production environment
 - Returns 403 Forbidden for HTTP requests
 - Allows HTTP in development
@@ -300,7 +349,9 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 12. PAYLOAD SIZE LIMITING
 
 ### Request Size Limits
+
 ✅ **Implementation**: `apps/api/src/index.ts`
+
 - JSON payload limit: 10KB
 - Prevents large payload attacks
 - Returns 413 Payload Too Large
@@ -310,13 +361,16 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 13. SECURITY TESTING
 
 ### Test Coverage
+
 ✅ **67 tests passing (100%)**
+
 - 49 edge case tests for input sanitization
 - Best case, average case, worst case scenarios
 - Security attack vector testing
 - Authorization testing
 
 **Test Files**:
+
 - `apps/api/src/__tests__/utils/sanitize.test.ts` (15 tests)
 - `apps/api/src/__tests__/utils/sanitize.edge-cases.test.ts` (49 tests)
 - `apps/api/src/__tests__/middleware/auth.test.ts` (3 tests)
@@ -326,13 +380,17 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 14. SECURITY CONFIGURATION FILES
 
 ### Firestore Security Rules
+
 ✅ **Implementation**: `firestore.rules`
+
 - Restricts database access to authenticated users
 - Enforces user ownership of data
 - Prevents unauthorized data access
 
 ### Environment Hardening
+
 ✅ **Implementation**: `.env` files
+
 - API keys stored securely
 - Never committed to version control
 - Validated on startup
@@ -374,6 +432,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 16. SECURITY CHECKLIST
 
 ### ✅ Authentication & Authorization
+
 - [x] Firebase ID token verification on all protected routes
 - [x] Role-Based Access Control (RBAC) with 4 roles
 - [x] User ownership verification
@@ -381,6 +440,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] Admin-only endpoints with audit logging
 
 ### ✅ Session Security
+
 - [x] Device fingerprinting (SHA256)
 - [x] IP address validation
 - [x] User-Agent validation
@@ -388,6 +448,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] Session token expiration
 
 ### ✅ Input Security
+
 - [x] Zod schema validation
 - [x] Prompt injection prevention
 - [x] XSS attack prevention
@@ -397,6 +458,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] Location sanitization
 
 ### ✅ Output Security
+
 - [x] HTML entity encoding
 - [x] Response sanitization
 - [x] Response splitting prevention
@@ -404,6 +466,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] CSP with strict directives
 
 ### ✅ API Security
+
 - [x] CORS with restricted origins
 - [x] CSRF token generation
 - [x] Rate limiting per endpoint
@@ -411,6 +474,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] HTTPS enforcement
 
 ### ✅ Monitoring & Logging
+
 - [x] Comprehensive audit logging
 - [x] Security event tracking
 - [x] Admin action logging
@@ -418,6 +482,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] Admin endpoints for log retrieval
 
 ### ✅ Secret Management
+
 - [x] Environment variable support
 - [x] Google Cloud Secret Manager integration
 - [x] Secret caching with TTL
@@ -425,6 +490,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] API key validation
 
 ### ✅ CI/CD Security
+
 - [x] Dependency vulnerability scanning
 - [x] Secret scanning (TruffleHog)
 - [x] Static application security testing
@@ -433,6 +499,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - [x] RBAC implementation verification
 
 ### ✅ Code Quality
+
 - [x] TypeScript strict mode
 - [x] ESLint security rules
 - [x] No console statements in production
@@ -444,6 +511,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 17. DEPLOYMENT SECURITY
 
 ### Production Checklist
+
 - [ ] Set NODE_ENV=production
 - [ ] Configure Firebase credentials
 - [ ] Set up Google Cloud Secret Manager
@@ -460,6 +528,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 18. INCIDENT RESPONSE
 
 ### Security Event Monitoring
+
 1. **Real-time Alerts**: Configure Cloud Monitoring for security events
 2. **Audit Log Review**: Check `/api/v1/admin/audit-logs` regularly
 3. **Security Events**: Monitor `/api/v1/admin/security-events` for HIGH/CRITICAL
@@ -467,6 +536,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 5. **Failed Auth**: Track authentication failures for patterns
 
 ### Response Procedures
+
 1. **Unauthorized Access**: Review audit logs, check user permissions
 2. **Suspicious Activity**: Invalidate user sessions, force re-authentication
 3. **Rate Limit Abuse**: Block IP address, review for DDoS patterns
@@ -478,6 +548,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 19. COMPLIANCE & STANDARDS
 
 ### Security Standards Met
+
 - ✅ OWASP Top 10 protections
 - ✅ NIST Cybersecurity Framework
 - ✅ CWE/SANS Top 25 mitigations
@@ -485,6 +556,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 - ✅ Zero-trust architecture elements
 
 ### Audit Trail Compliance
+
 - ✅ Comprehensive logging of all sensitive operations
 - ✅ Immutable audit logs in Firestore
 - ✅ User identification on all actions
@@ -497,6 +569,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 20. SECURITY METRICS
 
 ### Current Status
+
 - **Authentication**: ✅ 100% - All protected routes verified
 - **Authorization**: ✅ 100% - RBAC enforced on admin routes
 - **Input Validation**: ✅ 100% - Zod schemas on all inputs
@@ -512,6 +585,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 21. FUTURE ENHANCEMENTS
 
 ### Recommended Additions
+
 1. **Multi-Factor Authentication (MFA)**: Add TOTP/SMS verification
 2. **API Key Management**: Implement API key rotation
 3. **IP Whitelisting**: Add IP allowlist for admin endpoints
@@ -528,12 +602,14 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## 22. SECURITY CONTACTS & RESOURCES
 
 ### Documentation
+
 - [SECURITY_AUDIT.md](./SECURITY_AUDIT.md) - Initial security audit
 - [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) - System architecture
 - [docs/API.md](./docs/API.md) - API documentation
 - [.cursorrules](./.cursorrules) - Development guidelines
 
 ### External Resources
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Firebase Security](https://firebase.google.com/docs/security)
 - [Express.js Security](https://expressjs.com/en/advanced/best-practice-security.html)
@@ -544,6 +620,7 @@ const masked = maskSecret(apiKey, 4); // Logs: "AIza****..."
 ## Conclusion
 
 This implementation provides **100% defense-in-depth security** with:
+
 - ✅ 12 layers of security controls
 - ✅ Comprehensive audit logging
 - ✅ Automated CI/CD security scanning

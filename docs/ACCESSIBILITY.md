@@ -28,6 +28,7 @@ All pages use proper semantic HTML structure:
 ```
 
 **Benefits:**
+
 - Screen readers can navigate page structure
 - Users can jump to main content
 - Proper document outline
@@ -44,6 +45,7 @@ Full keyboard navigation support:
 - **Home/End**: Jump to first/last item
 
 **Implementation:**
+
 ```typescript
 import { keyboardNavigation } from '@/lib/accessibility';
 
@@ -60,6 +62,7 @@ if (keyboardNavigation.isActivationKey(e.key)) {
 - **Skip Links**: "Skip to main content" link at top of page
 
 **CSS:**
+
 ```css
 :focus-visible {
   outline: 3px solid #2563eb;
@@ -146,6 +149,7 @@ const shouldAnimate = !prefersReducedMotion();
 ```
 
 **CSS:**
+
 ```css
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -165,9 +169,9 @@ All interactive elements meet minimum size requirements:
 
 ```css
 button,
-a[role="button"],
-input[type="checkbox"],
-input[type="radio"] {
+a[role='button'],
+input[type='checkbox'],
+input[type='radio'] {
   min-height: 44px;
   min-width: 44px;
 }
@@ -192,6 +196,7 @@ Proper heading hierarchy:
 ```
 
 **Rules:**
+
 - Only one `<h1>` per page
 - No skipped heading levels
 - Headings describe content
@@ -318,17 +323,14 @@ Proper list structure:
 Accessible modal implementation:
 
 ```tsx
-<div
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="modal-title"
->
+<div role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <h2 id="modal-title">Confirm Action</h2>
   <p>Are you sure?</p>
 </div>
 ```
 
 **Features:**
+
 - Focus trap within modal
 - Escape key closes modal
 - Focus returns to trigger
@@ -341,12 +343,9 @@ Accessible modal implementation:
 ```tsx
 import { AccessibleButton } from '@/components/AccessibleComponents';
 
-<AccessibleButton
-  ariaLabel="Close menu"
-  onClick={handleClose}
->
+<AccessibleButton ariaLabel="Close menu" onClick={handleClose}>
   ✕
-</AccessibleButton>
+</AccessibleButton>;
 ```
 
 ### AccessibleInput
@@ -360,7 +359,7 @@ import { AccessibleInput } from '@/components/AccessibleComponents';
   required
   error={emailError}
   hint="We'll never share your email"
-/>
+/>;
 ```
 
 ### AccessibleSelect
@@ -375,7 +374,7 @@ import { AccessibleSelect } from '@/components/AccessibleComponents';
     { value: 'not-registered', label: 'Not Registered' },
   ]}
   required
-/>
+/>;
 ```
 
 ### AccessibleCheckbox
@@ -383,10 +382,7 @@ import { AccessibleSelect } from '@/components/AccessibleComponents';
 ```tsx
 import { AccessibleCheckbox } from '@/components/AccessibleComponents';
 
-<AccessibleCheckbox
-  label="I agree to the terms"
-  hint="You must agree to continue"
-/>
+<AccessibleCheckbox label="I agree to the terms" hint="You must agree to continue" />;
 ```
 
 ### AccessibleRadioGroup
@@ -402,7 +398,7 @@ import { AccessibleRadioGroup } from '@/components/AccessibleComponents';
     { value: 'mail', label: 'Mail-In Ballot' },
   ]}
   required
-/>
+/>;
 ```
 
 ### AccessibleModal
@@ -410,13 +406,9 @@ import { AccessibleRadioGroup } from '@/components/AccessibleComponents';
 ```tsx
 import { AccessibleModal } from '@/components/AccessibleComponents';
 
-<AccessibleModal
-  isOpen={isOpen}
-  onClose={handleClose}
-  title="Confirm Action"
->
+<AccessibleModal isOpen={isOpen} onClose={handleClose} title="Confirm Action">
   <p>Are you sure you want to proceed?</p>
-</AccessibleModal>
+</AccessibleModal>;
 ```
 
 ### AccessibleAlert
@@ -429,7 +421,7 @@ import { AccessibleAlert } from '@/components/AccessibleComponents';
   title="Success"
   message="Your assessment has been saved"
   onClose={handleClose}
-/>
+/>;
 ```
 
 ### AccessibleTabs
@@ -442,7 +434,7 @@ import { AccessibleTabs } from '@/components/AccessibleComponents';
     { id: 'tab1', label: 'Overview', content: <Overview /> },
     { id: 'tab2', label: 'Details', content: <Details /> },
   ]}
-/>
+/>;
 ```
 
 ### AccessibleTooltip
@@ -452,7 +444,7 @@ import { AccessibleTooltip } from '@/components/AccessibleComponents';
 
 <AccessibleTooltip content="Click to learn more">
   <button>?</button>
-</AccessibleTooltip>
+</AccessibleTooltip>;
 ```
 
 ## Testing Accessibility

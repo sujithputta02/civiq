@@ -152,7 +152,10 @@ describe('Output Encoding Middleware', () => {
         },
       };
       const result = sanitizeResponseData(data);
-      expect((result as Record<string, Record<string, Record<string, Record<string, unknown>>>>).level1.level2.level3.message).toContain('&lt;xss&gt;');
+      expect(
+        (result as Record<string, Record<string, Record<string, Record<string, unknown>>>>).level1
+          .level2.level3.message
+      ).toContain('&lt;xss&gt;');
     });
 
     // Best case: safe data
@@ -264,7 +267,10 @@ describe('Output Encoding Middleware', () => {
       const data = { user: { name: 'John', email: 'john@example.com' } };
       (res.json as unknown as (data: unknown) => void)(data);
 
-      const sanitizedData = originalJson.mock.calls[0][0] as Record<string, Record<string, unknown>>;
+      const sanitizedData = originalJson.mock.calls[0][0] as Record<
+        string,
+        Record<string, unknown>
+      >;
       expect(sanitizedData.user).toBeDefined();
       expect(sanitizedData.user.name).toBe('John');
     });
@@ -306,7 +312,10 @@ describe('Output Encoding Middleware', () => {
       preventResponseSplitting(req as Request, res as Response, next);
 
       expect(() => {
-        (res.setHeader as unknown as (name: string, value: string) => void)('X-Custom', 'value\rSet-Cookie: admin=true');
+        (res.setHeader as unknown as (name: string, value: string) => void)(
+          'X-Custom',
+          'value\rSet-Cookie: admin=true'
+        );
       }).toThrow();
     });
 
@@ -317,7 +326,10 @@ describe('Output Encoding Middleware', () => {
       preventResponseSplitting(req as Request, res as Response, next);
 
       expect(() => {
-        (res.setHeader as unknown as (name: string, value: string) => void)('X-Custom', 'value\r\nSet-Cookie: admin=true');
+        (res.setHeader as unknown as (name: string, value: string) => void)(
+          'X-Custom',
+          'value\r\nSet-Cookie: admin=true'
+        );
       }).toThrow();
     });
 
@@ -343,7 +355,10 @@ describe('Output Encoding Middleware', () => {
 
       preventResponseSplitting(req as Request, res as Response, next);
 
-      (res.setHeader as unknown as (name: string, value: string) => void)('X-Custom-Header', 'valid-value-123');
+      (res.setHeader as unknown as (name: string, value: string) => void)(
+        'X-Custom-Header',
+        'valid-value-123'
+      );
       expect(originalSetHeader).toHaveBeenCalled();
     });
 
@@ -355,7 +370,10 @@ describe('Output Encoding Middleware', () => {
       preventResponseSplitting(req as Request, res as Response, next);
 
       expect(() => {
-        (res.setHeader as unknown as (name: string, value: string) => void)('X-Custom', 'value\r\nSet-Cookie: session=hijacked');
+        (res.setHeader as unknown as (name: string, value: string) => void)(
+          'X-Custom',
+          'value\r\nSet-Cookie: session=hijacked'
+        );
       }).toThrow();
     });
   });

@@ -267,7 +267,9 @@ describe('API Routes', () => {
 
     it('should verify user ownership', () => {
       req.query = { userId: 'user456' };
-      expect((req.query as Record<string, unknown>)?.userId).not.toBe((req.user as Record<string, unknown>).uid);
+      expect((req.query as Record<string, unknown>)?.userId).not.toBe(
+        (req.user as Record<string, unknown>).uid
+      );
     });
 
     it('should require authentication', () => {
@@ -346,7 +348,9 @@ describe('API Routes', () => {
     it('should verify Cloud Scheduler secret', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       req.headers = { 'x-cloud-scheduler-secret': 'invalid-secret' };
-      expect((req.headers as Record<string, unknown>)?.['x-cloud-scheduler-secret']).not.toBe('valid-secret');
+      expect((req.headers as Record<string, unknown>)?.['x-cloud-scheduler-secret']).not.toBe(
+        'valid-secret'
+      );
     });
 
     it('should enforce rate limiting', () => {
@@ -377,11 +381,15 @@ describe('API Routes', () => {
     });
 
     it('BEST CASE: should return stats', () => {
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).toBe('admin');
     });
 
     it('AVERAGE CASE: should handle typical stats request', () => {
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).toBe('admin');
     });
 
     it('WORST CASE: should handle empty stats', () => {
@@ -390,7 +398,9 @@ describe('API Routes', () => {
 
     it('should require admin role', () => {
       (req.user as Record<string, unknown>).customClaims = { role: 'user' };
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).not.toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).not.toBe('admin');
     });
 
     it('should require authentication', () => {
@@ -418,7 +428,9 @@ describe('API Routes', () => {
     });
 
     it('BEST CASE: should retrieve audit logs', () => {
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).toBe('admin');
     });
 
     it('AVERAGE CASE: should handle typical log retrieval', () => {
@@ -431,12 +443,16 @@ describe('API Routes', () => {
 
     it('should require admin role', () => {
       (req.user as Record<string, unknown>).customClaims = { role: 'user' };
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).not.toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).not.toBe('admin');
     });
 
     it('should enforce limit cap', () => {
       req.query = { limit: '10000' };
-      expect(parseInt((req.query as Record<string, unknown>)?.limit as string)).toBeGreaterThan(1000);
+      expect(parseInt((req.query as Record<string, unknown>)?.limit as string)).toBeGreaterThan(
+        1000
+      );
     });
 
     it('should handle invalid limit', () => {
@@ -460,7 +476,9 @@ describe('API Routes', () => {
     });
 
     it('BEST CASE: should retrieve security events', () => {
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).toBe('admin');
     });
 
     it('AVERAGE CASE: should handle typical event retrieval', () => {
@@ -473,7 +491,9 @@ describe('API Routes', () => {
 
     it('should require admin role', () => {
       (req.user as Record<string, unknown>).customClaims = { role: 'user' };
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).not.toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).not.toBe('admin');
     });
 
     it('should filter by severity', () => {
@@ -487,7 +507,9 @@ describe('API Routes', () => {
 
     it('should enforce limit cap', () => {
       req.query = { limit: '10000' };
-      expect(parseInt((req.query as Record<string, unknown>)?.limit as string)).toBeGreaterThan(1000);
+      expect(parseInt((req.query as Record<string, unknown>)?.limit as string)).toBeGreaterThan(
+        1000
+      );
     });
 
     it('should return events in order', () => {
@@ -543,7 +565,9 @@ describe('API Routes', () => {
 
     it('should prevent privilege escalation', () => {
       (req.user as Record<string, unknown>).customClaims = { role: 'user' };
-      expect(((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role).not.toBe('admin');
+      expect(
+        ((req.user as Record<string, unknown>).customClaims as Record<string, unknown>).role
+      ).not.toBe('admin');
     });
 
     it('should prevent rate limit bypass', () => {

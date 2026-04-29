@@ -64,7 +64,11 @@ export function requireAdmin(req: AuthenticatedRequest, res: Response, next: Nex
 /**
  * Verify user is moderator or admin
  */
-export function requireModerator(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
+export function requireModerator(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): void {
   requireRole(UserRole.MODERATOR, UserRole.ADMIN)(req, res, next);
 }
 
@@ -83,7 +87,11 @@ export function requireAuth(req: AuthenticatedRequest, res: Response, next: Next
 /**
  * Audit middleware to log all sensitive operations
  */
-export function auditMiddleware(_req: AuthenticatedRequest, _res: Response, next: NextFunction): void {
+export function auditMiddleware(
+  _req: AuthenticatedRequest,
+  _res: Response,
+  next: NextFunction
+): void {
   // Audit middleware is now handled in index.ts with proper async handling
   next();
 }

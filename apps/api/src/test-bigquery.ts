@@ -7,7 +7,7 @@ async function runTest() {
   console.log('--- Triggering BigQuery Auto-Provisioning Pipeline Test ---');
   await logToBigQuery('test_judge_evaluation', {
     status: 'Validating automatic provisioning boundaries',
-    testMode: true
+    testMode: true,
   });
   // eslint-disable-next-line no-console
   console.log('--- Test script completed ---');

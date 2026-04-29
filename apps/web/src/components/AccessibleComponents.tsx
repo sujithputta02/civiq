@@ -4,7 +4,12 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { generateId, prefersReducedMotion, announceToScreenReader, keyboardNavigation } from '@/lib/accessibility';
+import {
+  generateId,
+  prefersReducedMotion,
+  announceToScreenReader,
+  keyboardNavigation,
+} from '@/lib/accessibility';
 
 /**
  * Accessible Button Component
@@ -82,7 +87,11 @@ export const AccessibleInput = React.forwardRef<HTMLInputElement, AccessibleInpu
       <div className="space-y-2">
         <label htmlFor={inputId} className="block text-sm font-medium text-slate-700">
           {label}
-          {required && <span className="text-red-600 ml-1" aria-label="required">*</span>}
+          {required && (
+            <span className="text-red-600 ml-1" aria-label="required">
+              *
+            </span>
+          )}
         </label>
         <input
           ref={ref}
@@ -138,7 +147,11 @@ export const AccessibleSelect = React.forwardRef<HTMLSelectElement, AccessibleSe
       <div className="space-y-2">
         <label htmlFor={selectId} className="block text-sm font-medium text-slate-700">
           {label}
-          {required && <span className="text-red-600 ml-1" aria-label="required">*</span>}
+          {required && (
+            <span className="text-red-600 ml-1" aria-label="required">
+              *
+            </span>
+          )}
         </label>
         <select
           ref={ref}
@@ -254,7 +267,11 @@ export const AccessibleRadioGroup: React.FC<AccessibleRadioGroupProps> = ({
     <fieldset className="space-y-3">
       <legend className="text-sm font-medium text-slate-700">
         {legend}
-        {required && <span className="text-red-600 ml-1" aria-label="required">*</span>}
+        {required && (
+          <span className="text-red-600 ml-1" aria-label="required">
+            *
+          </span>
+        )}
       </legend>
       <div className="space-y-2">
         {options.map((option) => (
@@ -277,14 +294,13 @@ export const AccessibleRadioGroup: React.FC<AccessibleRadioGroupProps> = ({
               `}
             />
             <div className="flex-1">
-              <label htmlFor={`${name}-${option.value}`} className="text-sm font-medium text-slate-700 cursor-pointer">
+              <label
+                htmlFor={`${name}-${option.value}`}
+                className="text-sm font-medium text-slate-700 cursor-pointer"
+              >
                 {option.label}
               </label>
-              {option.hint && (
-                <p className="text-sm text-slate-500 mt-1">
-                  {option.hint}
-                </p>
-              )}
+              {option.hint && <p className="text-sm text-slate-500 mt-1">{option.hint}</p>}
             </div>
           </div>
         ))}
@@ -397,7 +413,12 @@ export const AccessibleAlert: React.FC<AccessibleAlertProps> = ({
   const typeConfig = {
     success: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: '✓' },
     error: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: '✕' },
-    warning: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-800', icon: '⚠' },
+    warning: {
+      bg: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      text: 'text-yellow-800',
+      icon: '⚠',
+    },
     info: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-800', icon: 'ℹ' },
   };
 
@@ -464,11 +485,7 @@ export const AccessibleTabs: React.FC<AccessibleTabsProps> = ({ tabs, defaultTab
 
   return (
     <div>
-      <div
-        ref={tabListRef}
-        role="tablist"
-        className="flex border-b border-slate-200 gap-1"
-      >
+      <div ref={tabListRef} role="tablist" className="flex border-b border-slate-200 gap-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -547,10 +564,13 @@ export const AccessibleTooltip: React.FC<AccessibleTooltipProps> = ({
             absolute z-50 px-3 py-2 text-sm font-medium text-white bg-slate-900 rounded-md
             whitespace-nowrap pointer-events-none
             ${
-              position === 'top' ? 'bottom-full left-1/2 -translate-x-1/2 mb-2' :
-              position === 'bottom' ? 'top-full left-1/2 -translate-x-1/2 mt-2' :
-              position === 'left' ? 'right-full top-1/2 -translate-y-1/2 mr-2' :
-              'left-full top-1/2 -translate-y-1/2 ml-2'
+              position === 'top'
+                ? 'bottom-full left-1/2 -translate-x-1/2 mb-2'
+                : position === 'bottom'
+                  ? 'top-full left-1/2 -translate-x-1/2 mt-2'
+                  : position === 'left'
+                    ? 'right-full top-1/2 -translate-y-1/2 mr-2'
+                    : 'left-full top-1/2 -translate-y-1/2 ml-2'
             }
           `}
         >

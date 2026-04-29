@@ -9,7 +9,7 @@ import { verifyClaim } from './services/gemini';
 async function run() {
   // eslint-disable-next-line no-console
   console.log('Testing OpenRouter + Tavily Fallback Flow...');
-  
+
   // Force Gemini to fail so it falls back
   process.env.GOOGLE_AI_API_KEY = 'invalid_key_to_force_fallback';
 

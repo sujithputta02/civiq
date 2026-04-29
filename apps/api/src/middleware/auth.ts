@@ -16,7 +16,7 @@ export async function verifyFirebaseToken(
 ): Promise<void> {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       res.status(401).json({ error: 'Missing or invalid authorization header' });
       return;
@@ -26,13 +26,13 @@ export async function verifyFirebaseToken(
 
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
-      
+
       if (decodedToken.exp && decodedToken.exp * 1000 < Date.now()) {
         res.status(401).json({ error: 'Token expired' });
         return;
       }
 
-      const tokenAge = Date.now() - (decodedToken.iat * 1000);
+      const tokenAge = Date.now() - decodedToken.iat * 1000;
       const maxTokenAge = 24 * 60 * 60 * 1000;
       if (tokenAge > maxTokenAge) {
         res.status(401).json({ error: 'Token too old. Please log in again.' });
@@ -51,11 +51,7 @@ export async function verifyFirebaseToken(
   }
 }
 
-export function verifyUserOwnership(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function verifyUserOwnership(req: Request, res: Response, next: NextFunction): void {
   const user = req.user;
   const requestedUserId = (req.body.userId || req.query.userId) as string | undefined;
 

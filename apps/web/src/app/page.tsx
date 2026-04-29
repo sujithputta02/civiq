@@ -9,16 +9,22 @@ export default function LandingPage() {
       {/* Dynamic Background Elements */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-200/30 blur-[120px] rounded-full" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-100/40 blur-[120px] rounded-full" />
-      
+
       <nav className="relative z-10 px-8 py-6 flex justify-between items-center">
         <div className="text-2xl font-bold tracking-tight text-primary">
           Civiq<span className="text-accent-primary">.</span>
         </div>
         <div className="flex gap-8 items-center">
-          <Link href="/about" className="text-secondary hover:text-primary transition-colors">How it works</Link>
-          <Link href="/verify" className="text-secondary hover:text-primary transition-colors">Verify Myth</Link>
+          <Link href="/about" className="text-secondary hover:text-primary transition-colors">
+            How it works
+          </Link>
+          <Link href="/verify" className="text-secondary hover:text-primary transition-colors">
+            Verify Myth
+          </Link>
           <Link href="/login">
-            <RefractiveButton variant="secondary" size="sm">Sign In</RefractiveButton>
+            <RefractiveButton variant="secondary" size="sm">
+              Sign In
+            </RefractiveButton>
           </Link>
         </div>
       </nav>
@@ -28,14 +34,14 @@ export default function LandingPage() {
           <ShieldCheck size={16} />
           <span>Your Trusted Election Readiness Copilot</span>
         </div>
-        
+
         <h1 className="text-6xl md:text-7xl font-bold tracking-tighter text-primary mb-6 max-w-4xl leading-[1.1]">
           Understand every election step <br />
           <span className="refractive-text">before it becomes a missed opportunity.</span>
         </h1>
-        
+
         <p className="text-xl text-secondary mb-12 max-w-2xl leading-relaxed">
-          Civiq converts the confusing election process into a personalized, step-by-step journey. 
+          Civiq converts the confusing election process into a personalized, step-by-step journey.
           Built for clarity, trust, and action.
         </p>
 
@@ -56,7 +62,9 @@ export default function LandingPage() {
               <Clock size={24} />
             </div>
             <h3 className="text-xl font-bold">Personalized Timeline</h3>
-            <p className="text-secondary">Know exactly what to do now, what comes later, and never miss a deadline.</p>
+            <p className="text-secondary">
+              Know exactly what to do now, what comes later, and never miss a deadline.
+            </p>
           </GlassCard>
 
           <GlassCard className="p-8 text-left flex flex-col gap-4">
@@ -64,7 +72,9 @@ export default function LandingPage() {
               <ShieldCheck size={24} />
             </div>
             <h3 className="text-xl font-bold">Myth-Check Lab</h3>
-            <p className="text-secondary">Verify claims and avoid misinformation traps with our AI-powered verification engine.</p>
+            <p className="text-secondary">
+              Verify claims and avoid misinformation traps with our AI-powered verification engine.
+            </p>
           </GlassCard>
 
           <GlassCard className="p-8 text-left flex flex-col gap-4">
@@ -72,7 +82,10 @@ export default function LandingPage() {
               <CheckCircle2 size={24} />
             </div>
             <h3 className="text-xl font-bold">Voter Simulation</h3>
-            <p className="text-secondary">Reduce anxiety by walking through a mock voting journey from arrival to ballot casting.</p>
+            <p className="text-secondary">
+              Reduce anxiety by walking through a mock voting journey from arrival to ballot
+              casting.
+            </p>
           </GlassCard>
         </div>
       </section>
@@ -84,9 +97,15 @@ export default function LandingPage() {
             © 2026 Civiq. Powered by Google Vertex AI & Firebase.
           </div>
           <div className="flex gap-8 text-sm text-secondary">
-            <a href="#" className="hover:text-primary">Accessibility</a>
-            <a href="#" className="hover:text-primary">Privacy Policy</a>
-            <a href="#" className="hover:text-primary">Security Audit</a>
+            <a href="#" className="hover:text-primary">
+              Accessibility
+            </a>
+            <a href="#" className="hover:text-primary">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-primary">
+              Security Audit
+            </a>
           </div>
         </div>
       </footer>

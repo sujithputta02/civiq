@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const { signInWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-    
+
     try {
       await signInWithEmail(email, password);
       router.push('/dashboard'); // or wherever you want to redirect after login
@@ -66,8 +66,8 @@ export default function LoginPage() {
             <label className="text-sm font-medium text-slate-700 ml-1">Email</label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
-                type="email" 
+              <input
+                type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -80,14 +80,17 @@ export default function LoginPage() {
           <div className="space-y-1">
             <div className="flex items-center justify-between ml-1">
               <label className="text-sm font-medium text-slate-700">Password</label>
-              <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
-                type="password" 
+              <input
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -97,11 +100,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <RefractiveButton 
-            type="submit" 
-            className="w-full mt-2" 
-            disabled={isSubmitting}
-          >
+          <RefractiveButton type="submit" className="w-full mt-2" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </RefractiveButton>
         </form>
@@ -112,7 +111,7 @@ export default function LoginPage() {
           <div className="h-px bg-slate-200 flex-1"></div>
         </div>
 
-        <button 
+        <button
           onClick={handleGoogleSignIn}
           type="button"
           className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors shadow-sm font-medium text-slate-700"

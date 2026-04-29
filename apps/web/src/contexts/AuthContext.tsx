@@ -1,15 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signOut as firebaseSignOut, 
+import {
+  User,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut as firebaseSignOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
@@ -42,12 +42,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      
+
       if (currentUser) {
         try {
           const docRef = doc(db, 'users', currentUser.uid);
           const docSnap = await getDoc(docRef);
-          
+
           if (docSnap.exists()) {
             const data = docSnap.data();
             if (data.assessment) {
@@ -57,27 +57,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               useAssessmentStore.getState().setTimeline(data.timeline);
             }
           } else {
-             // If they don't have data in Firestore, but they DO have it locally (just completed it), save it up.
-             const localState = useAssessmentStore.getState();
-             if (localState.data && localState.data.isComplete) {
-               await setDoc(docRef, {
-                 assessment: localState.data,
-                 timeline: localState.timeline,
-                 updatedAt: new Date().toISOString()
-               }, { merge: true });
-             } else {
-               // Reset state if it's genuinely a new session
-               localState.reset();
-             }
+            // If they don't have data in Firestore, but they DO have it locally (just completed it), save it up.
+            const localState = useAssessmentStore.getState();
+            if (localState.data && localState.data.isComplete) {
+              await setDoc(
+                docRef,
+                {
+                  assessment: localState.data,
+                  timeline: localState.timeline,
+                  updatedAt: new Date().toISOString(),
+                },
+                { merge: true }
+              );
+            } else {
+              // Reset state if it's genuinely a new session
+              localState.reset();
+            }
           }
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error('Error fetching user data:', error);
         }
       } else {
         // Logged out, reset store
         useAssessmentStore.getState().reset();
       }
-      
+
       setLoading(false);
     });
 
@@ -116,9 +120,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, signOut 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signInWithGoogle,
+        signInWithEmail,
+        signUpWithEmail,
+        resetPassword,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -95,7 +95,11 @@ export function validateParams(schema: ZodSchema) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const ValidationSchemas = {
   // User ID validation
-  userId: z.string().min(1).max(128).regex(/^[a-zA-Z0-9_-]+$/),
+  userId: z
+    .string()
+    .min(1)
+    .max(128)
+    .regex(/^[a-zA-Z0-9_-]+$/),
 
   // Email validation
   email: z.string().email().max(254),

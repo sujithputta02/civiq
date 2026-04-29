@@ -76,9 +76,7 @@ describe('RBAC Middleware', () => {
       middleware(req, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ error: expect.any(String) })
-      );
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.any(String) }));
     });
 
     it('should deny unauthenticated user', () => {
@@ -255,25 +253,34 @@ describe('RBAC Middleware', () => {
   describe('Role Hierarchy', () => {
     it('should enforce role hierarchy: admin > moderator > user > guest', () => {
       // Admin should access admin routes
-      req.user = { ...req.user, customClaims: { role: UserRole.ADMIN } } as AuthenticatedRequest['user'];
+      req.user = {
+        ...req.user,
+        customClaims: { role: UserRole.ADMIN },
+      } as AuthenticatedRequest['user'];
       const adminMiddleware = requireRole(UserRole.ADMIN);
       adminMiddleware(req, res as Response, next);
       expect(next).toHaveBeenCalled();
-      
+
       // Reset mocks
       vi.clearAllMocks();
-      
+
       // Moderator should access moderator routes
-      req.user = { ...req.user, customClaims: { role: UserRole.MODERATOR } } as AuthenticatedRequest['user'];
+      req.user = {
+        ...req.user,
+        customClaims: { role: UserRole.MODERATOR },
+      } as AuthenticatedRequest['user'];
       const modMiddleware = requireRole(UserRole.MODERATOR);
       modMiddleware(req, res as Response, next);
       expect(next).toHaveBeenCalled();
-      
+
       // Reset mocks
       vi.clearAllMocks();
-      
+
       // User should access user routes
-      req.user = { ...req.user, customClaims: { role: UserRole.USER } } as AuthenticatedRequest['user'];
+      req.user = {
+        ...req.user,
+        customClaims: { role: UserRole.USER },
+      } as AuthenticatedRequest['user'];
       const userMiddleware = requireRole(UserRole.USER);
       userMiddleware(req, res as Response, next);
       expect(next).toHaveBeenCalled();

@@ -35,6 +35,7 @@ NEXT_PUBLIC_VAPID_KEY=your_87_character_public_key_here
 ```
 
 **Example:**
+
 ```env
 NEXT_PUBLIC_VAPID_KEY=BKxyz1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 ```
@@ -109,12 +110,12 @@ importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_STORAGE_BUCKET',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId: 'YOUR_APP_ID',
 });
 
 const messaging = firebase.messaging();
@@ -172,7 +173,7 @@ If you see errors, check:
 
 2. **messaging/token-subscribe-failed**: Same as above
 
-3. **Service worker registration failed**: 
+3. **Service worker registration failed**:
    - Check that `firebase-messaging-sw.js` exists in `public/`
    - Check browser console for CORS errors
 
@@ -242,6 +243,7 @@ export const sendNotification = functions.https.onCall(async (data, context) => 
 **Cause**: API key doesn't have Firebase Cloud Messaging API permission
 
 **Solution**:
+
 1. Go to Google Cloud Console
 2. APIs & Services > Credentials
 3. Edit your API key
@@ -259,6 +261,7 @@ export const sendNotification = functions.https.onCall(async (data, context) => 
 **Cause**: Service worker file not found or CORS issue
 
 **Solution**:
+
 1. Verify `firebase-messaging-sw.js` exists in `public/`
 2. Check browser console for CORS errors
 3. Ensure service worker is accessible at `/firebase-messaging-sw.js`
@@ -268,6 +271,7 @@ export const sendNotification = functions.https.onCall(async (data, context) => 
 **Cause**: Incorrect or incomplete VAPID key
 
 **Solution**:
+
 1. Go to Firebase Console > Project Settings > Cloud Messaging
 2. Copy the full Web Push Certificate (87 characters)
 3. Paste into `.env.local` as `NEXT_PUBLIC_VAPID_KEY`
@@ -278,6 +282,7 @@ export const sendNotification = functions.https.onCall(async (data, context) => 
 **Cause**: User denied permission or browser doesn't support notifications
 
 **Solution**:
+
 1. Check browser notification settings
 2. Allow notifications for your domain
 3. Test in a different browser

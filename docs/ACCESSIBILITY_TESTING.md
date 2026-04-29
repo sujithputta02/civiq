@@ -49,7 +49,7 @@ describe('Accessibility', () => {
     const { container } = render(<Dashboard />);
     const h1 = container.querySelector('h1');
     const h2 = container.querySelectorAll('h2');
-    
+
     expect(h1).toBeInTheDocument();
     expect(h2.length).toBeGreaterThan(0);
   });
@@ -57,7 +57,7 @@ describe('Accessibility', () => {
   it('should have proper form labels', async () => {
     const { container } = render(<AssessmentForm />);
     const inputs = container.querySelectorAll('input');
-    
+
     inputs.forEach(input => {
       const label = container.querySelector(`label[for="${input.id}"]`);
       expect(label).toBeInTheDocument();
@@ -110,6 +110,7 @@ describe('Accessibility', () => {
 ### 2. Screen Reader Testing
 
 **Tools:**
+
 - **Windows:** NVDA (free), JAWS (paid)
 - **macOS:** VoiceOver (built-in)
 - **iOS:** VoiceOver (built-in)
@@ -194,6 +195,7 @@ describe('Accessibility', () => {
    - [ ] Verify text is readable
 
 **Tools:**
+
 - [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
 - [Coblis Color Blindness Simulator](https://www.color-blindness.com/coblis-color-blindness-simulator/)
 - [Accessible Colors](https://accessible-colors.com/)
@@ -230,15 +232,19 @@ describe('Accessibility', () => {
 **Enable Reduced Motion:**
 
 **Windows:**
+
 - Settings > Ease of Access > Display > Show animations
 
 **macOS:**
+
 - System Preferences > Accessibility > Display > Reduce motion
 
 **iOS:**
+
 - Settings > Accessibility > Motion > Reduce Motion
 
 **Android:**
+
 - Settings > Accessibility > Remove animations
 
 **Test Cases:**
@@ -256,6 +262,7 @@ describe('Accessibility', () => {
 **Objective:** Verify touch targets are large enough
 
 **Requirements:**
+
 - Minimum 44x44 pixels
 - 8px spacing between targets
 

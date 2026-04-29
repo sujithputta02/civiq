@@ -13,7 +13,7 @@ export const publishMythVerification = async (claim: string, result: Record<stri
 
     const [topic] = await pubSubClient.topic(topicName).get({ autoCreate: true });
     const messageId = await topic.publishMessage({ data: dataBuffer });
-      
+
     // eslint-disable-next-line no-console
     console.log(`Message ${messageId} published to ${topicName}`);
   } catch (error) {

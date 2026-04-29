@@ -9,24 +9,34 @@ const MODEL_NAME = 'gemini-2.0-flash';
 export async function verifyClaim(claim: string): Promise<VerificationResult> {
   // Security: Sanitize input to prevent prompt injection
   const sanitizedClaim = sanitizeInput(claim);
-  
+
   const API_KEY = process.env.GOOGLE_AI_API_KEY || '';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
 
   let searchContext = '';
   try {
     const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
-    const searchResponse = await tvly.search(sanitizedClaim, { searchDepth: 'basic', maxResults: 3 });
+    const searchResponse = await tvly.search(sanitizedClaim, {
+      searchDepth: 'basic',
+      maxResults: 3,
+    });
     if (searchResponse.results && searchResponse.results.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      searchContext = 'Real-time context from the web:\n' + searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') + '\n\n';
+      searchContext =
+        'Real-time context from the web:\n' +
+        searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') +
+        '\n\n';
     }
   } catch (searchErr) {
     // eslint-disable-next-line no-console
     console.error('Tavily search failed:', searchErr);
   }
 
-  const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   const prompt = `
     You are an expert election misinformation verifier for the "Civiq" platform.
     Today's date is ${currentDate}.
@@ -52,19 +62,19 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: 'application/json' }
-      })
+        generationConfig: { responseMimeType: 'application/json' },
+      }),
     });
 
     const result = await response.json();
-    
+
     if (result.error) {
       throw new Error(result.error.message);
     }
 
     const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) throw new Error('No response from Gemini');
-    
+
     const parsedResult = JSON.parse(text) as VerificationResult;
     await logToBigQuery('claim_verification', { claim: sanitizedClaim, result: parsedResult });
     return parsedResult;
@@ -73,18 +83,19 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
     console.error('Error verifying claim, falling back to OpenRouter:', error);
     try {
       const openRouterKey = process.env.OPENROUTER_API_KEY;
-      if (!openRouterKey) throw new Error('OpenRouter API key is not configured in environment variables');
+      if (!openRouterKey)
+        throw new Error('OpenRouter API key is not configured in environment variables');
 
       const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openRouterKey}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${openRouterKey}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           model: process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-super-120b-a12b:free',
-          messages: [{ role: 'user', content: prompt }]
-        })
+          messages: [{ role: 'user', content: prompt }],
+        }),
       });
       const orResult = await orResponse.json();
       // eslint-disable-next-line no-console
@@ -92,13 +103,16 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
       if (orResult.error) {
         throw new Error(orResult.error.message || JSON.stringify(orResult.error));
       }
-      
+
       let text = orResult.choices?.[0]?.message?.content;
       if (!text) throw new Error('No response from OpenRouter');
-      
+
       // Clean up potential markdown JSON formatting
-      text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      
+      text = text
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?/g, '')
+        .trim();
+
       return JSON.parse(text) as VerificationResult;
     } catch (fallbackError) {
       // eslint-disable-next-line no-console
@@ -111,11 +125,18 @@ export async function verifyClaim(claim: string): Promise<VerificationResult> {
   }
 }
 
-export async function chatAssistant(userId: string, message: string, contextData: Record<string, unknown>, explanationMode: string = '1m'): Promise<string> {
+export async function chatAssistant(
+  userId: string,
+  message: string,
+  contextData: Record<string, unknown>,
+  explanationMode: string = '1m'
+): Promise<string> {
   // Security: Sanitize inputs
   const sanitizedMessage = sanitizeInput(message);
-  const sanitizedLocation = sanitizeLocation(typeof contextData?.location === 'string' ? contextData.location : 'Unknown');
-  
+  const sanitizedLocation = sanitizeLocation(
+    typeof contextData?.location === 'string' ? contextData.location : 'Unknown'
+  );
+
   const API_KEY = process.env.GOOGLE_AI_API_KEY || '';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
 
@@ -128,17 +149,27 @@ export async function chatAssistant(userId: string, message: string, contextData
   let searchContext = '';
   try {
     const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
-    const searchResponse = await tvly.search(sanitizedMessage, { searchDepth: 'basic', maxResults: 3 });
+    const searchResponse = await tvly.search(sanitizedMessage, {
+      searchDepth: 'basic',
+      maxResults: 3,
+    });
     if (searchResponse.results && searchResponse.results.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      searchContext = 'Real-time context from the web:\n' + searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') + '\n\n';
+      searchContext =
+        'Real-time context from the web:\n' +
+        searchResponse.results.map((r: any) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') +
+        '\n\n';
     }
   } catch (searchErr) {
     // eslint-disable-next-line no-console
     console.error('Tavily search failed:', searchErr);
   }
 
-  const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
   const systemInstruction = `You are an expert election assistant for Civiq. 
 Today's date is ${currentDate}. 
 User Context: ${JSON.stringify(contextData)}
@@ -166,30 +197,31 @@ ${searchContext}`;
         contents: [
           { role: 'user', parts: [{ text: systemInstruction }] },
           ...history,
-          { role: 'user', parts: [{ text: sanitizedMessage }] }
-        ]
-      })
+          { role: 'user', parts: [{ text: sanitizedMessage }] },
+        ],
+      }),
     });
 
     const result = await response.json();
     if (result.error) {
       throw new Error(result.error.message);
     }
-    
+
     finalReply = result.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error in chat, falling back to OpenRouter:', error);
     try {
       const openRouterKey = process.env.OPENROUTER_API_KEY;
-      if (!openRouterKey) throw new Error('OpenRouter API key is not configured in environment variables');
-      
+      if (!openRouterKey)
+        throw new Error('OpenRouter API key is not configured in environment variables');
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const messages: any[] = [{ role: 'system', content: systemInstruction }];
       for (const h of history) {
         messages.push({
           role: h.role === 'model' ? 'assistant' : 'user',
-          content: h.parts?.[0]?.text || ''
+          content: h.parts?.[0]?.text || '',
         });
       }
       messages.push({ role: 'user', content: sanitizedMessage });
@@ -197,13 +229,13 @@ ${searchContext}`;
       const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openRouterKey}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${openRouterKey}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           model: process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-super-120b-a12b:free',
-          messages
-        })
+          messages,
+        }),
       });
       const orResult = await orResponse.json();
       // eslint-disable-next-line no-console
@@ -211,7 +243,7 @@ ${searchContext}`;
       if (orResult.error) {
         throw new Error(orResult.error.message || JSON.stringify(orResult.error));
       }
-      
+
       finalReply = orResult.choices?.[0]?.message?.content || 'No response';
     } catch (fallbackError) {
       // eslint-disable-next-line no-console
@@ -224,7 +256,7 @@ ${searchContext}`;
   if (finalReply !== 'Failed to generate response.') {
     history.push({ role: 'user', parts: [{ text: sanitizedMessage }] });
     history.push({ role: 'model', parts: [{ text: finalReply }] });
-    
+
     // limit history size to prevent payload from getting too large (e.g., last 20 messages = 10 turns)
     if (history.length > 20) {
       history = history.slice(history.length - 20);

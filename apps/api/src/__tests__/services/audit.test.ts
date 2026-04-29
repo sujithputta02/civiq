@@ -207,20 +207,35 @@ describe('Audit Service', () => {
 
   describe('logSecurityEvent', () => {
     it('BEST CASE: should log low severity event', async () => {
-      await logSecurityEvent('RATE_LIMIT_EXCEEDED', 'user123', { endpoint: '/api/v1/verify' }, 'LOW');
+      await logSecurityEvent(
+        'RATE_LIMIT_EXCEEDED',
+        'user123',
+        { endpoint: '/api/v1/verify' },
+        'LOW'
+      );
 
       expect(adminDb.collection).toHaveBeenCalledWith('security_events');
     });
 
     it('AVERAGE CASE: should log medium severity event', async () => {
-      await logSecurityEvent('SUSPICIOUS_ACTIVITY', 'user123', { pattern: 'multiple_ips' }, 'MEDIUM');
+      await logSecurityEvent(
+        'SUSPICIOUS_ACTIVITY',
+        'user123',
+        { pattern: 'multiple_ips' },
+        'MEDIUM'
+      );
 
       expect(adminDb.collection).toHaveBeenCalled();
     });
 
     it('WORST CASE: should log critical severity event', async () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      await logSecurityEvent('SESSION_HIJACKING_ATTEMPT', 'user123', { fingerprint_mismatch: true }, 'CRITICAL');
+      await logSecurityEvent(
+        'SESSION_HIJACKING_ATTEMPT',
+        'user123',
+        { fingerprint_mismatch: true },
+        'CRITICAL'
+      );
 
       expect(adminDb.collection).toHaveBeenCalled();
     });
@@ -481,14 +496,24 @@ describe('Audit Service', () => {
     });
 
     it('should log privilege escalation attempts', async () => {
-      await logSecurityEvent('PRIVILEGE_ESCALATION_ATTEMPT', 'user123', { targetRole: 'admin' }, 'HIGH');
+      await logSecurityEvent(
+        'PRIVILEGE_ESCALATION_ATTEMPT',
+        'user123',
+        { targetRole: 'admin' },
+        'HIGH'
+      );
 
       expect(adminDb.collection).toHaveBeenCalled();
     });
 
     it('should log session hijacking attempts', async () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      await logSecurityEvent('SESSION_HIJACKING_ATTEMPT', 'user123', { fingerprint_mismatch: true }, 'CRITICAL');
+      await logSecurityEvent(
+        'SESSION_HIJACKING_ATTEMPT',
+        'user123',
+        { fingerprint_mismatch: true },
+        'CRITICAL'
+      );
 
       expect(adminDb.collection).toHaveBeenCalled();
     });

@@ -15,9 +15,9 @@ async function testVertex() {
   // eslint-disable-next-line no-console
   console.log('Credentials Path:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-  const vertexAI = new VertexAI({ 
-    project: 'civiq-494613', 
-    location: 'us-central1' 
+  const vertexAI = new VertexAI({
+    project: 'civiq-494613',
+    location: 'us-central1',
   });
 
   const model = vertexAI.getGenerativeModel({ model: 'gemini-1.5-flash-001' });
@@ -27,7 +27,7 @@ async function testVertex() {
     console.log('\nSending test prompt: "Hello, are you there?"');
     const result = await model.generateContent('Hello, are you there?');
     const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text;
-    
+
     if (text) {
       // eslint-disable-next-line no-console
       console.log('\n✅ SUCCESS!');

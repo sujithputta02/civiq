@@ -150,7 +150,8 @@ export function getContrastRatio(rgb1: string, rgb2: string): number {
 export function createSkipLink(targetId: string): HTMLAnchorElement {
   const link = document.createElement('a');
   link.href = `#${targetId}`;
-  link.className = 'sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-blue-600 focus:text-white focus:rounded-md';
+  link.className =
+    'sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-blue-600 focus:text-white focus:rounded-md';
   link.textContent = 'Skip to main content';
   return link;
 }
@@ -186,10 +187,7 @@ export class LiveRegion {
 /**
  * Tooltip accessibility helper
  */
-export function createAccessibleTooltip(
-  triggerElement: HTMLElement,
-  tooltipText: string
-): void {
+export function createAccessibleTooltip(triggerElement: HTMLElement, tooltipText: string): void {
   const tooltipId = generateId('tooltip');
   triggerElement.setAttribute('aria-describedby', tooltipId);
 
@@ -204,10 +202,7 @@ export function createAccessibleTooltip(
  * Form validation announcements
  */
 export function announceFormError(fieldName: string, errorMessage: string): void {
-  announceToScreenReader(
-    `${fieldName} error: ${errorMessage}`,
-    'assertive'
-  );
+  announceToScreenReader(`${fieldName} error: ${errorMessage}`, 'assertive');
 }
 
 /**

@@ -15,6 +15,6 @@ module.exports = {
     'prefer-const': 'error',
     'prefer-arrow-callback': 'error',
     'no-implicit-coercion': 'error',
-    'eqeqeq': ['error', 'always'],
+    eqeqeq: ['error', 'always'],
   },
 };

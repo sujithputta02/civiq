@@ -13,10 +13,7 @@ module.exports = {
       'error',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
     ],
-    '@typescript-eslint/explicit-member-accessibility': [
-      'error',
-      { accessibility: 'explicit' },
-    ],
+    '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'explicit' }],
     '@typescript-eslint/naming-convention': [
       'error',
       {

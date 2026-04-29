@@ -61,9 +61,7 @@ describe('Auth Middleware', () => {
       verifyUserOwnership(req as Request, res as Response, next);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({ error: expect.any(String) })
-      );
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: expect.any(String) }));
     });
 
     it('should deny access when user is not authenticated', () => {

@@ -10,10 +10,10 @@ async function listModels() {
     // eslint-disable-next-line no-console
     return console.error('No API Key');
   }
-  
+
   const genAI = new GoogleGenerativeAI(apiKey);
   try {
-    // There isn't a direct listModels in the main SDK easily accessible this way, 
+    // There isn't a direct listModels in the main SDK easily accessible this way,
     // but we can try common names.
     const models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro', 'gemini-1.5-flash-latest'];
     // eslint-disable-next-line no-console

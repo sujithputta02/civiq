@@ -9,11 +9,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
 const steps = [
-  { title: "Status", question: "What is your current voter registration status?" },
-  { title: "Confidence", question: "On a scale of 1-5, how confident do you feel about the upcoming election process?" },
-  { title: "Location", question: "Where will you be voting? (Optional)" },
-  { title: "Familiarity", question: "How familiar are you with the voting methods available to you?" },
-  { title: "Constraints", question: "Do any of these apply to you? (Select all that apply)" },
+  { title: 'Status', question: 'What is your current voter registration status?' },
+  {
+    title: 'Confidence',
+    question: 'On a scale of 1-5, how confident do you feel about the upcoming election process?',
+  },
+  { title: 'Location', question: 'Where will you be voting? (Optional)' },
+  {
+    title: 'Familiarity',
+    question: 'How familiar are you with the voting methods available to you?',
+  },
+  { title: 'Constraints', question: 'Do any of these apply to you? (Select all that apply)' },
 ];
 
 export default function AssessmentPage() {
@@ -35,32 +41,36 @@ export default function AssessmentPage() {
           import('firebase/analytics').then(({ logEvent }) => {
             logEvent(analytics, 'assessment_completed', {
               voting_status: finalData.votingStatus,
-              location: finalData.location
+              location: finalData.location,
             });
           });
         }
       });
-      
+
       // Save to Firestore if logged in
       if (user) {
         try {
           const { doc, setDoc } = await import('firebase/firestore');
           const { db } = await import('@/lib/firebase');
           const { generateTimeline } = await import('@/lib/timeline');
-          
+
           const generatedTimeline = generateTimeline(finalData);
           setTimeline(generatedTimeline);
 
-          await setDoc(doc(db, 'users', user.uid), {
-            assessment: finalData,
-            timeline: generatedTimeline,
-            updatedAt: new Date().toISOString()
-          }, { merge: true });
+          await setDoc(
+            doc(db, 'users', user.uid),
+            {
+              assessment: finalData,
+              timeline: generatedTimeline,
+              updatedAt: new Date().toISOString(),
+            },
+            { merge: true }
+          );
         } catch (error) {
-          console.error("Error saving assessment:", error);
+          console.error('Error saving assessment:', error);
         }
       }
-      
+
       router.push('/dashboard');
     }
   };
@@ -76,13 +86,15 @@ export default function AssessmentPage() {
         return (
           <div className="space-y-6">
             {['REGISTERED', 'NOT_REGISTERED', 'UNSURE'].map((status) => (
-              <GlassCard 
+              <GlassCard
                 key={status}
                 className={`p-6 cursor-pointer hover:border-accent-primary transition-colors ${data.votingStatus === status ? 'border-accent-primary bg-blue-50/50' : ''}`}
                 onClick={() => updateData({ votingStatus: status as any })}
               >
                 <div className="flex justify-between items-center">
-                  <span className="font-medium text-lg capitalize">{status.toLowerCase().replace('_', ' ')}</span>
+                  <span className="font-medium text-lg capitalize">
+                    {status.toLowerCase().replace('_', ' ')}
+                  </span>
                   {data.votingStatus === status && <Check className="text-accent-primary" />}
                 </div>
               </GlassCard>
@@ -105,7 +117,7 @@ export default function AssessmentPage() {
         );
       case 2:
         return (
-          <input 
+          <input
             type="text"
             placeholder="Enter your city or state..."
             className="w-full p-4 rounded-2xl bg-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-accent-primary text-lg"
@@ -128,21 +140,33 @@ export default function AssessmentPage() {
           </div>
         );
       case 4:
-        const constraints = ["First-time voter", "Living abroad", "Physical disability", "Busy schedule", "Need language support"];
+        const constraints = [
+          'First-time voter',
+          'Living abroad',
+          'Physical disability',
+          'Busy schedule',
+          'Need language support',
+        ];
         return (
           <div className="grid grid-cols-1 gap-4">
             {constraints.map((c) => (
-              <GlassCard 
+              <GlassCard
                 key={c}
                 className={`p-4 cursor-pointer hover:border-accent-primary transition-colors ${data.constraints?.includes(c) ? 'border-accent-primary bg-blue-50/50' : ''}`}
                 onClick={() => {
                   const current = data.constraints || [];
-                  updateData({ constraints: current.includes(c) ? current.filter(x => x !== c) : [...current, c] });
+                  updateData({
+                    constraints: current.includes(c)
+                      ? current.filter((x) => x !== c)
+                      : [...current, c],
+                  });
                 }}
               >
                 <div className="flex justify-between items-center">
                   <span>{c}</span>
-                  {data.constraints?.includes(c) && <Check size={16} className="text-accent-primary" />}
+                  {data.constraints?.includes(c) && (
+                    <Check size={16} className="text-accent-primary" />
+                  )}
                 </div>
               </GlassCard>
             ))}
@@ -167,7 +191,7 @@ export default function AssessmentPage() {
 
         <div className="mb-8">
           <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-            <motion.div 
+            <motion.div
               className="h-full bg-accent-primary"
               initial={{ width: 0 }}
               animate={{ width: `${((step + 1) / steps.length) * 100}%` }}
@@ -186,22 +210,18 @@ export default function AssessmentPage() {
             <h2 className="text-sm font-bold uppercase tracking-widest text-accent-primary mb-2">
               {steps[step].title}
             </h2>
-            <h1 className="text-3xl font-bold mb-8 text-primary">
-              {steps[step].question}
-            </h1>
+            <h1 className="text-3xl font-bold mb-8 text-primary">{steps[step].question}</h1>
 
-            <div className="min-h-[300px]">
-              {renderStep()}
-            </div>
+            <div className="min-h-[300px]">{renderStep()}</div>
 
             <div className="mt-12 flex justify-end">
-              <RefractiveButton 
-                size="lg" 
-                onClick={handleNext} 
+              <RefractiveButton
+                size="lg"
+                onClick={handleNext}
                 className="gap-2"
                 disabled={step === 0 && !data.votingStatus}
               >
-                {step === steps.length - 1 ? "Get My Plan" : "Continue"} <ArrowRight size={20} />
+                {step === steps.length - 1 ? 'Get My Plan' : 'Continue'} <ArrowRight size={20} />
               </RefractiveButton>
             </div>
           </motion.div>

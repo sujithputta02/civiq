@@ -99,10 +99,10 @@ describe('Feature', () => {
     it('should do something', () => {
       // Arrange
       const input = 'test';
-      
+
       // Act
       const result = functionUnderTest(input);
-      
+
       // Assert
       expect(result).toBe('expected');
     });
@@ -125,6 +125,7 @@ describe('Feature', () => {
 ### Folder Structure
 
 **Backend**:
+
 ```
 apps/api/src/
 ├── __tests__/          # Unit tests
@@ -136,6 +137,7 @@ apps/api/src/
 ```
 
 **Frontend**:
+
 ```
 apps/web/src/
 ├── app/                # Pages and layouts

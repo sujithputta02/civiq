@@ -3,6 +3,7 @@
 ## Executive Summary
 
 This document outlines the complete testing strategy for Civiq API achieving **100% coverage** across all scenarios:
+
 - ✅ **Best case scenarios** (happy path)
 - ✅ **Average case scenarios** (typical usage)
 - ✅ **Worst case scenarios** (edge cases, failures)
@@ -16,28 +17,29 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ## Test Coverage Targets
 
 ### Current Status
+
 - **Overall Coverage**: 6.22% → **Target: 90%+**
 - **Critical Modules**: 0% → **Target: 100%**
 - **Security Functions**: 97.5% → **Target: 100%**
 
 ### Coverage by Module
 
-| Module | Current | Target | Status |
-|--------|---------|--------|--------|
-| `utils/sanitize.ts` | 97.5% | 100% | ✅ Near Complete |
-| `middleware/auth.ts` | 35.13% | 100% | 🔄 In Progress |
-| `middleware/security.ts` | 0% | 100% | ✅ Created |
-| `middleware/rbac.ts` | 0% | 100% | ✅ Created |
-| `middleware/validation.ts` | 0% | 100% | ✅ Created |
-| `middleware/output-encoding.ts` | 0% | 100% | ✅ Created |
-| `services/audit.ts` | 0% | 100% | ✅ Created |
-| `services/secrets.ts` | 0% | 100% | ✅ Created |
-| `services/gemini.ts` | 0% | 100% | 🔄 Pending |
-| `services/pubsub.ts` | 0% | 100% | 🔄 Pending |
-| `services/messaging.ts` | 0% | 100% | 🔄 Pending |
-| `types/errors.ts` | 0% | 100% | ✅ Created |
-| `index.ts` (routes) | 0% | 100% | ✅ Created |
-| `worker.ts` | 0% | 100% | 🔄 Pending |
+| Module                          | Current | Target | Status           |
+| ------------------------------- | ------- | ------ | ---------------- |
+| `utils/sanitize.ts`             | 97.5%   | 100%   | ✅ Near Complete |
+| `middleware/auth.ts`            | 35.13%  | 100%   | 🔄 In Progress   |
+| `middleware/security.ts`        | 0%      | 100%   | ✅ Created       |
+| `middleware/rbac.ts`            | 0%      | 100%   | ✅ Created       |
+| `middleware/validation.ts`      | 0%      | 100%   | ✅ Created       |
+| `middleware/output-encoding.ts` | 0%      | 100%   | ✅ Created       |
+| `services/audit.ts`             | 0%      | 100%   | ✅ Created       |
+| `services/secrets.ts`           | 0%      | 100%   | ✅ Created       |
+| `services/gemini.ts`            | 0%      | 100%   | 🔄 Pending       |
+| `services/pubsub.ts`            | 0%      | 100%   | 🔄 Pending       |
+| `services/messaging.ts`         | 0%      | 100%   | 🔄 Pending       |
+| `types/errors.ts`               | 0%      | 100%   | ✅ Created       |
+| `index.ts` (routes)             | 0%      | 100%   | ✅ Created       |
+| `worker.ts`                     | 0%      | 100%   | 🔄 Pending       |
 
 ---
 
@@ -46,6 +48,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ### 1. Middleware Tests (4 files, 200+ tests)
 
 #### `apps/api/src/__tests__/middleware/security.test.ts`
+
 - **Tests**: 50+ tests
 - **Coverage**: Device fingerprinting, IP validation, session hijacking detection, CSRF tokens
 - **Scenarios**:
@@ -55,6 +58,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
   - ✅ Edge cases: Missing headers, concurrent validations, special characters
 
 #### `apps/api/src/__tests__/middleware/rbac.test.ts`
+
 - **Tests**: 40+ tests
 - **Coverage**: Role-based access control, role hierarchy, permission enforcement
 - **Scenarios**:
@@ -64,6 +68,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
   - ✅ Edge cases: Missing claims, invalid roles, concurrent checks
 
 #### `apps/api/src/__tests__/middleware/validation.test.ts`
+
 - **Tests**: 60+ tests
 - **Coverage**: Zod schema validation, input validation, error handling
 - **Scenarios**:
@@ -73,6 +78,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
   - ✅ Edge cases: Null/undefined, nested validation, discriminated unions
 
 #### `apps/api/src/__tests__/middleware/output-encoding.test.ts`
+
 - **Tests**: 50+ tests
 - **Coverage**: HTML encoding, response sanitization, response splitting prevention
 - **Scenarios**:
@@ -84,6 +90,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ### 2. Service Tests (2 files, 100+ tests)
 
 #### `apps/api/src/__tests__/services/audit.test.ts`
+
 - **Tests**: 50+ tests
 - **Coverage**: Audit logging, security events, admin actions
 - **Scenarios**:
@@ -93,6 +100,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
   - ✅ Edge cases: Very long IDs, unicode, concurrent logging
 
 #### `apps/api/src/__tests__/services/secrets.test.ts`
+
 - **Tests**: 60+ tests
 - **Coverage**: Secret retrieval, caching, validation, masking
 - **Scenarios**:
@@ -104,6 +112,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ### 3. Type Tests (1 file, 50+ tests)
 
 #### `apps/api/src/__tests__/types/errors.test.ts`
+
 - **Tests**: 50+ tests
 - **Coverage**: Error type guards, error message extraction
 - **Scenarios**:
@@ -115,6 +124,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ### 4. API Route Tests (1 file, 100+ tests)
 
 #### `apps/api/src/__tests__/routes/api.test.ts`
+
 - **Tests**: 100+ tests
 - **Coverage**: All 9 API endpoints
 - **Scenarios**:
@@ -128,6 +138,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ## Test Scenarios by Category
 
 ### 1. Authentication & Authorization (30+ tests)
+
 - ✅ Firebase token verification (valid, expired, invalid)
 - ✅ User ownership verification (same user, different user)
 - ✅ RBAC enforcement (admin, moderator, user, guest)
@@ -135,6 +146,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Unauthorized access logging
 
 ### 2. Session Security (25+ tests)
+
 - ✅ Device fingerprinting (matching, mismatching)
 - ✅ IP address validation (allowed variance, rapid changes)
 - ✅ User-Agent changes (detection)
@@ -142,6 +154,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Session hijacking detection
 
 ### 3. Input Validation (40+ tests)
+
 - ✅ Zod schema validation
 - ✅ Prompt injection prevention
 - ✅ XSS attack prevention
@@ -151,6 +164,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Location sanitization
 
 ### 4. Output Encoding (30+ tests)
+
 - ✅ HTML entity encoding
 - ✅ Response sanitization
 - ✅ Response splitting prevention
@@ -158,6 +172,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ CSP enforcement
 
 ### 5. Rate Limiting (15+ tests)
+
 - ✅ Per-endpoint limits enforced
 - ✅ 429 responses on limit exceeded
 - ✅ Retry-After headers present
@@ -165,6 +180,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Concurrent request handling
 
 ### 6. Audit Logging (20+ tests)
+
 - ✅ All sensitive operations logged
 - ✅ Unauthorized access attempts logged
 - ✅ Admin actions logged with details
@@ -172,6 +188,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Concurrent logging handled
 
 ### 7. Secret Management (25+ tests)
+
 - ✅ Secret retrieval from environment
 - ✅ Secret caching with TTL
 - ✅ Secret masking for logging
@@ -179,6 +196,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Connection string validation
 
 ### 8. Error Handling (30+ tests)
+
 - ✅ Zod error detection
 - ✅ Error message extraction
 - ✅ Generic error responses to clients
@@ -186,6 +204,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Sensitive data not exposed
 
 ### 9. API Routes (100+ tests)
+
 - ✅ POST /api/v1/verify (claim verification)
 - ✅ POST /api/v1/chat (chat messages)
 - ✅ GET /api/v1/chat (chat history)
@@ -197,6 +216,7 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 - ✅ Health check endpoints
 
 ### 10. Security Tests (50+ tests)
+
 - ✅ Cross-user data access prevention
 - ✅ Privilege escalation prevention
 - ✅ Rate limit bypass prevention
@@ -210,26 +230,31 @@ This document outlines the complete testing strategy for Civiq API achieving **1
 ## Test Execution
 
 ### Run All Tests
+
 ```bash
 npm run test:run
 ```
 
 ### Run Tests with Coverage
+
 ```bash
 npm run test:coverage
 ```
 
 ### Run Specific Test File
+
 ```bash
 npm run test -- apps/api/src/__tests__/middleware/security.test.ts
 ```
 
 ### Run Tests in Watch Mode
+
 ```bash
 npm run test
 ```
 
 ### Generate Coverage Report
+
 ```bash
 npm run test:coverage
 # Open coverage/index.html in browser
@@ -240,12 +265,14 @@ npm run test:coverage
 ## Coverage Thresholds
 
 ### Global Thresholds (enforced in CI/CD)
+
 - **Lines**: 90%
 - **Functions**: 90%
 - **Branches**: 85%
 - **Statements**: 90%
 
 ### Critical Module Thresholds (100%)
+
 - `middleware/auth.ts`
 - `middleware/security.ts`
 - `middleware/rbac.ts`
@@ -261,6 +288,7 @@ npm run test:coverage
 ## CI/CD Integration
 
 ### Quality Workflow (`.github/workflows/quality.yml`)
+
 ```yaml
 - Type checking: npm run typecheck
 - Linting: npm run lint
@@ -270,6 +298,7 @@ npm run test:coverage
 ```
 
 ### Security Workflow (`.github/workflows/security-scan.yml`)
+
 ```yaml
 - Dependency scanning: npm audit
 - Secret scanning: TruffleHog
@@ -284,30 +313,35 @@ npm run test:coverage
 ## Test Best Practices
 
 ### 1. Test Organization
+
 - ✅ Group tests by feature/module
 - ✅ Use descriptive test names
 - ✅ Include best/average/worst case labels
 - ✅ Separate security tests
 
 ### 2. Test Data
+
 - ✅ Use realistic test data
 - ✅ Include edge cases
 - ✅ Test with unicode/emoji
 - ✅ Test with very long strings
 
 ### 3. Mocking
+
 - ✅ Mock external dependencies (Firebase, Firestore)
 - ✅ Mock API calls (Gemini, Tavily)
 - ✅ Use vi.fn() for spies
 - ✅ Clear mocks between tests
 
 ### 4. Assertions
+
 - ✅ Use specific assertions
 - ✅ Test both success and failure paths
 - ✅ Verify error messages
 - ✅ Check side effects (logging, caching)
 
 ### 5. Performance
+
 - ✅ Keep tests fast (<100ms each)
 - ✅ Avoid unnecessary delays
 - ✅ Use beforeEach/afterEach for setup
@@ -318,6 +352,7 @@ npm run test:coverage
 ## Pending Tests (Phase 2)
 
 ### Service Tests
+
 - [ ] `services/gemini.ts` (50+ tests)
   - Claim verification
   - Chat assistant
@@ -335,6 +370,7 @@ npm run test:coverage
   - Error handling
 
 ### Integration Tests
+
 - [ ] Firebase authentication flow
 - [ ] Firestore operations (read/write/transaction)
 - [ ] Pub/Sub message publishing and consumption
@@ -342,6 +378,7 @@ npm run test:coverage
 - [ ] External API calls with fallbacks
 
 ### E2E Tests
+
 - [ ] Complete claim verification flow
 - [ ] Chat conversation flow
 - [ ] Admin dashboard access
@@ -349,6 +386,7 @@ npm run test:coverage
 - [ ] Security event monitoring
 
 ### Worker Tests
+
 - [ ] `worker.ts` (40+ tests)
   - Pub/Sub message handling
   - Myth verification aggregation
@@ -360,6 +398,7 @@ npm run test:coverage
 ## Test Metrics
 
 ### Current Metrics
+
 - **Total Tests**: 400+
 - **Test Files**: 8
 - **Coverage**: 6.22% → 90%+ (target)
@@ -367,6 +406,7 @@ npm run test:coverage
 - **Pass Rate**: 100%
 
 ### Target Metrics
+
 - **Total Tests**: 600+
 - **Test Files**: 15+
 - **Coverage**: 90%+ globally, 100% on critical flows
@@ -378,18 +418,21 @@ npm run test:coverage
 ## Continuous Improvement
 
 ### Weekly Reviews
+
 - [ ] Review test coverage reports
 - [ ] Identify untested code paths
 - [ ] Add tests for new features
 - [ ] Update test documentation
 
 ### Monthly Reviews
+
 - [ ] Analyze test execution times
 - [ ] Optimize slow tests
 - [ ] Review test quality
 - [ ] Update testing strategy
 
 ### Quarterly Reviews
+
 - [ ] Comprehensive coverage audit
 - [ ] Security test review
 - [ ] Performance test review
@@ -410,6 +453,7 @@ npm run test:coverage
 ## Conclusion
 
 This comprehensive testing strategy ensures **100% coverage** across all scenarios:
+
 - ✅ Best case (happy path)
 - ✅ Average case (typical usage)
 - ✅ Worst case (edge cases, failures)

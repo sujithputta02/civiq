@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { validateBody, validateQuery, validateParams, ValidationSchemas } from '../../middleware/validation';
+import {
+  validateBody,
+  validateQuery,
+  validateParams,
+  ValidationSchemas,
+} from '../../middleware/validation';
 
 describe('Validation Middleware', () => {
   let req: Partial<Request>;

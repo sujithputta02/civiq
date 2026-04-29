@@ -9,7 +9,7 @@ async function testGemini() {
   // eslint-disable-next-line no-console
   console.log('--- Gemini API Connection Test ---');
   const apiKey = process.env.GOOGLE_AI_API_KEY;
-  
+
   if (!apiKey || apiKey.includes('YOUR_GEMINI_API_KEY')) {
     // eslint-disable-next-line no-console
     console.error('❌ ERROR: GOOGLE_AI_API_KEY is not set correctly in .env');
@@ -17,7 +17,10 @@ async function testGemini() {
   }
 
   // eslint-disable-next-line no-console
-  console.log('API Key Found:', apiKey.substring(0, 5) + '...' + apiKey.substring(apiKey.length - 5));
+  console.log(
+    'API Key Found:',
+    apiKey.substring(0, 5) + '...' + apiKey.substring(apiKey.length - 5)
+  );
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
@@ -27,7 +30,7 @@ async function testGemini() {
     console.log('\nSending test prompt: "Hello, are you there?"');
     const result = await model.generateContent('Hello, are you there?');
     const text = result.response.text();
-    
+
     if (text) {
       // eslint-disable-next-line no-console
       console.log('\n✅ SUCCESS!');

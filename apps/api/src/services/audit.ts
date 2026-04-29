@@ -34,7 +34,9 @@ export async function logAuditEvent(event: AuditEvent): Promise<void> {
 
     // Also log to console for immediate visibility
     // eslint-disable-next-line no-console
-    console.log(`[AUDIT] ${event.action} - User: ${event.userId} - Resource: ${event.resource} - Status: ${event.status}`);
+    console.log(
+      `[AUDIT] ${event.action} - User: ${event.userId} - Resource: ${event.resource} - Status: ${event.status}`
+    );
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Failed to log audit event:', error);

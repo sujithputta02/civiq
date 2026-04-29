@@ -8,7 +8,8 @@ export function generateTimeline(assessment: Partial<ReadinessAssessment>): Time
     steps.push({
       id: 'reg-01',
       title: 'Register to Vote',
-      description: 'The first and most critical step. Check eligibility and submit your registration form.',
+      description:
+        'The first and most critical step. Check eligibility and submit your registration form.',
       status: 'URGENT',
       category: 'Registration',
       deadline: 'Varies by state (usually 15-30 days before)',
@@ -17,7 +18,8 @@ export function generateTimeline(assessment: Partial<ReadinessAssessment>): Time
     steps.push({
       id: 'reg-01',
       title: 'Verify Registration',
-      description: 'Even if registered, verify your status on the voter roll to avoid polling day surprises.',
+      description:
+        'Even if registered, verify your status on the voter roll to avoid polling day surprises.',
       status: 'COMPLETED',
       category: 'Registration',
     });
@@ -33,7 +35,10 @@ export function generateTimeline(assessment: Partial<ReadinessAssessment>): Time
   });
 
   // 3. Voting Method
-  if (assessment.constraints?.includes('Busy schedule') || assessment.constraints?.includes('Living abroad')) {
+  if (
+    assessment.constraints?.includes('Busy schedule') ||
+    assessment.constraints?.includes('Living abroad')
+  ) {
     steps.push({
       id: 'meth-01',
       title: 'Request Absentee Ballot',
