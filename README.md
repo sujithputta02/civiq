@@ -9,6 +9,8 @@
 
 Civiq is an AI-powered election readiness platform that converts complex election procedures into a personalized, interactive journey. Designed to combat "voter failure," it guides users through eligibility rules, deadlines, and real-world simulations.
 
+**Live App:** [https://civiq-494613.web.app](https://civiq-494613.web.app)
+
 ---
 
 ## 🏆 100% Challenge Alignment
