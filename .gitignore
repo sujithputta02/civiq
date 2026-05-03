@@ -17,6 +17,8 @@ node_modules/
 !tsconfig.json
 !tsconfig*.json
 !firebase.json
+!turbo.json
+!.lintstagedrc.json
 !packages/config/typescript/*.json
 
 # Build Output

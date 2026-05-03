@@ -134,7 +134,7 @@ jobs:
       - name: Verify audit logging implementation
         run: |
           echo "Checking for audit logging..."
-          if [ -f "apps/api/src/services/audit.ts" ]; then
+          if [ -f "apps/api/src/modules/security/audit.service.ts" ]; then
             echo "✅ Audit service found"
           else
             echo "❌ Audit service not found"
