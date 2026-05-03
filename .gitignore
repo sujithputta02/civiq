@@ -30,3 +30,6 @@ build/
 
 # Background Worker Ignore
 apps/web/public/firebase-messaging-sw.js
+
+# TypeScript
+*.tsbuildinfo
