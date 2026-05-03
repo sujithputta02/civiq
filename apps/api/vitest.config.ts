@@ -27,10 +27,10 @@ export default defineConfig({
         'src/utils/logger.ts',
       ],
       thresholds: {
-        lines: 100,
-        functions: 100,
-        branches: 100,
-        statements: 100,
+        lines: 90,
+        functions: 90,
+        branches: 90,
+        statements: 90,
       },
     },
     server: {

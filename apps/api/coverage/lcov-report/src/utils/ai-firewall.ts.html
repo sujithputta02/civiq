@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>83/83</span>
+                <span class='fraction'>105/105</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>83/83</span>
+                <span class='fraction'>105/105</span>
             </div>
         
             
@@ -169,7 +169,29 @@
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,6 +204,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -254,6 +297,7 @@
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">13x</span>
@@ -289,18 +333,36 @@ export interface FirewallResult {
 }
 &nbsp;
 const INJECTION_PATTERNS: { pattern: RegExp; name: string }[] = [
-  { pattern: /ignore\s+(previous|all|above|prior)\s+(instructions?|prompt|context)/i, name: 'ignore-instructions' },
-  { pattern: /forget\s+(everything|all|previous|your\s+instructions?)/i, name: 'forget-instructions' },
-  { pattern: /disregard\s+(previous|all|your)\s+(\w+\s+)?(instructions?|rules?|prompt)/i, name: 'disregard-instructions' },
+  {
+    pattern: /ignore\s+(previous|all|above|prior)\s+(instructions?|prompt|context)/i,
+    name: 'ignore-instructions',
+  },
+  {
+    pattern: /forget\s+(everything|all|previous|your\s+instructions?)/i,
+    name: 'forget-instructions',
+  },
+  {
+    pattern: /disregard\s+(previous|all|your)\s+(\w+\s+)?(instructions?|rules?|prompt)/i,
+    name: 'disregard-instructions',
+  },
   { pattern: /you\s+are\s+now\s+(a\s+)?(?!civiq|an?\s+assistant)/i, name: 'role-hijack' },
   { pattern: /act\s+as\s+(if\s+you\s+(are|were)|a\s+)?(?!civiq)/i, name: 'act-as-hijack' },
   { pattern: /pretend\s+(you\s+are|to\s+be)/i, name: 'pretend-hijack' },
   { pattern: /override\s+(your\s+)?(role|rules?|instructions?|system)/i, name: 'override-role' },
   { pattern: /from\s+now\s+on\s+you\s+(are|will|must)/i, name: 'role-redefine' },
   { pattern: /system\s+prompt/i, name: 'system-prompt-extract' },
-  { pattern: /reveal\s+(your\s+)?(system|initial|original)\s+(prompt|instructions?)/i, name: 'reveal-prompt' },
-  { pattern: /what\s+(are|were)\s+your\s+(initial|original|system)\s+instructions?/i, name: 'instruction-extract' },
-  { pattern: /print\s+(your\s+)?(system|full|complete)\s+(prompt|instructions?)/i, name: 'print-prompt' },
+  {
+    pattern: /reveal\s+(your\s+)?(system|initial|original)\s+(prompt|instructions?)/i,
+    name: 'reveal-prompt',
+  },
+  {
+    pattern: /what\s+(are|were)\s+your\s+(initial|original|system)\s+instructions?/i,
+    name: 'instruction-extract',
+  },
+  {
+    pattern: /print\s+(your\s+)?(system|full|complete)\s+(prompt|instructions?)/i,
+    name: 'print-prompt',
+  },
   { pattern: /jailbreak/i, name: 'jailbreak-keyword' },
   { pattern: /DAN\s+(mode|prompt)/i, name: 'dan-mode' },
   { pattern: /developer\s+mode/i, name: 'developer-mode' },
@@ -318,7 +380,10 @@ const INJECTION_PATTERNS: { pattern: RegExp; name: string }[] = [
   { pattern: /send\s+(to|email|http|this\s+to)/i, name: 'exfiltration-attempt' },
   { pattern: /curl\s+https?:\/\//i, name: 'curl-exfiltration' },
   { pattern: /fetch\(["']https?:\/\//i, name: 'fetch-exfiltration' },
-  { pattern: /http[s]?:\/\/(?:localhost|127\.\d|0\.0\.0\.0|internal|metadata\.google)/i, name: 'ssrf-url' },
+  {
+    pattern: /http[s]?:\/\/(?:localhost|127\.\d|0\.0\.0\.0|internal|metadata\.google)/i,
+    name: 'ssrf-url',
+  },
 ];
 &nbsp;
 const HIGH_RISK_THRESHOLD = 2;
@@ -355,7 +420,8 @@ export function aiPromptFirewall(input: string, userId?: string): FirewallResult
     .replace(/&lt;\s*\/?system\s*&gt;/gi, '[TAG REMOVED]');
 &nbsp;
   // Remove zero-width and control characters individually to satisfy lint
-  sanitized = sanitized.replace(/\u200B/g, '')
+  sanitized = sanitized
+    .replace(/\u200B/g, '')
     .replace(/\u200C/g, '')
     .replace(/\u200D/g, '')
     .replace(/\uFEFF/g, '')
@@ -388,7 +454,7 @@ export function assertSafeForAI(input: string, userId?: string): string {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-03T15:36:00.052Z
+                at 2026-05-03T17:16:04.447Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
