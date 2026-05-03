@@ -205,7 +205,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Run security test suite
-        run: npm test --workspace=apps/api -- --coverage --testPathPattern="__tests__"
+        run: npm run test:coverage --workspace=apps/api
         env:
           NODE_ENV: test
           CI: true
