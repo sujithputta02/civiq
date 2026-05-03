@@ -33,5 +33,25 @@
     "@google-cloud/firestore": "^8.5.0",
     "firebase-admin": "^13.8.0",
     "next": "^16.2.4"
+  },
+  "overrides": {
+    "uuid": "^11.0.5",
+    "esbuild": "^0.28.0",
+    "postcss": "^8.5.10",
+    "@tootallnate/once": "^3.0.1",
+    "vite": "^6.4.2",
+    "vitest": "^2.1.9",
+    "gaxios": {
+      "uuid": "^11.0.5"
+    },
+    "teeny-request": {
+      "uuid": "^11.0.5"
+    },
+    "google-gax": {
+      "uuid": "^11.0.5"
+    },
+    "@google-cloud/storage": {
+      "uuid": "^11.0.5"
+    }
   }
 }

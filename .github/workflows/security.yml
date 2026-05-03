@@ -31,9 +31,33 @@ jobs:
         run: npm audit --audit-level=moderate
         continue-on-error: true
 
-      - name: Check for vulnerable dependencies
-        run: npm audit --json > audit-report.json
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
         continue-on-error: true
+
+      - name: Check for vulnerable dependencies
+        run: |
+          # Generate audit report
+          npm audit --json > audit-report.json
+          
+          # Check severity levels
+          CRITICAL=$(cat audit-report.json | jq '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(cat audit-report.json | jq '.metadata.vulnerabilities.high // 0')
+          MODERATE=$(cat audit-report.json | jq '.metadata.vulnerabilities.moderate // 0')
+          
+          echo "Security Audit Summary:"
+          echo "  Critical: $CRITICAL"
+          echo "  High: $HIGH"
+          echo "  Moderate: $MODERATE"
+          
+          # Fail only on critical or high vulnerabilities
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "❌ Found critical or high severity vulnerabilities"
+            exit 1
+          fi
+          
+          echo "✅ No critical or high vulnerabilities found"
+        continue-on-error: false
 
       - name: Upload audit report
         uses: actions/upload-artifact@v4

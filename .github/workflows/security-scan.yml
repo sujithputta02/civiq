@@ -33,14 +33,25 @@ jobs:
         continue-on-error: true
 
       - name: Check for critical vulnerabilities
-        continue-on-error: true
+        continue-on-error: false
         run: |
-          CRITICAL=$(npm audit --json | jq '.metadata.vulnerabilities.critical // 0')
+          # Check for critical and high vulnerabilities only
+          AUDIT_JSON=$(npm audit --json)
+          CRITICAL=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.high // 0')
+          
           if [ "$CRITICAL" -gt 0 ]; then
             echo "❌ Found $CRITICAL critical vulnerabilities"
             exit 1
           fi
-          echo "✅ No critical vulnerabilities found"
+          
+          if [ "$HIGH" -gt 0 ]; then
+            echo "❌ Found $HIGH high vulnerabilities"
+            exit 1
+          fi
+          
+          echo "✅ No critical or high vulnerabilities found"
+          echo "Note: Moderate vulnerabilities in transitive dependencies are tracked and will be resolved when upstream packages update"
 
   secret-scan:
     name: Secret Scanning
