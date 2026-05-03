@@ -37,9 +37,9 @@ describe('FirestoreCache Utilities', () => {
 
   describe('batchGetDocs', () => {
     it('should use cache for existing entries', async () => {
-      const db = { 
-        doc: vi.fn().mockReturnValue({ id: 'ref' }), 
-        getAll: vi.fn().mockResolvedValue([{ exists: true, data: () => ({ name: 'new' }) }]) 
+      const db = {
+        doc: vi.fn().mockReturnValue({ id: 'ref' }),
+        getAll: vi.fn().mockResolvedValue([{ exists: true, data: () => ({ name: 'new' }) }]),
       } as any;
       firestoreCache.set('path/1', { name: 'cached' });
 
@@ -51,9 +51,9 @@ describe('FirestoreCache Utilities', () => {
 
     it('should fetch and cache uncached entries', async () => {
       const doc2 = { exists: true, data: () => ({ name: 'fetched' }) };
-      const db = { 
-        doc: vi.fn().mockReturnValue('ref2'), 
-        getAll: vi.fn().mockResolvedValue([doc2]) 
+      const db = {
+        doc: vi.fn().mockReturnValue('ref2'),
+        getAll: vi.fn().mockResolvedValue([doc2]),
       } as any;
 
       const results = await batchGetDocs(db, ['path/2']);
@@ -63,9 +63,9 @@ describe('FirestoreCache Utilities', () => {
 
     it('should handle missing documents in batch read', async () => {
       const doc2 = { exists: false };
-      const db = { 
-        doc: vi.fn().mockReturnValue('ref2'), 
-        getAll: vi.fn().mockResolvedValue([doc2]) 
+      const db = {
+        doc: vi.fn().mockReturnValue('ref2'),
+        getAll: vi.fn().mockResolvedValue([doc2]),
       } as any;
 
       const results = await batchGetDocs(db, ['path/2']);
@@ -75,7 +75,9 @@ describe('FirestoreCache Utilities', () => {
 
   describe('paginatedQuery', () => {
     it('should handle pagination without cursor', async () => {
-      const mockDocs = Array(5).fill(0).map((_, i) => ({ id: `id${i}`, data: () => ({ i }) }));
+      const mockDocs = Array(5)
+        .fill(0)
+        .map((_, i) => ({ id: `id${i}`, data: () => ({ i }) }));
       const query = {
         limit: vi.fn().mockReturnThis(),
         get: vi.fn().mockResolvedValue({ docs: mockDocs }),

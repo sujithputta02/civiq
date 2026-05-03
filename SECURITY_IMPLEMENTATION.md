@@ -380,6 +380,7 @@ Protects all AI-bound inputs (claim verification, chat assistant) from adversari
 **Risk classification**: `low` / `medium` / `high` — blocked at `high` (≥ 2 pattern matches)
 
 **Wired into routes**:
+
 ```typescript
 // /api/v1/verify
 const safeClaim = assertSafeForAI(validated.claim, req.user?.uid);
@@ -402,17 +403,17 @@ Ensures no PII leaks into logs, AI prompts, or analytics exports.
 
 **Detected & redacted types**:
 
-| PII Type | Pattern | Replacement |
-|---|---|---|
-| Email | RFC 5322 regex | `[EMAIL REDACTED]` |
-| Full name | Two-capitalised-word heuristic | `[NAME REDACTED]` |
-| Indian mobile | 10-digit (6–9 prefix) | `[PHONE REDACTED]` |
-| Aadhaar | 12-digit / 4-4-4 spaced | `[AADHAAR REDACTED]` |
-| PAN card | ABCDE1234F | `[PAN REDACTED]` |
-| Date of birth | ISO & DD/MM/YYYY | `[DATE REDACTED]` |
-| IPv4 address | Dotted-quad | `[IP REDACTED]` |
-| Credit card | 13–19 digit groups | `[CARD REDACTED]` |
-| Long numerics | ≥ 10 digits | `[ID REDACTED]` |
+| PII Type      | Pattern                        | Replacement          |
+| ------------- | ------------------------------ | -------------------- |
+| Email         | RFC 5322 regex                 | `[EMAIL REDACTED]`   |
+| Full name     | Two-capitalised-word heuristic | `[NAME REDACTED]`    |
+| Indian mobile | 10-digit (6–9 prefix)          | `[PHONE REDACTED]`   |
+| Aadhaar       | 12-digit / 4-4-4 spaced        | `[AADHAAR REDACTED]` |
+| PAN card      | ABCDE1234F                     | `[PAN REDACTED]`     |
+| Date of birth | ISO & DD/MM/YYYY               | `[DATE REDACTED]`    |
+| IPv4 address  | Dotted-quad                    | `[IP REDACTED]`      |
+| Credit card   | 13–19 digit groups             | `[CARD REDACTED]`    |
+| Long numerics | ≥ 10 digits                    | `[ID REDACTED]`      |
 
 ### Consent Enforcement
 
@@ -446,19 +447,20 @@ Every request receives a 0–1 threat score. Requests scoring ≥ 0.8 receive `4
 
 **Scoring factors**:
 
-| Factor | Score contribution |
-|---|---|
-| IP request velocity > 120 rpm | +0.50 |
-| Auth failures ≥ 5 per minute | +0.40 |
-| Malicious User-Agent (sqlmap, nikto, nuclei …) | +0.35 |
-| Path traversal / injection in URL | +0.45 |
-| Permanently blocked IP | 1.00 (instant block) |
-| Missing Accept-Language (Tor/bot heuristic) | +0.10 |
-| Oversized payload > 50 KB | +0.30 |
+| Factor                                         | Score contribution   |
+| ---------------------------------------------- | -------------------- |
+| IP request velocity > 120 rpm                  | +0.50                |
+| Auth failures ≥ 5 per minute                   | +0.40                |
+| Malicious User-Agent (sqlmap, nikto, nuclei …) | +0.35                |
+| Path traversal / injection in URL              | +0.45                |
+| Permanently blocked IP                         | 1.00 (instant block) |
+| Missing Accept-Language (Tor/bot heuristic)    | +0.10                |
+| Oversized payload > 50 KB                      | +0.30                |
 
 **Auth failure integration**: `auth.ts` calls `recordAuthFailure(ip)` on every Firebase token rejection, feeding real-time data into the threat scorer.
 
 **Global placement**: mounted directly after `express.json()`, before any route handler:
+
 ```typescript
 app.use(threatDetectionMiddleware);
 ```
@@ -473,18 +475,19 @@ app.use(threatDetectionMiddleware);
 
 **Pipeline jobs**:
 
-| Job | Tool | Gate |
-|---|---|---|
-| Dependency Review | `npm audit --audit-level=high` | Hard fail on high/critical |
-| Container Scan | Aqua Trivy filesystem | SARIF to GitHub Security tab |
-| Secret Scanning | TruffleHog (filesystem + git history) | Verified secrets only |
-| SAST | CodeQL `security-extended` query suite | Uploaded to Security tab |
-| AI Security Checks | Shell verification of new layers | Hard fail if missing |
-| Test Coverage Gate | Jest with coverage | Fails if suite fails |
+| Job                | Tool                                   | Gate                         |
+| ------------------ | -------------------------------------- | ---------------------------- |
+| Dependency Review  | `npm audit --audit-level=high`         | Hard fail on high/critical   |
+| Container Scan     | Aqua Trivy filesystem                  | SARIF to GitHub Security tab |
+| Secret Scanning    | TruffleHog (filesystem + git history)  | Verified secrets only        |
+| SAST               | CodeQL `security-extended` query suite | Uploaded to Security tab     |
+| AI Security Checks | Shell verification of new layers       | Hard fail if missing         |
+| Test Coverage Gate | Jest with coverage                     | Fails if suite fails         |
 
 **Runtime hardening** (existing `security-scan.yml` enhanced):
+
 ```yaml
-- run: npm audit --audit-level=high  # Upgraded from --audit-level=moderate
+- run: npm audit --audit-level=high # Upgraded from --audit-level=moderate
 ```
 
 ---
@@ -495,16 +498,16 @@ app.use(threatDetectionMiddleware);
 
 ✅ **111 tests passing (100%)**
 
-| File | Tests | Layer |
-|---|---|---|
-| `utils/sanitize.test.ts` | 15 | 9 |
-| `utils/sanitize.edge-cases.test.ts` | 49 | 9 |
-| `middleware/auth.test.ts` | 3 | 1 |
-| `utils/ai-firewall.test.ts` | 17 | **13 (new)** |
-| `utils/pii-redaction.test.ts` | 13 | **14 (new)** |
-| `middleware/threat-detection.test.ts` | 14 | **15 (new)** |
-| `services/zero-trust-pipeline.test.ts` | 10 | **16 (new)** |
-| `alignment.test.ts` | misc | Cross-cutting |
+| File                                   | Tests | Layer         |
+| -------------------------------------- | ----- | ------------- |
+| `utils/sanitize.test.ts`               | 15    | 9             |
+| `utils/sanitize.edge-cases.test.ts`    | 49    | 9             |
+| `middleware/auth.test.ts`              | 3     | 1             |
+| `utils/ai-firewall.test.ts`            | 17    | **13 (new)**  |
+| `utils/pii-redaction.test.ts`          | 13    | **14 (new)**  |
+| `middleware/threat-detection.test.ts`  | 14    | **15 (new)**  |
+| `services/zero-trust-pipeline.test.ts` | 10    | **16 (new)**  |
+| `alignment.test.ts`                    | misc  | Cross-cutting |
 
 **Total: 111+ tests, 100% coverage on all security functions**
 

@@ -11,7 +11,6 @@ const nextConfig = {
   // Compression and optimization
   compress: true,
   productionBrowserSourceMaps: false,
-  swcMinify: true,
 
   // Headers for caching
   async headers() {

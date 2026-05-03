@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { describe, it, vi, expect, beforeEach } from 'vitest';
 
-
 // Mock env to allow mutation in tests
 vi.mock('@civiq/config-env', () => ({
   env: {
@@ -10,25 +9,34 @@ vi.mock('@civiq/config-env', () => ({
     FRONTEND_URL: 'http://localhost:3000',
     PORT: 3010,
     GOOGLE_AI_API_KEY: 'test-key',
-    TAVILY_API_KEY: 'test-key'
-  }
+    TAVILY_API_KEY: 'test-key',
+  },
 }));
 
 process.env.FRONTEND_URL = 'http://localhost:3000';
 
 // Mock fetch
-vi.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve({
-  ok: true,
-  json: () => Promise.resolve({
-    candidates: [{ content: { parts: [{ text: '{"classification": "VERIFIED", "claim": "c", "explanation": "e"}' }] } }]
-  })
-} as any));
+vi.spyOn(global, 'fetch').mockImplementation(() =>
+  Promise.resolve({
+    ok: true,
+    json: () =>
+      Promise.resolve({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: '{"classification": "VERIFIED", "claim": "c", "explanation": "e"}' }],
+            },
+          },
+        ],
+      }),
+  } as any)
+);
 
 // Mock tavily
 vi.mock('@tavily/core', () => ({
   tavily: vi.fn(() => ({
-    search: vi.fn().mockResolvedValue({ results: [] })
-  }))
+    search: vi.fn().mockResolvedValue({ results: [] }),
+  })),
 }));
 
 // Mock firebase-admin
@@ -45,7 +53,7 @@ const mockAdmin = {
 
 vi.mock('firebase-admin', () => ({
   default: mockAdmin,
-  ...mockAdmin
+  ...mockAdmin,
 }));
 
 vi.mock('firebase-admin/auth', () => ({
@@ -60,15 +68,15 @@ vi.mock('../../modules/identity/admin.service.js', () => ({
     set: vi.fn().mockResolvedValue({}),
     runTransaction: vi.fn().mockImplementation(async (cb) => {
       const transaction = {
-        get: vi.fn().mockResolvedValue({ 
-          exists: true, 
-          data: () => ({ 
-            totalQueries: 100, 
-            trueCount: 50, 
-            falseCount: 30, 
-            mixedCount: 20, 
-            recentQueries: Array(55).fill({ claim: 'c', classification: 'VERIFIED' }) 
-          }) 
+        get: vi.fn().mockResolvedValue({
+          exists: true,
+          data: () => ({
+            totalQueries: 100,
+            trueCount: 50,
+            falseCount: 30,
+            mixedCount: 20,
+            recentQueries: Array(55).fill({ claim: 'c', classification: 'VERIFIED' }),
+          }),
         }),
         set: vi.fn(),
         getAll: vi.fn(),
@@ -95,36 +103,38 @@ vi.mock('ioredis', () => {
       expire: vi.fn(),
       emit: vi.fn(),
       close: vi.fn(),
-    }))
+    })),
   };
 });
 
 // Mock PubSub
 const mockSub = {
   on: vi.fn(),
-  name: 's'
+  name: 's',
 };
 const mockTopic = {
   publishJSON: vi.fn().mockResolvedValue(['msg']),
   publishMessage: vi.fn().mockResolvedValue('msg-id'),
-  get: vi.fn().mockResolvedValue([{ 
-    name: 't',
-    publishMessage: vi.fn().mockResolvedValue('msg-id'),
-    subscription: vi.fn().mockReturnValue({
-      get: vi.fn().mockResolvedValue([mockSub])
-    })
-  }]),
+  get: vi.fn().mockResolvedValue([
+    {
+      name: 't',
+      publishMessage: vi.fn().mockResolvedValue('msg-id'),
+      subscription: vi.fn().mockReturnValue({
+        get: vi.fn().mockResolvedValue([mockSub]),
+      }),
+    },
+  ]),
   subscription: vi.fn().mockReturnValue({
-    get: vi.fn().mockResolvedValue([mockSub])
-  })
+    get: vi.fn().mockResolvedValue([mockSub]),
+  }),
 };
 
 vi.mock('@google-cloud/pubsub', () => {
   return {
     PubSub: vi.fn().mockImplementation(() => ({
       topic: vi.fn().mockReturnValue(mockTopic),
-      close: vi.fn().mockResolvedValue(undefined)
-    }))
+      close: vi.fn().mockResolvedValue(undefined),
+    })),
   };
 });
 
@@ -139,10 +149,10 @@ describe('Coverage Boost: Final Push', () => {
       const { tavily } = await import('@tavily/core');
       const service = new AIService();
       vi.mocked(tavily).mockReturnValue({
-        search: vi.fn().mockResolvedValue({ results: [{ title: 'T', content: 'C', url: 'U' }] })
+        search: vi.fn().mockResolvedValue({ results: [{ title: 'T', content: 'C', url: 'U' }] }),
       } as any);
       global.fetch = vi.fn().mockResolvedValue({
-        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] })
+        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] }),
       } as any);
       await service.verifyClaim('claim');
     });
@@ -152,10 +162,10 @@ describe('Coverage Boost: Final Push', () => {
       const { tavily } = await import('@tavily/core');
       const service = new AIService();
       vi.mocked(tavily).mockReturnValue({
-        search: vi.fn().mockRejectedValue(new Error('Fail'))
+        search: vi.fn().mockRejectedValue(new Error('Fail')),
       } as any);
       global.fetch = vi.fn().mockResolvedValue({
-        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] })
+        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] }),
       } as any);
       await service.verifyClaim('claim');
     });
@@ -163,17 +173,18 @@ describe('Coverage Boost: Final Push', () => {
 
   describe('modules/communication/pubsub-batch.service', () => {
     it('should handle large batch and empty flush', async () => {
-      const { addToBatch, flushBatch } = await import('../../modules/communication/pubsub-batch.service.js');
-      
+      const { addToBatch, flushBatch } =
+        await import('../../modules/communication/pubsub-batch.service.js');
+
       // Hit batch.length >= BATCH_SIZE (line 29)
       for (let i = 0; i < 101; i++) {
         await addToBatch('c', {});
       }
-      
+
       // Hit batch.length === 0 but timer exists (line 45-47)
-      await flushBatch(); 
+      await flushBatch();
       await addToBatch('c', {}); // sets timer
-      (global as any).pubsubBatch = []; 
+      (global as any).pubsubBatch = [];
     });
 
     it('should handle timeout error (line 32-34)', async () => {
@@ -189,12 +200,14 @@ describe('Coverage Boost: Final Push', () => {
 
   describe('modules/communication/pubsub.service', () => {
     it('should handle success publishing (line 14-16)', async () => {
-      const { publishMythVerification } = await import('../../modules/communication/pubsub.service.js');
+      const { publishMythVerification } =
+        await import('../../modules/communication/pubsub.service.js');
       await publishMythVerification('claim', {});
     });
 
     it('should handle publishing error', async () => {
-      const { publishMythVerification } = await import('../../modules/communication/pubsub.service.js');
+      const { publishMythVerification } =
+        await import('../../modules/communication/pubsub.service.js');
       const ps = new (await import('@google-cloud/pubsub')).PubSub();
       const topic = (await ps.topic('t').get())[0];
       vi.mocked(topic.publishMessage).mockRejectedValueOnce(new Error('PubSub Fail'));
@@ -206,7 +219,7 @@ describe('Coverage Boost: Final Push', () => {
     it('should handle all creation and insertion paths (line 15-38)', async () => {
       const { logToBigQuery } = await import('../../modules/security/bigquery.service.js');
       const { BigQuery } = await import('@google-cloud/bigquery');
-      
+
       const mockTable = {
         exists: vi.fn().mockResolvedValue([false]),
         insert: vi.fn().mockResolvedValue({}),
@@ -216,7 +229,7 @@ describe('Coverage Boost: Final Push', () => {
         table: vi.fn().mockReturnValue(mockTable),
         createTable: vi.fn().mockResolvedValue({}),
       };
-      
+
       vi.spyOn(BigQuery.prototype, 'dataset').mockReturnValue(mockDataset as any);
       vi.spyOn(BigQuery.prototype, 'createDataset').mockResolvedValue([{}] as any);
 
@@ -225,7 +238,7 @@ describe('Coverage Boost: Final Push', () => {
       // Hit error path (line 119-120)
       vi.mocked(mockTable.insert).mockRejectedValueOnce(new Error('BQ Fail'));
       await logToBigQuery('test', {});
-      
+
       // Test existing paths
       mockTable.exists.mockResolvedValue([true]);
       mockDataset.exists.mockResolvedValue([true]);
@@ -237,28 +250,30 @@ describe('Coverage Boost: Final Push', () => {
     it('should handle chatAssistant success and history', async () => {
       const { AIService } = await import('../../modules/ai/ai.service.js');
       const service = new AIService();
-      
+
       const mockDoc = {
         exists: true,
-        data: () => ({ messages: [{ role: 'user', parts: [{ text: 'prev' }] }] })
+        data: () => ({ messages: [{ role: 'user', parts: [{ text: 'prev' }] }] }),
       };
       const mockChatDocRef = {
         get: vi.fn().mockResolvedValue(mockDoc),
-        set: vi.fn().mockResolvedValue({})
+        set: vi.fn().mockResolvedValue({}),
       };
       const mockCollection = {
         doc: vi.fn().mockReturnValue({
           collection: vi.fn().mockReturnValue({
-            doc: vi.fn().mockReturnValue(mockChatDocRef)
-          })
-        })
+            doc: vi.fn().mockReturnValue(mockChatDocRef),
+          }),
+        }),
       };
-      
+
       const { adminDb } = await import('../../modules/identity/admin.service.js');
       vi.spyOn(adminDb, 'collection').mockReturnValue(mockCollection as any);
-      
+
       global.fetch = vi.fn().mockResolvedValue({
-        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: 'reply' }] } }] })
+        json: vi
+          .fn()
+          .mockResolvedValue({ candidates: [{ content: { parts: [{ text: 'reply' }] } }] }),
       } as any);
 
       const res = await service.chatAssistant('uid', 'hi', { location: 'London' });
@@ -269,7 +284,7 @@ describe('Coverage Boost: Final Push', () => {
       const { AIService } = await import('../../modules/ai/ai.service.js');
       const service = new AIService();
       global.fetch = vi.fn().mockResolvedValue({
-        json: vi.fn().mockResolvedValue({ error: { message: 'Chat Error' } })
+        json: vi.fn().mockResolvedValue({ error: { message: 'Chat Error' } }),
       } as any);
       await expect(service.chatAssistant('uid', 'hi', {})).rejects.toThrow('Chat Error');
     });
@@ -297,8 +312,11 @@ describe('Coverage Boost: Final Push', () => {
     it('should handle valid token', async () => {
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
       const admin = (await import('firebase-admin')).default;
-      vi.spyOn(admin.auth(), 'verifyIdToken').mockResolvedValue({ uid: '123', exp: Date.now() / 1000 + 100 } as any);
-      
+      vi.spyOn(admin.auth(), 'verifyIdToken').mockResolvedValue({
+        uid: '123',
+        exp: Date.now() / 1000 + 100,
+      } as any);
+
       const req = { headers: { authorization: 'Bearer tok' } } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
@@ -310,8 +328,11 @@ describe('Coverage Boost: Final Push', () => {
     it('should handle expired token', async () => {
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
       const admin = (await import('firebase-admin')).default;
-      vi.spyOn(admin.auth(), 'verifyIdToken').mockResolvedValue({ uid: '123', exp: Date.now() / 1000 - 100 } as any);
-      
+      vi.spyOn(admin.auth(), 'verifyIdToken').mockResolvedValue({
+        uid: '123',
+        exp: Date.now() / 1000 - 100,
+      } as any);
+
       const req = { headers: { authorization: 'Bearer tok' } } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
@@ -324,7 +345,7 @@ describe('Coverage Boost: Final Push', () => {
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
       const admin = (await import('firebase-admin')).default;
       vi.spyOn(admin.auth(), 'verifyIdToken').mockRejectedValue(new Error('Invalid'));
-      
+
       const req = { headers: { authorization: 'Bearer tok' }, ip: '1.2.3.4' } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
@@ -335,10 +356,10 @@ describe('Coverage Boost: Final Push', () => {
 
     it('should handle internal error in auth', async () => {
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
-      const req = null as any; 
+      const req = null as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
-      
+
       await verifyFirebaseToken(req, res, next);
       expect(res.status).toHaveBeenCalledWith(500);
     });
@@ -357,13 +378,13 @@ describe('Coverage Boost: Final Push', () => {
       const { env } = await import('@civiq/config-env');
       const originalEnv = env.NODE_ENV;
       (env as any).NODE_ENV = 'production';
-      
+
       const req = { protocol: 'http' } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
       enforceHttps(req, res, next);
       expect(res.status).toHaveBeenCalledWith(403);
-      
+
       (env as any).NODE_ENV = originalEnv;
     });
   });
@@ -372,24 +393,24 @@ describe('Coverage Boost: Final Push', () => {
     it('should initialize and process messages', async () => {
       const { startMythVerificationWorker } = await import('../../worker.js');
       await startMythVerificationWorker();
-      
+
       const { PubSub } = await import('@google-cloud/pubsub');
       const ps = new PubSub();
       const topic = (await ps.topic('t').get())[0];
       const sub = (await topic.subscription('s').get())[0];
       const handler = (sub.on as any).mock.calls.find((c: any) => c[0] === 'message')![1];
-      const mockMsg = { 
-        id: '1', 
+      const mockMsg = {
+        id: '1',
         data: Buffer.from(JSON.stringify({ classification: 'VERIFIED', claim: 'test' })),
         ack: vi.fn(),
-        nack: vi.fn()
+        nack: vi.fn(),
       };
-      
+
       const { adminDb } = await import('../../modules/identity/admin.service.js');
       vi.spyOn(adminDb, 'runTransaction').mockImplementation(async (cb: any) => {
         await cb({
           get: vi.fn().mockResolvedValue({ data: () => null }),
-          set: vi.fn()
+          set: vi.fn(),
         });
       });
 
@@ -398,7 +419,10 @@ describe('Coverage Boost: Final Push', () => {
 
       vi.mocked(adminDb.runTransaction).mockImplementationOnce(async (cb) => {
         const tx = {
-          get: vi.fn().mockResolvedValue({ exists: true, data: () => ({ recentQueries: Array(55).fill({}) }) }),
+          get: vi.fn().mockResolvedValue({
+            exists: true,
+            data: () => ({ recentQueries: Array(55).fill({}) }),
+          }),
           set: vi.fn(),
           getAll: vi.fn(),
           create: vi.fn(),
@@ -408,20 +432,20 @@ describe('Coverage Boost: Final Push', () => {
         return cb(tx as any);
       });
       await handler(mockMsg);
-      
-      const mockMsgFalse = { 
-        id: '2', 
+
+      const mockMsgFalse = {
+        id: '2',
         data: Buffer.from(JSON.stringify({ classification: 'FALSE', claim: 'test' })),
         ack: vi.fn(),
-        nack: vi.fn()
+        nack: vi.fn(),
       };
       await handler(mockMsgFalse);
-      
-      const mockMsgMixed = { 
-        id: '3', 
+
+      const mockMsgMixed = {
+        id: '3',
         data: Buffer.from(JSON.stringify({ classification: 'MIXED', claim: 'test' })),
         ack: vi.fn(),
-        nack: vi.fn()
+        nack: vi.fn(),
       };
       await handler(mockMsgMixed);
     });
@@ -464,17 +488,26 @@ describe('Coverage Boost: Final Push', () => {
     });
 
     it('should handle pubsub-batch edge cases', async () => {
-      const { flushBatch, shutdown, addToBatch } = await import('../../modules/communication/pubsub-batch.service.js');
+      const { flushBatch, shutdown, addToBatch } =
+        await import('../../modules/communication/pubsub-batch.service.js');
       await addToBatch('c', {});
-      await flushBatch(); 
-      await flushBatch(); 
+      await flushBatch();
+      await flushBatch();
       await shutdown();
     });
 
     it('should handle security fingerprint and session', async () => {
-      const { validateSessionSecurity, generateSecureSessionToken, validateSessionTokenExpiration, clearSession, logActivity, detectSuspiciousActivity, detectSuspiciousActivityMiddleware } = await import('../../middleware/security.js');
+      const {
+        validateSessionSecurity,
+        generateSecureSessionToken,
+        validateSessionTokenExpiration,
+        clearSession,
+        logActivity,
+        detectSuspiciousActivity,
+        detectSuspiciousActivityMiddleware,
+      } = await import('../../middleware/security.js');
       const { default: redis } = await import('../../modules/shared/redis.service.js');
-      
+
       vi.mocked(redis.get).mockResolvedValue(null);
       vi.mocked(redis.set).mockResolvedValue('OK');
       vi.mocked(redis.lrange).mockResolvedValue([]);
@@ -482,37 +515,41 @@ describe('Coverage Boost: Final Push', () => {
       const req = { headers: { 'user-agent': 'UA' }, ip: '1.2.3.4', user: { uid: 'u1' } } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
-      
+
       await validateSessionSecurity(req, res, next);
       expect(next).toHaveBeenCalled();
-      
+
       const generatedFingerprint = vi.mocked(redis.set).mock.calls[0][1] as string;
-      
+
       vi.mocked(redis.get).mockResolvedValue(generatedFingerprint);
       await validateSessionSecurity(req, res, next);
-      
-      const reqHijack = { headers: { 'user-agent': 'UA2' }, ip: '1.2.3.4', user: { uid: 'u1' } } as any;
+
+      const reqHijack = {
+        headers: { 'user-agent': 'UA2' },
+        ip: '1.2.3.4',
+        user: { uid: 'u1' },
+      } as any;
       await validateSessionSecurity(reqHijack, res, next);
       expect(res.status).toHaveBeenCalledWith(401);
-      
+
       const token = generateSecureSessionToken('u1');
       expect(validateSessionTokenExpiration(token)).toBe(true);
       expect(validateSessionTokenExpiration('invalid')).toBe(false);
-      
+
       await clearSession('u1');
-      
+
       vi.mocked(redis.lrange).mockResolvedValueOnce([]);
       expect(await detectSuspiciousActivity('u2')).toBe(false);
-      
+
       await logActivity('u2', 'A', '1.1.1.1');
       await detectSuspiciousActivity('u2');
-      
+
       const reqSuspicious = { method: 'GET', path: '/', ip: '1.1.1.1', user: { uid: 'u2' } } as any;
       await detectSuspiciousActivityMiddleware(reqSuspicious, res, next);
 
       vi.mocked(redis.lrange).mockRejectedValueOnce(new Error('Redis Fail'));
       await detectSuspiciousActivityMiddleware(reqSuspicious, res, next);
-      
+
       await detectSuspiciousActivityMiddleware({ headers: {} } as any, res, next);
       vi.mocked(redis.get).mockRejectedValueOnce(new Error('Fail'));
       await validateSessionSecurity({ user: { uid: 'u1' }, headers: {} } as any, res, next);
@@ -522,25 +559,30 @@ describe('Coverage Boost: Final Push', () => {
       const { requireRole } = await import('../../middleware/rbac.js');
       const { validateBody } = await import('../../middleware/validation.js');
       const { threatDetectionMiddleware } = await import('../../middleware/threat-detection.js');
-      const { sanitizeJsonResponse, preventResponseSplitting, secureResponseHeaders, safeRedirect } = await import('../../middleware/output-encoding.js');
+      const {
+        sanitizeJsonResponse,
+        preventResponseSplitting,
+        secureResponseHeaders,
+        safeRedirect,
+      } = await import('../../middleware/output-encoding.js');
       const { AIService } = await import('../../modules/ai/ai.service.js');
       const { z } = await import('zod');
-      
-      const res = { 
-        status: vi.fn().mockReturnThis(), 
-        json: vi.fn().mockReturnThis(), 
-        set: vi.fn(), 
-        send: vi.fn(), 
-        setHeader: vi.fn(), 
+
+      const res = {
+        status: vi.fn().mockReturnThis(),
+        json: vi.fn().mockReturnThis(),
+        set: vi.fn(),
+        send: vi.fn(),
+        setHeader: vi.fn(),
         removeHeader: vi.fn(),
         redirect: vi.fn(),
-        locals: {} 
+        locals: {},
       } as any;
       const next = vi.fn();
 
       const rbac = requireRole('admin' as any);
-      await rbac({ user: { customClaims: { role: 'user' } } } as any, res, next); 
-      await rbac({ user: {} } as any, res, next); 
+      await rbac({ user: { customClaims: { role: 'user' } } } as any, res, next);
+      await rbac({ user: {} } as any, res, next);
       await rbac({} as any, res, next);
       await rbac(null as any, res, next);
 
@@ -548,49 +590,64 @@ describe('Coverage Boost: Final Push', () => {
       await validator({} as any, res, next);
       await validator({ body: { name: 123 } } as any, res, next);
       await validator({ body: { name: 'test' } } as any, res, next);
-      const badSchema = { parse: () => { throw new Error('Fail'); } } as any;
+      const badSchema = {
+        parse: () => {
+          throw new Error('Fail');
+        },
+      } as any;
       const badValidator = validateBody(badSchema);
       await badValidator({ body: {} } as any, res, next);
 
-      await threatDetectionMiddleware({ headers: { 'user-agent': 'sqlmap' }, body: {} } as any, res, next);
-      await threatDetectionMiddleware({ headers: {}, body: { input: '<script>' } } as any, res, next);
-      
+      await threatDetectionMiddleware(
+        { headers: { 'user-agent': 'sqlmap' }, body: {} } as any,
+        res,
+        next
+      );
+      await threatDetectionMiddleware(
+        { headers: {}, body: { input: '<script>' } } as any,
+        res,
+        next
+      );
+
       await sanitizeJsonResponse({} as any, res, next);
       await preventResponseSplitting({} as any, res, next);
       await secureResponseHeaders({} as any, res, next);
       safeRedirect(res, '/safe');
       safeRedirect(res, 'http://evil.com');
-      
+
       const ai = new AIService();
       const { adminDb } = await import('../../modules/identity/admin.service.js');
 
       vi.mocked(fetch).mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ error: { message: 'Gemini Error' } })
+        json: () => Promise.resolve({ error: { message: 'Gemini Error' } }),
       } as any);
       await ai.verifyClaim('test').catch(() => {});
-      
+
       vi.mocked(fetch).mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ candidates: [{ content: { parts: [{}] } }] })
+        json: () => Promise.resolve({ candidates: [{ content: { parts: [{}] } }] }),
       } as any);
       await ai.verifyClaim('test').catch(() => {});
-      
+
       vi.mocked(fetch).mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ candidates: [] })
+        json: () => Promise.resolve({ candidates: [] }),
       } as any);
       await ai.chatAssistant('u1', 'hi', {}, '1m').catch(() => {});
 
       vi.mocked(fetch).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          candidates: [{ content: { parts: [{ text: 'Reply' }] } }]
-        })
+        json: () =>
+          Promise.resolve({
+            candidates: [{ content: { parts: [{ text: 'Reply' }] } }],
+          }),
       } as any);
       vi.mocked(adminDb.runTransaction).mockImplementation(async (cb) => {
         return cb({
-          get: vi.fn().mockResolvedValue({ exists: true, data: () => ({ messages: Array(25).fill({}) }) }),
+          get: vi
+            .fn()
+            .mockResolvedValue({ exists: true, data: () => ({ messages: Array(25).fill({}) }) }),
           set: vi.fn(),
           getAll: vi.fn(),
           create: vi.fn(),
@@ -599,11 +656,24 @@ describe('Coverage Boost: Final Push', () => {
         } as any);
       });
       await ai.chatAssistant('u1', 'hi', {}, '1m').catch(() => {});
-      
+
       // Hit line 108 (short explanation)
       vi.mocked(fetch).mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ candidates: [{ content: { parts: [{ text: '{"classification": "VERIFIED", "claim": "c", "explanation": "Short"}' }] } }] })
+        json: () =>
+          Promise.resolve({
+            candidates: [
+              {
+                content: {
+                  parts: [
+                    {
+                      text: '{"classification": "VERIFIED", "claim": "c", "explanation": "Short"}',
+                    },
+                  ],
+                },
+              },
+            ],
+          }),
       } as any);
       await ai.verifyClaim('test').catch(() => {});
 
@@ -612,16 +682,20 @@ describe('Coverage Boost: Final Push', () => {
         doc: vi.fn().mockReturnValue({
           collection: vi.fn().mockReturnValue({
             doc: vi.fn().mockReturnValue({
-              get: vi.fn().mockResolvedValue({ exists: false })
-            })
-          })
-        })
+              get: vi.fn().mockResolvedValue({ exists: false }),
+            }),
+          }),
+        }),
       } as any);
       await ai.chatAssistant('u-new', 'hi', {}, '1m').catch(() => {});
     });
 
     it('should handle more edge cases (Security, Validation, Auth)', async () => {
-      const { validateSessionTokenExpiration, validateSessionFingerprint, detectSuspiciousActivityMiddleware } = await import('../../middleware/security.js');
+      const {
+        validateSessionTokenExpiration,
+        validateSessionFingerprint,
+        detectSuspiciousActivityMiddleware,
+      } = await import('../../middleware/security.js');
       const { validateQuery, validateParams } = await import('../../middleware/validation.js');
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
       const { default: redis } = await import('../../modules/shared/redis.service.js');
@@ -633,16 +707,28 @@ describe('Coverage Boost: Final Push', () => {
 
       validateSessionTokenExpiration('expired-token');
       await validateSessionFingerprint({ headers: {} } as any, 'u-final-' + Date.now(), 'f');
-      
+
       // Hit suspicious activity branch
       vi.mocked(redis.get).mockResolvedValueOnce(JSON.stringify({ deviceId: 'f' }) as any);
       await detectSuspiciousActivityMiddleware({ user: { uid: 'u1' } } as any, res, next);
-      
+
       const { verifyUserOwnership } = await import('../../middleware/auth.js');
-      await verifyUserOwnership({ user: { uid: 'u1' }, body: { userId: 'u1' }, query: {} } as any, res, next);
-      await verifyUserOwnership({ user: { uid: 'u1' }, body: {}, query: { userId: 'u1' } } as any, res, next);
-      await verifyUserOwnership({ user: { uid: 'u1' }, body: { userId: 'u2' }, query: {} } as any, res, next);
-      
+      await verifyUserOwnership(
+        { user: { uid: 'u1' }, body: { userId: 'u1' }, query: {} } as any,
+        res,
+        next
+      );
+      await verifyUserOwnership(
+        { user: { uid: 'u1' }, body: {}, query: { userId: 'u1' } } as any,
+        res,
+        next
+      );
+      await verifyUserOwnership(
+        { user: { uid: 'u1' }, body: { userId: 'u2' }, query: {} } as any,
+        res,
+        next
+      );
+
       const { detectSuspiciousActivity } = await import('../../middleware/security.js');
       const now = Date.now();
       vi.mocked(redis.lrange).mockResolvedValueOnce([
@@ -653,33 +739,46 @@ describe('Coverage Boost: Final Push', () => {
         JSON.stringify({ timestamp: now - 5000, ipAddress: '1.1.1.1' }),
       ]);
       await detectSuspiciousActivity('u-suspicious');
-      
-      const badSchema = { parse: () => { throw new Error('Fail'); } } as any;
+
+      const badSchema = {
+        parse: () => {
+          throw new Error('Fail');
+        },
+      } as any;
       await validateQuery(badSchema)({ query: {} } as any, res, next);
       await validateParams(badSchema)({ params: {} } as any, res, next);
     });
 
     it('should handle audit and secrets edge cases', async () => {
-      const { logAdminAction, logSecurityEvent } = await import('../../modules/security/audit.service.js');
+      const { logAdminAction, logSecurityEvent } =
+        await import('../../modules/security/audit.service.js');
       const { getSecret } = await import('../../modules/security/secrets.service.js');
       const { adminDb } = await import('../../modules/identity/admin.service.js');
-      
+
       // Audit error path
-      vi.mocked(adminDb.collection).mockImplementationOnce(() => { throw new Error('Audit Fail'); });
+      vi.mocked(adminDb.collection).mockImplementationOnce(() => {
+        throw new Error('Audit Fail');
+      });
       await logAdminAction('u1', 'action', 'res');
-      
-      vi.mocked(adminDb.collection).mockImplementationOnce(() => { throw new Error('Security Fail'); });
+
+      vi.mocked(adminDb.collection).mockImplementationOnce(() => {
+        throw new Error('Security Fail');
+      });
       await logSecurityEvent('type', 'u1', {}, 'HIGH');
-      
+
       // Secrets line 35 (no secret)
-      vi.mocked(adminDb.doc).mockImplementationOnce(() => ({
-        get: vi.fn().mockResolvedValue({ exists: false })
-      } as any));
+      vi.mocked(adminDb.doc).mockImplementationOnce(
+        () =>
+          ({
+            get: vi.fn().mockResolvedValue({ exists: false }),
+          }) as any
+      );
       await getSecret('missing').catch(() => {});
     });
 
     it('should hit remaining communication branches', async () => {
-      const { addToBatch, flushBatch } = await import('../../modules/communication/pubsub-batch.service.js');
+      const { addToBatch, flushBatch } =
+        await import('../../modules/communication/pubsub-batch.service.js');
       await addToBatch('c-flush', { data: 1 });
       await flushBatch();
     });
@@ -694,22 +793,23 @@ describe('Coverage Boost: Final Push', () => {
       const { verifyFirebaseToken } = await import('../../middleware/auth.js');
       const admin = (await import('firebase-admin')).default;
       vi.spyOn(admin.auth(), 'verifyIdToken').mockRejectedValueOnce(new Error('Fail'));
-      const req = { headers: { authorization: 'Bearer tok' } } as any; 
+      const req = { headers: { authorization: 'Bearer tok' } } as any;
       const res = { status: vi.fn().mockReturnThis(), json: vi.fn() } as any;
       const next = vi.fn();
       await verifyFirebaseToken(req, res, next);
     });
 
     it('should handle pubsub-batch timeout error', async () => {
-      const { addToBatch, flushBatch } = await import('../../modules/communication/pubsub-batch.service.js');
+      const { addToBatch, flushBatch } =
+        await import('../../modules/communication/pubsub-batch.service.js');
       vi.useFakeTimers();
       mockTopic.publishJSON.mockRejectedValue(new Error('Timer Fail'));
       await addToBatch('c2', {});
       vi.runOnlyPendingTimers();
-      
+
       // Empty batch flush with timer already cleared or existing
-      await flushBatch(); 
-      
+      await flushBatch();
+
       vi.useRealTimers();
     });
 

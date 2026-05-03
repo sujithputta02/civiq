@@ -21,7 +21,7 @@ describe('Auth Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
-    
+
     // Silence console warnings during auth tests to keep output clean
     vi.spyOn(console, 'warn').mockImplementation(() => {});
   });

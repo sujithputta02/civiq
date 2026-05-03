@@ -120,7 +120,9 @@ export default function AdminDashboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <GlassCard className="p-6 border-l-4 border-l-blue-500">
-            <p className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Total Queries</p>
+            <p className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">
+              Total Queries
+            </p>
             <p className="text-4xl font-black text-slate-800">{stats?.totalQueries || 0}</p>
           </GlassCard>
           <GlassCard className="p-6 border-l-4 border-l-red-500">
@@ -149,8 +151,8 @@ export default function AdminDashboardPage() {
             <div className="space-y-4">
               {!stats?.recentQueries?.length ? (
                 <GlassCard className="p-12 text-center text-slate-500">
-                  No queries have been made yet. Test the Myth-Check feature to see data appear here in
-                  real-time!
+                  No queries have been made yet. Test the Myth-Check feature to see data appear here
+                  in real-time!
                 </GlassCard>
               ) : (
                 stats.recentQueries.map((query, idx) => (
@@ -164,7 +166,9 @@ export default function AdminDashboardPage() {
                       {query.classification}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-lg text-slate-800 leading-snug">"{query.claim}"</p>
+                      <p className="font-medium text-lg text-slate-800 leading-snug">
+                        "{query.claim}"
+                      </p>
                       <p className="text-sm text-slate-400 mt-2 flex items-center gap-1">
                         <Clock size={14} />
                         {new Date(query.timestamp).toLocaleString()}
@@ -193,7 +197,7 @@ export default function AdminDashboardPage() {
                   </span>
                 </GlassCard>
               ))}
-              
+
               <div className="mt-8 p-6 rounded-2xl bg-slate-900 text-white">
                 <h4 className="font-bold mb-2 flex items-center gap-2">
                   <Activity size={18} className="text-blue-400" /> System Health

@@ -64,11 +64,7 @@ export function sanitizeResponseData(data: unknown, seen = new WeakSet()): unkno
 /**
  * Middleware to sanitize JSON responses
  */
-export function sanitizeJsonResponse(
-  _req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function sanitizeJsonResponse(_req: Request, res: Response, next: NextFunction): void {
   const originalJson = res.json;
 
   res.json = function (body: unknown): Response {
@@ -82,11 +78,7 @@ export function sanitizeJsonResponse(
 /**
  * Middleware to prevent Response Splitting
  */
-export function preventResponseSplitting(
-  _req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function preventResponseSplitting(_req: Request, res: Response, next: NextFunction): void {
   const originalSetHeader = res.setHeader;
 
   res.setHeader = function (name: string, value: string | number | readonly string[]): Response {
@@ -103,11 +95,7 @@ export function preventResponseSplitting(
 /**
  * Security headers for response integrity
  */
-export function secureResponseHeaders(
-  _req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function secureResponseHeaders(_req: Request, res: Response, next: NextFunction): void {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');

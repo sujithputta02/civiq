@@ -12,18 +12,36 @@ export interface FirewallResult {
 }
 
 const INJECTION_PATTERNS: { pattern: RegExp; name: string }[] = [
-  { pattern: /ignore\s+(previous|all|above|prior)\s+(instructions?|prompt|context)/i, name: 'ignore-instructions' },
-  { pattern: /forget\s+(everything|all|previous|your\s+instructions?)/i, name: 'forget-instructions' },
-  { pattern: /disregard\s+(previous|all|your)\s+(\w+\s+)?(instructions?|rules?|prompt)/i, name: 'disregard-instructions' },
+  {
+    pattern: /ignore\s+(previous|all|above|prior)\s+(instructions?|prompt|context)/i,
+    name: 'ignore-instructions',
+  },
+  {
+    pattern: /forget\s+(everything|all|previous|your\s+instructions?)/i,
+    name: 'forget-instructions',
+  },
+  {
+    pattern: /disregard\s+(previous|all|your)\s+(\w+\s+)?(instructions?|rules?|prompt)/i,
+    name: 'disregard-instructions',
+  },
   { pattern: /you\s+are\s+now\s+(a\s+)?(?!civiq|an?\s+assistant)/i, name: 'role-hijack' },
   { pattern: /act\s+as\s+(if\s+you\s+(are|were)|a\s+)?(?!civiq)/i, name: 'act-as-hijack' },
   { pattern: /pretend\s+(you\s+are|to\s+be)/i, name: 'pretend-hijack' },
   { pattern: /override\s+(your\s+)?(role|rules?|instructions?|system)/i, name: 'override-role' },
   { pattern: /from\s+now\s+on\s+you\s+(are|will|must)/i, name: 'role-redefine' },
   { pattern: /system\s+prompt/i, name: 'system-prompt-extract' },
-  { pattern: /reveal\s+(your\s+)?(system|initial|original)\s+(prompt|instructions?)/i, name: 'reveal-prompt' },
-  { pattern: /what\s+(are|were)\s+your\s+(initial|original|system)\s+instructions?/i, name: 'instruction-extract' },
-  { pattern: /print\s+(your\s+)?(system|full|complete)\s+(prompt|instructions?)/i, name: 'print-prompt' },
+  {
+    pattern: /reveal\s+(your\s+)?(system|initial|original)\s+(prompt|instructions?)/i,
+    name: 'reveal-prompt',
+  },
+  {
+    pattern: /what\s+(are|were)\s+your\s+(initial|original|system)\s+instructions?/i,
+    name: 'instruction-extract',
+  },
+  {
+    pattern: /print\s+(your\s+)?(system|full|complete)\s+(prompt|instructions?)/i,
+    name: 'print-prompt',
+  },
   { pattern: /jailbreak/i, name: 'jailbreak-keyword' },
   { pattern: /DAN\s+(mode|prompt)/i, name: 'dan-mode' },
   { pattern: /developer\s+mode/i, name: 'developer-mode' },
@@ -41,7 +59,10 @@ const INJECTION_PATTERNS: { pattern: RegExp; name: string }[] = [
   { pattern: /send\s+(to|email|http|this\s+to)/i, name: 'exfiltration-attempt' },
   { pattern: /curl\s+https?:\/\//i, name: 'curl-exfiltration' },
   { pattern: /fetch\(["']https?:\/\//i, name: 'fetch-exfiltration' },
-  { pattern: /http[s]?:\/\/(?:localhost|127\.\d|0\.0\.0\.0|internal|metadata\.google)/i, name: 'ssrf-url' },
+  {
+    pattern: /http[s]?:\/\/(?:localhost|127\.\d|0\.0\.0\.0|internal|metadata\.google)/i,
+    name: 'ssrf-url',
+  },
 ];
 
 const HIGH_RISK_THRESHOLD = 2;
@@ -78,7 +99,8 @@ export function aiPromptFirewall(input: string, userId?: string): FirewallResult
     .replace(/<\s*\/?system\s*>/gi, '[TAG REMOVED]');
 
   // Remove zero-width and control characters individually to satisfy lint
-  sanitized = sanitized.replace(/\u200B/g, '')
+  sanitized = sanitized
+    .replace(/\u200B/g, '')
     .replace(/\u200C/g, '')
     .replace(/\u200D/g, '')
     .replace(/\uFEFF/g, '')

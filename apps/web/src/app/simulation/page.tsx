@@ -28,7 +28,8 @@ const simulationSteps = [
     description:
       'You arrive at your assigned polling station. Check the signs for the queue and ensure you are at the right location.',
     tip: 'Tip: Arriving early or during mid-morning/mid-afternoon can help you avoid the longest lines.',
-    aiQuery: 'What should I look for when I first arrive at a polling station to ensure I am in the right place?',
+    aiQuery:
+      'What should I look for when I first arrive at a polling station to ensure I am in the right place?',
   },
   {
     id: 'id-check',
@@ -37,7 +38,8 @@ const simulationSteps = [
     description:
       'Provide your name and, if required in your state, your identification to the poll worker.',
     tip: 'Tip: If your ID is rejected, ask for a provisional ballot. It is your right to cast one.',
-    aiQuery: 'What are the most common reasons an ID might be rejected, and how can I prepare for it?',
+    aiQuery:
+      'What are the most common reasons an ID might be rejected, and how can I prepare for it?',
   },
   {
     id: 'ballot-receipt',
@@ -142,7 +144,7 @@ export default function SimulationPage() {
               An interactive digital rehearsal to build procedural confidence.
             </p>
           </div>
-          
+
           <div className="bg-white/5 border border-white/10 p-1.5 rounded-2xl flex gap-2">
             {(['15s', '1m', 'deep'] as const).map((d) => (
               <button
@@ -188,14 +190,18 @@ export default function SimulationPage() {
                       {simulationSteps[currentStep].title}
                     </h2>
                   </div>
-                  
-                  <RefractiveButton 
-                    onClick={askAi} 
+
+                  <RefractiveButton
+                    onClick={askAi}
                     disabled={isLoadingAi}
                     variant="secondary"
                     className="gap-2 bg-white/10 border-white/10 hover:bg-white/20 text-white"
                   >
-                    {isLoadingAi ? <Loader2 className="animate-spin" size={18} /> : <Bot size={18} />}
+                    {isLoadingAi ? (
+                      <Loader2 className="animate-spin" size={18} />
+                    ) : (
+                      <Bot size={18} />
+                    )}
                     Explain with AI
                   </RefractiveButton>
                 </div>
@@ -223,7 +229,9 @@ export default function SimulationPage() {
                           <div className="absolute -top-3 -left-3 bg-blue-600 p-1.5 rounded-lg">
                             <Bot size={16} />
                           </div>
-                          <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3">AI Guidance</h4>
+                          <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-3">
+                            AI Guidance
+                          </h4>
                           <p className="text-sm text-slate-300 leading-relaxed italic">
                             "{aiResponse}"
                           </p>
@@ -233,13 +241,17 @@ export default function SimulationPage() {
                     {!aiResponse && !isLoadingAi && (
                       <div className="h-full border-2 border-dashed border-white/5 rounded-2xl flex flex-col items-center justify-center p-8 text-center text-slate-500">
                         <Bot size={32} className="mb-4 opacity-20" />
-                        <p className="text-xs">Click "Explain with AI" for personalized guidance on this step.</p>
+                        <p className="text-xs">
+                          Click "Explain with AI" for personalized guidance on this step.
+                        </p>
                       </div>
                     )}
                     {isLoadingAi && (
-                       <div className="h-full border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
+                      <div className="h-full border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-8 text-center">
                         <Loader2 size={32} className="mb-4 animate-spin text-blue-500" />
-                        <p className="text-xs text-blue-400 animate-pulse">Consulting civic intelligence...</p>
+                        <p className="text-xs text-blue-400 animate-pulse">
+                          Consulting civic intelligence...
+                        </p>
                       </div>
                     )}
                   </div>
@@ -276,7 +288,8 @@ export default function SimulationPage() {
         </AnimatePresence>
 
         <div className="mt-12 text-center text-slate-500 text-sm">
-          This simulation is powered by Vertex AI and tailored to your location: <span className="text-slate-300 font-medium">{data.location || 'Default'}</span>.
+          This simulation is powered by Vertex AI and tailored to your location:{' '}
+          <span className="text-slate-300 font-medium">{data.location || 'Default'}</span>.
         </div>
       </div>
     </div>

@@ -50,7 +50,7 @@ describe('API Integration Tests', () => {
   describe('POST /api/v1/logout', () => {
     it('should return 401 if not authenticated', async () => {
       const res = await request(app).post('/api/v1/logout');
-      expect(res.status).toBe(401); 
+      expect(res.status).toBe(401);
     });
   });
 });

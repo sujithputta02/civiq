@@ -35,7 +35,12 @@ export async function logAuditEvent(event: AuditEvent): Promise<void> {
     await adminDb.collection('audit_logs').add(auditEntry);
 
     logger.info(
-      { action: event.action, userId: event.userId, resource: event.resource, status: event.status },
+      {
+        action: event.action,
+        userId: event.userId,
+        resource: event.resource,
+        status: event.status,
+      },
       'Audit event logged'
     );
   } catch (error) {

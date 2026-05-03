@@ -26,7 +26,7 @@ export async function getSecret(secretName: string): Promise<string> {
 
   // 1. Try to get from process.env first
   let value: string | undefined;
-  
+
   try {
     // Access process.env directly to avoid envalid proxy issues in tests
     value = process.env[secretName];
@@ -102,5 +102,8 @@ export function isValidApiKey(key: string): boolean {
  */
 export function isValidConnectionString(conn: string): boolean {
   // Support common protocols: redis, rediss, mongodb, postgresql, mysql, http, https, file, custom
-  return typeof conn === 'string' && /^(redis|rediss|mongodb|postgresql|mysql|http|https|file|custom):\/\/.+/.test(conn);
+  return (
+    typeof conn === 'string' &&
+    /^(redis|rediss|mongodb|postgresql|mysql|http|https|file|custom):\/\/.+/.test(conn)
+  );
 }

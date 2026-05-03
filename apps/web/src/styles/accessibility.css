@@ -79,7 +79,7 @@ textarea:focus-visible {
     backdrop-filter: none !important;
     opacity: 1 !important;
   }
-  
+
   .dark .bg-white\/40,
   .dark .bg-white\/50,
   .dark .bg-black\/50 {
@@ -199,11 +199,11 @@ a,
 input,
 select,
 textarea,
-[role="button"],
-[role="link"],
-[role="checkbox"],
-[role="radio"],
-[role="tab"] {
+[role='button'],
+[role='link'],
+[role='checkbox'],
+[role='radio'],
+[role='tab'] {
   min-height: 44px;
   min-width: 44px;
   display: inline-flex;
@@ -214,7 +214,7 @@ textarea,
 
 /* Ensure proper spacing for touch targets */
 button + button,
-a[role="button"] + a[role="button"] {
+a[role='button'] + a[role='button'] {
   margin-left: 8px;
 }
 
@@ -427,59 +427,59 @@ legend {
 }
 
 /* Ensure proper error message styling */
-[role="alert"] {
+[role='alert'] {
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
   border-left: 4px solid;
 }
 
-[role="alert"].error {
+[role='alert'].error {
   background-color: #fee2e2;
   border-color: #dc2626;
   color: #991b1b;
 }
 
-[role="alert"].success {
+[role='alert'].success {
   background-color: #dcfce7;
   border-color: #16a34a;
   color: #15803d;
 }
 
-[role="alert"].warning {
+[role='alert'].warning {
   background-color: #fef3c7;
   border-color: #ca8a04;
   color: #92400e;
 }
 
-[role="alert"].info {
+[role='alert'].info {
   background-color: #dbeafe;
   border-color: #2563eb;
   color: #1e40af;
 }
 
 /* Ensure proper loading indicator styling */
-[aria-busy="true"] {
+[aria-busy='true'] {
   opacity: 0.6;
   pointer-events: none;
 }
 
 /* Ensure proper disabled state styling */
 [disabled],
-[aria-disabled="true"] {
+[aria-disabled='true'] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Ensure proper readonly state styling */
 [readonly],
-[aria-readonly="true"] {
+[aria-readonly='true'] {
   background-color: #f3f4f6;
   cursor: default;
 }
 
 /* Ensure proper invalid state styling */
-[aria-invalid="true"] {
+[aria-invalid='true'] {
   border-color: #dc2626;
   background-color: #fef2f2;
 }
@@ -492,29 +492,29 @@ legend {
 }
 
 /* Ensure proper optional field styling */
-[aria-required="false"]::after {
+[aria-required='false']::after {
   content: ' (optional)';
   color: #6b7280;
   font-size: 0.875rem;
 }
 
 /* Ensure proper live region styling */
-[role="status"],
-[role="alert"],
+[role='status'],
+[role='alert'],
 [aria-live] {
   position: relative;
 }
 
 /* Ensure proper landmark styling */
-[role="main"],
-[role="navigation"],
-[role="contentinfo"],
-[role="complementary"] {
+[role='main'],
+[role='navigation'],
+[role='contentinfo'],
+[role='complementary'] {
   display: block;
 }
 
 /* Ensure proper dialog styling */
-[role="dialog"] {
+[role='dialog'] {
   position: fixed;
   z-index: 1000;
   background-color: white;
@@ -524,7 +524,7 @@ legend {
 }
 
 /* Ensure proper tooltip styling */
-[role="tooltip"] {
+[role='tooltip'] {
   background-color: #1f2937;
   color: white;
   padding: 0.5rem 0.75rem;
@@ -534,48 +534,48 @@ legend {
 }
 
 /* Ensure proper menu styling */
-[role="menu"],
-[role="menubar"] {
+[role='menu'],
+[role='menubar'] {
   display: flex;
   gap: 0.5rem;
 }
 
-[role="menuitem"] {
+[role='menuitem'] {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
 }
 
-[role="menuitem"]:hover,
-[role="menuitem"][aria-selected="true"] {
+[role='menuitem']:hover,
+[role='menuitem'][aria-selected='true'] {
   background-color: #e5e7eb;
 }
 
 /* Ensure proper tab styling */
-[role="tablist"] {
+[role='tablist'] {
   display: flex;
   border-bottom: 2px solid #d1d5db;
   gap: 0.5rem;
 }
 
-[role="tab"] {
+[role='tab'] {
   padding: 0.75rem 1rem;
   border-bottom: 3px solid transparent;
   cursor: pointer;
   font-weight: 500;
 }
 
-[role="tab"][aria-selected="true"] {
+[role='tab'][aria-selected='true'] {
   border-bottom-color: #2563eb;
   color: #2563eb;
 }
 
-[role="tabpanel"] {
+[role='tabpanel'] {
   padding: 1rem 0;
 }
 
 /* Ensure proper progressbar styling */
-[role="progressbar"] {
+[role='progressbar'] {
   width: 100%;
   height: 8px;
   background-color: #e5e7eb;
@@ -583,7 +583,7 @@ legend {
   overflow: hidden;
 }
 
-[role="progressbar"]::after {
+[role='progressbar']::after {
   content: '';
   display: block;
   height: 100%;
@@ -593,7 +593,7 @@ legend {
 }
 
 /* Ensure proper slider styling */
-[role="slider"] {
+[role='slider'] {
   width: 100%;
   height: 8px;
   background-color: #e5e7eb;
@@ -602,13 +602,13 @@ legend {
 }
 
 /* Ensure proper spinbutton styling */
-[role="spinbutton"] {
+[role='spinbutton'] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-[role="spinbutton"] button {
+[role='spinbutton'] button {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -618,17 +618,17 @@ legend {
 }
 
 /* Ensure proper combobox styling */
-[role="combobox"] {
+[role='combobox'] {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-[role="combobox"] input {
+[role='combobox'] input {
   flex: 1;
 }
 
-[role="combobox"] button {
+[role='combobox'] button {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -638,107 +638,107 @@ legend {
 }
 
 /* Ensure proper listbox styling */
-[role="listbox"] {
+[role='listbox'] {
   border: 1px solid #d1d5db;
   border-radius: 4px;
   max-height: 300px;
   overflow-y: auto;
 }
 
-[role="option"] {
+[role='option'] {
   padding: 0.75rem 1rem;
   cursor: pointer;
 }
 
-[role="option"]:hover,
-[role="option"][aria-selected="true"] {
+[role='option']:hover,
+[role='option'][aria-selected='true'] {
   background-color: #e5e7eb;
 }
 
 /* Ensure proper tree styling */
-[role="tree"] {
+[role='tree'] {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-[role="treeitem"] {
+[role='treeitem'] {
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
 
-[role="treeitem"]:hover,
-[role="treeitem"][aria-selected="true"] {
+[role='treeitem']:hover,
+[role='treeitem'][aria-selected='true'] {
   background-color: #e5e7eb;
 }
 
 /* Ensure proper grid styling */
-[role="grid"] {
+[role='grid'] {
   display: grid;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
-[role="row"] {
+[role='row'] {
   display: contents;
 }
 
-[role="gridcell"] {
+[role='gridcell'] {
   padding: 0.75rem;
   border: 1px solid #d1d5db;
 }
 
 /* Ensure proper search styling */
-[role="search"] {
+[role='search'] {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-[role="search"] input {
+[role='search'] input {
   flex: 1;
 }
 
 /* Ensure proper doc styling */
-[role="doc-abstract"],
-[role="doc-acknowledgments"],
-[role="doc-afterword"],
-[role="doc-appendix"],
-[role="doc-backlink"],
-[role="doc-biblioentry"],
-[role="doc-bibliography"],
-[role="doc-biblioref"],
-[role="doc-chapter"],
-[role="doc-colophon"],
-[role="doc-conclusion"],
-[role="doc-cover"],
-[role="doc-credit"],
-[role="doc-credits"],
-[role="doc-dedication"],
-[role="doc-endnote"],
-[role="doc-endnotes"],
-[role="doc-epigraph"],
-[role="doc-epilogue"],
-[role="doc-errata"],
-[role="doc-example"],
-[role="doc-footnote"],
-[role="doc-foreword"],
-[role="doc-glossary"],
-[role="doc-glossref"],
-[role="doc-index"],
-[role="doc-introduction"],
-[role="doc-noteref"],
-[role="doc-notice"],
-[role="doc-pagebreak"],
-[role="doc-pagelist"],
-[role="doc-part"],
-[role="doc-preface"],
-[role="doc-prologue"],
-[role="doc-pullquote"],
-[role="doc-qna"],
-[role="doc-subtitle"],
-[role="doc-tip"],
-[role="doc-toc"] {
+[role='doc-abstract'],
+[role='doc-acknowledgments'],
+[role='doc-afterword'],
+[role='doc-appendix'],
+[role='doc-backlink'],
+[role='doc-biblioentry'],
+[role='doc-bibliography'],
+[role='doc-biblioref'],
+[role='doc-chapter'],
+[role='doc-colophon'],
+[role='doc-conclusion'],
+[role='doc-cover'],
+[role='doc-credit'],
+[role='doc-credits'],
+[role='doc-dedication'],
+[role='doc-endnote'],
+[role='doc-endnotes'],
+[role='doc-epigraph'],
+[role='doc-epilogue'],
+[role='doc-errata'],
+[role='doc-example'],
+[role='doc-footnote'],
+[role='doc-foreword'],
+[role='doc-glossary'],
+[role='doc-glossref'],
+[role='doc-index'],
+[role='doc-introduction'],
+[role='doc-noteref'],
+[role='doc-notice'],
+[role='doc-pagebreak'],
+[role='doc-pagelist'],
+[role='doc-part'],
+[role='doc-preface'],
+[role='doc-prologue'],
+[role='doc-pullquote'],
+[role='doc-qna'],
+[role='doc-subtitle'],
+[role='doc-tip'],
+[role='doc-toc'] {
   display: block;
   margin-bottom: 1rem;
 }

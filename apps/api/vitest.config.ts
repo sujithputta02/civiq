@@ -11,10 +11,10 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'json-summary', 'html', 'lcov'],
       exclude: [
-        'node_modules/', 
-        'dist/', 
-        '**/*.d.ts', 
-        '**/*.config.*', 
+        'node_modules/',
+        'dist/',
+        '**/*.d.ts',
+        '**/*.config.*',
         '**/index.ts',
         'src/fix_stats.ts',
         'src/list-models.ts',
@@ -24,7 +24,7 @@ export default defineConfig({
         'src/scratch/**',
         'src/__tests__/**',
         'src/modules/shared/redis.service.ts',
-        'src/utils/logger.ts'
+        'src/utils/logger.ts',
       ],
       thresholds: {
         lines: 100,

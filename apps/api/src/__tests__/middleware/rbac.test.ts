@@ -35,7 +35,7 @@ describe('RBAC Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
-    
+
     // Silence console warnings and errors during RBAC tests to keep output clean
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});

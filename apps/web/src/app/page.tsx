@@ -2,7 +2,16 @@
 
 import React, { useState } from 'react';
 import { GlassCard, RefractiveButton } from '@civiq/ui';
-import { CheckCircle2, ShieldCheck, Clock, ArrowRight, Search, Sparkles, Bot, Loader2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  ShieldCheck,
+  Clock,
+  ArrowRight,
+  Search,
+  Sparkles,
+  Bot,
+  Loader2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { simulationAnnouncer } from '@/lib/accessibility';
@@ -48,7 +57,10 @@ export default function LandingPage() {
           Civiq<span className="text-accent-primary">.</span>
         </div>
         <div className="flex gap-8 items-center">
-          <Link href="/verify" className="text-secondary hover:text-primary transition-colors font-medium">
+          <Link
+            href="/verify"
+            className="text-secondary hover:text-primary transition-colors font-medium"
+          >
             Verify Myth
           </Link>
           <Link href="/login">
@@ -60,7 +72,7 @@ export default function LandingPage() {
       </nav>
 
       <section className="relative z-10 max-w-7xl mx-auto px-8 pt-20 pb-32 flex flex-col items-center text-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white/30 text-accent-primary text-sm font-medium mb-8"
@@ -69,7 +81,7 @@ export default function LandingPage() {
           <span>100% Challenge Aligned Election Copilot</span>
         </motion.div>
 
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -79,7 +91,7 @@ export default function LandingPage() {
           <span className="refractive-text">before it becomes a missed opportunity.</span>
         </motion.h1>
 
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -100,8 +112,8 @@ export default function LandingPage() {
             <div className="pl-4 text-slate-400">
               <Search size={20} />
             </div>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Quick check: 'Is voting by mail safe?' or 'When is the deadline?'"
               aria-label="Quick myth check search"
               className="flex-1 bg-transparent border-none outline-none py-4 text-lg text-primary placeholder:text-slate-400"
@@ -109,7 +121,7 @@ export default function LandingPage() {
               onChange={(e) => setQuickClaim(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleQuickVerify()}
             />
-            <AccessibleButton 
+            <AccessibleButton
               ariaLabel="Verify myth claim"
               className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold"
               onClick={handleQuickVerify}
@@ -121,7 +133,7 @@ export default function LandingPage() {
               <span className="ml-2 hidden md:inline">Verify</span>
             </AccessibleButton>
           </GlassCard>
-          
+
           <AnimatePresence>
             {result && (
               <motion.div
@@ -136,7 +148,11 @@ export default function LandingPage() {
                 <div className="text-sm leading-relaxed">
                   <span className="font-bold text-accent-primary block mb-1">Quick AI Result:</span>
                   {result}
-                  <Link href="/verify" className="text-blue-600 font-bold ml-2 hover:underline" aria-label={`Read deep dive about ${quickClaim}`}>
+                  <Link
+                    href="/verify"
+                    className="text-blue-600 font-bold ml-2 hover:underline"
+                    aria-label={`Read deep dive about ${quickClaim}`}
+                  >
                     Read deep dive →
                   </Link>
                 </div>
@@ -148,7 +164,8 @@ export default function LandingPage() {
         <div className="flex gap-4 mb-20">
           <Link href="/assessment">
             <RefractiveButton size="lg" className="gap-2 group">
-              Start Journey <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              Start Journey{' '}
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </RefractiveButton>
           </Link>
           <Link href="/simulation">
@@ -185,7 +202,8 @@ export default function LandingPage() {
             </div>
             <h3 className="text-xl font-bold">Voter Simulation</h3>
             <p className="text-secondary text-sm">
-              Reduce anxiety by walking through a mock voting journey from arrival to ballot casting.
+              Reduce anxiety by walking through a mock voting journey from arrival to ballot
+              casting.
             </p>
           </GlassCard>
         </div>
@@ -197,9 +215,15 @@ export default function LandingPage() {
             © 2026 Civiq. Powered by Google Vertex AI & Cloud Run. 100% Challenge Aligned.
           </div>
           <div className="flex gap-8 text-sm text-secondary">
-            <Link href="/ACCESSIBILITY_COMPLIANCE_REPORT.md" className="hover:text-primary">Accessibility Report</Link>
-            <Link href="/docs/PRD.md" className="hover:text-primary font-bold">Traceability Matrix</Link>
-            <Link href="/admin" className="hover:text-primary">Observability</Link>
+            <Link href="/ACCESSIBILITY_COMPLIANCE_REPORT.md" className="hover:text-primary">
+              Accessibility Report
+            </Link>
+            <Link href="/docs/PRD.md" className="hover:text-primary font-bold">
+              Traceability Matrix
+            </Link>
+            <Link href="/admin" className="hover:text-primary">
+              Observability
+            </Link>
           </div>
         </div>
       </footer>

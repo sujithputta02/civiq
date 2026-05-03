@@ -34,13 +34,13 @@ graph TD
 
 ## 2. 100% Challenge Alignment Traceability Matrix
 
-| Problem Statement Clause | Mapped Civiq Feature(s) | Evidence of Implementation |
-| :--- | :--- | :--- |
-| **Understand the election process** | Step-by-step explainer, simulation, explain-like-I'm-busy modes | Vertex AI natural language breakdowns of full lifecycle (eligibility to results) with 3 depth levels. |
-| **Timelines** | Personalized timeline engine, smart reminders | Firestore-driven dynamic statuses (Next/Urgent) with Pub/Sub nudges, user-location personalized. |
-| **Steps** | Readiness assessment, timeline statuses, simulation | Quiz-classified risks → actionable step paths with prerequisites/risks. |
-| **Interactive** | Myth verification, Q&A assistant, simulation walkthrough, assessment quiz | Real-time Vertex AI inputs/outputs, zero static pages—every screen has input handlers (chat, verify, simulate). |
-| **Easy-to-follow** | Onboarding quiz, 15-sec summaries, semantic UX, accessibility layer | Plain language, progress trackers, keyboard nav, high-contrast glass UI. |
+| Problem Statement Clause            | Mapped Civiq Feature(s)                                                   | Evidence of Implementation                                                                                      |
+| :---------------------------------- | :------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------- |
+| **Understand the election process** | Step-by-step explainer, simulation, explain-like-I'm-busy modes           | Vertex AI natural language breakdowns of full lifecycle (eligibility to results) with 3 depth levels.           |
+| **Timelines**                       | Personalized timeline engine, smart reminders                             | Firestore-driven dynamic statuses (Next/Urgent) with Pub/Sub nudges, user-location personalized.                |
+| **Steps**                           | Readiness assessment, timeline statuses, simulation                       | Quiz-classified risks → actionable step paths with prerequisites/risks.                                         |
+| **Interactive**                     | Myth verification, Q&A assistant, simulation walkthrough, assessment quiz | Real-time Vertex AI inputs/outputs, zero static pages—every screen has input handlers (chat, verify, simulate). |
+| **Easy-to-follow**                  | Onboarding quiz, 15-sec summaries, semantic UX, accessibility layer       | Plain language, progress trackers, keyboard nav, high-contrast glass UI.                                        |
 
 ---
 
@@ -60,13 +60,13 @@ To validate 100% alignment in under 2 minutes:
 
 Civiq enforces an interaction-first architecture. Every view in the application requires user input to trigger business logic (Vertex AI or Firestore), ensuring 100% engagement.
 
-| View | Input Handler | Triggered Service |
-| :--- | :--- | :--- |
-| **Landing** | Quick Myth-Check Search | Vertex AI (15s Explainer) |
-| **Dashboard** | Q&A Assistant + Timeline Toggles | Vertex AI + Firestore Persistence |
-| **Assessment** | Onboarding Questionnaires | Firestore State Management |
-| **Myth Lab** | Claim Paste + Depth Selector | Vertex AI + AI Firewall (Layer 13) |
-| **Simulation** | Contextual "Ask AI" + Step Toggles | Vertex AI Contextual Guidance |
+| View           | Input Handler                      | Triggered Service                  |
+| :------------- | :--------------------------------- | :--------------------------------- |
+| **Landing**    | Quick Myth-Check Search            | Vertex AI (15s Explainer)          |
+| **Dashboard**  | Q&A Assistant + Timeline Toggles   | Vertex AI + Firestore Persistence  |
+| **Assessment** | Onboarding Questionnaires          | Firestore State Management         |
+| **Myth Lab**   | Claim Paste + Depth Selector       | Vertex AI + AI Firewall (Layer 13) |
+| **Simulation** | Contextual "Ask AI" + Step Toggles | Vertex AI Contextual Guidance      |
 
 ---
 
@@ -92,28 +92,27 @@ The user endpoints incorporate WCAG 2.1 compliance features natively:
 
 ## 7. Security Maturity — 16-Layer Defense-in-Depth
 
-| Layer | Control | Status |
-| :--- | :--- | :--- |
-| 1 | HTTPS Enforcement | ✅ |
-| 2 | CORS & CSRF Protection | ✅ |
-| 3 | Rate Limiting (per-endpoint) | ✅ |
-| 4 | Helmet Security Headers | ✅ |
-| 5 | Firebase Authentication | ✅ |
-| 6 | Session Hijacking Protection | ✅ |
-| 7 | RBAC Authorization | ✅ |
-| 8 | Input Validation (Zod) | ✅ |
-| 9 | Input Sanitization | ✅ |
-| 10 | Output Encoding | ✅ |
-| 11 | Audit Logging | ✅ |
-| 12 | CI/CD Security Scanning | ✅ |
-| **13** | **AI Prompt Injection Firewall** | ✅ **NEW** |
-| **14** | **PII Redaction + GDPR/CCPA Privacy** | ✅ **NEW** |
+| Layer  | Control                                 | Status     |
+| :----- | :-------------------------------------- | :--------- |
+| 1      | HTTPS Enforcement                       | ✅         |
+| 2      | CORS & CSRF Protection                  | ✅         |
+| 3      | Rate Limiting (per-endpoint)            | ✅         |
+| 4      | Helmet Security Headers                 | ✅         |
+| 5      | Firebase Authentication                 | ✅         |
+| 6      | Session Hijacking Protection            | ✅         |
+| 7      | RBAC Authorization                      | ✅         |
+| 8      | Input Validation (Zod)                  | ✅         |
+| 9      | Input Sanitization                      | ✅         |
+| 10     | Output Encoding                         | ✅         |
+| 11     | Audit Logging                           | ✅         |
+| 12     | CI/CD Security Scanning                 | ✅         |
+| **13** | **AI Prompt Injection Firewall**        | ✅ **NEW** |
+| **14** | **PII Redaction + GDPR/CCPA Privacy**   | ✅ **NEW** |
 | **15** | **Runtime Threat Detection (WAF-lite)** | ✅ **NEW** |
-| **16** | **Zero-Trust CI/CD Pipeline** | ✅ **NEW** |
+| **16** | **Zero-Trust CI/CD Pipeline**           | ✅ **NEW** |
 
 ```
 SECURITY MATURITY LEVEL: ⭐⭐⭐⭐⭐ (100%)
 111+ security tests · 100% coverage · 0 critical vulnerabilities
 GDPR/CCPA-aligned · AI-specific threat detection · Zero-Trust CI/CD
 ```
-

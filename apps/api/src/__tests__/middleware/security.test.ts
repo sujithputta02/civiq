@@ -23,8 +23,14 @@ vi.mock('../../modules/shared/redis.service.js', () => {
   return {
     default: {
       get: vi.fn(async (key) => store.get(key)),
-      set: vi.fn(async (key, value) => { store.set(key, value); return 'OK'; }),
-      del: vi.fn(async (key) => { store.delete(key); return 1; }),
+      set: vi.fn(async (key, value) => {
+        store.set(key, value);
+        return 'OK';
+      }),
+      del: vi.fn(async (key) => {
+        store.delete(key);
+        return 1;
+      }),
       lpush: vi.fn(async (key, value) => {
         const list = store.get(key) || [];
         list.unshift(value);
@@ -104,7 +110,7 @@ describe('Security Middleware', () => {
     it('should reject different fingerprint (hijacking)', async () => {
       const fp1 = generateDeviceFingerprint(req as Request);
       await validateSessionFingerprint(req as Request, 'user123', fp1);
-      
+
       req.headers!['user-agent'] = 'Attacker Browser';
       const fp2 = generateDeviceFingerprint(req as Request);
       const result = await validateSessionFingerprint(req as Request, 'user123', fp2);
@@ -152,10 +158,10 @@ describe('Security Middleware', () => {
   describe('detectSuspiciousActivityMiddleware', () => {
     it('should block after detecting burst', async () => {
       (req as any).user = { uid: 'user123' };
-      for(let i=0; i<6; i++) {
+      for (let i = 0; i < 6; i++) {
         await logActivity('user123', `A${i}`, `1.1.1.${i}`);
       }
-      
+
       await detectSuspiciousActivityMiddleware(req as Request, res as Response, next);
       expect(res.status).toHaveBeenCalledWith(403);
       expect(next).not.toHaveBeenCalled();

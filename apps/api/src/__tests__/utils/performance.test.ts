@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { recordMetric, measureAsync, measureSync, getStats, clearMetrics } from '../../utils/performance.js';
+import {
+  recordMetric,
+  measureAsync,
+  measureSync,
+  getStats,
+  clearMetrics,
+} from '../../utils/performance.js';
 
 describe('Performance Utils', () => {
   beforeEach(() => {

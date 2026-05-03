@@ -69,19 +69,28 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse;
       }
 
-      return fetch(request).then((networkResponse) => {
-        // Only cache successful, non-opaque responses
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
+      return fetch(request)
+        .then((networkResponse) => {
+          // Only cache successful, non-opaque responses
+          if (
+            networkResponse &&
+            networkResponse.status === 200 &&
+            networkResponse.type === 'basic'
+          ) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Final fallback for images or other assets
+          return new Response('Network error occurred', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' },
           });
-        }
-        return networkResponse;
-      }).catch(() => {
-        // Final fallback for images or other assets
-        return new Response('Network error occurred', { status: 408, headers: { 'Content-Type': 'text/plain' } });
-      });
+        });
     })
   );
 });

@@ -33,7 +33,7 @@ jobs:
 
       - name: npm audit (high severity gate)
         run: npm audit --audit-level=high
-        continue-on-error: false   # Hard fail on high/critical vulns
+        continue-on-error: false # Hard fail on high/critical vulns
 
       - name: Trivy filesystem vulnerability scan
         uses: aquasecurity/trivy-action@master
@@ -43,7 +43,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
-          exit-code: '0'          # Report only; gate is npm audit above
+          exit-code: '0' # Report only; gate is npm audit above
 
       - name: Upload Trivy SARIF to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Full history for TruffleHog
+          fetch-depth: 0 # Full history for TruffleHog
 
       - name: TruffleHog filesystem scan
         uses: trufflesecurity/trufflehog@main

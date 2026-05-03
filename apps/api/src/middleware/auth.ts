@@ -59,7 +59,10 @@ export function verifyUserOwnership(req: Request, res: Response, next: NextFunct
   }
 
   if (requestedUserId && requestedUserId !== user.uid) {
-    logger.warn({ currentUid: user.uid, targetUid: requestedUserId }, 'Unauthorized access attempt');
+    logger.warn(
+      { currentUid: user.uid, targetUid: requestedUserId },
+      'Unauthorized access attempt'
+    );
     res.status(403).json({ error: 'Forbidden: Cannot access other users data' });
     return;
   }

@@ -38,12 +38,12 @@ export default function MythCheckPage() {
       simulationAnnouncer.start('Myth Verification');
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
       const token = user ? await user.getIdToken() : '';
-      
+
       const response = await fetch(`${apiUrl}/api/v1/verify`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ claim, explanationMode: depth }),
       });
@@ -56,7 +56,7 @@ export default function MythCheckPage() {
         logEvent(analytics, 'myth_verified', {
           claim_length: claim.length,
           classification: data.classification,
-          depth: depth
+          depth: depth,
         });
       }
     } catch (error) {
@@ -123,8 +123,17 @@ export default function MythCheckPage() {
 
         <GlassCard className="p-8 mb-12">
           <div className="flex justify-between items-center mb-4">
-            <label htmlFor="claim-textarea" className="text-sm font-bold text-slate-500 uppercase tracking-widest">Input Claim</label>
-            <div className="flex gap-2 bg-slate-100 p-1 rounded-xl" role="tablist" aria-label="Verification Depth">
+            <label
+              htmlFor="claim-textarea"
+              className="text-sm font-bold text-slate-500 uppercase tracking-widest"
+            >
+              Input Claim
+            </label>
+            <div
+              className="flex gap-2 bg-slate-100 p-1 rounded-xl"
+              role="tablist"
+              aria-label="Verification Depth"
+            >
               {(['15s', '1m', 'deep'] as const).map((d) => (
                 <button
                   key={d}
@@ -181,15 +190,21 @@ export default function MythCheckPage() {
             <div className="bg-white/40 rounded-2xl p-6 border border-white/30 mb-6">
               <div className="flex items-center gap-2 mb-3 text-blue-600">
                 <Bot size={18} />
-                <span className="text-xs font-bold uppercase tracking-wider">AI Explanation ({depth})</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  AI Explanation ({depth})
+                </span>
               </div>
               <p className="text-slate-800 text-lg leading-relaxed">{result.explanation}</p>
             </div>
 
             {result.source && (
               <div className="pt-6 border-t border-white/30 text-sm text-secondary flex items-center gap-2">
-                <span className="font-bold">Primary Source:</span> 
-                <a href={result.source.startsWith('http') ? result.source : '#'} target="_blank" className="text-blue-600 hover:underline">
+                <span className="font-bold">Primary Source:</span>
+                <a
+                  href={result.source.startsWith('http') ? result.source : '#'}
+                  target="_blank"
+                  className="text-blue-600 hover:underline"
+                >
                   {result.source}
                 </a>
               </div>

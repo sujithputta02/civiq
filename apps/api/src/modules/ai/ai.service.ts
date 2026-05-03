@@ -77,8 +77,15 @@ export class AIService {
         maxResults: 3,
       });
       if (searchResponse.results && searchResponse.results.length > 0) {
-        searchContext = 'Real-time context from the web:\n' +
-          searchResponse.results.map((r: { title: string, content: string, url: string }) => `- ${r.title}: ${r.content} (${r.url})`).join('\n') + '\n\n';
+        searchContext =
+          'Real-time context from the web:\n' +
+          searchResponse.results
+            .map(
+              (r: { title: string; content: string; url: string }) =>
+                `- ${r.title}: ${r.content} (${r.url})`
+            )
+            .join('\n') +
+          '\n\n';
       }
     } catch (searchErr) {
       logger.error(searchErr, 'Tavily search failed');
@@ -119,14 +126,18 @@ export class AIService {
     explanationMode: string = '1m'
   ): Promise<string> {
     const sanitizedMessage = sanitizeInput(message);
-    const sanitizedLocation = sanitizeLocation(typeof contextData?.location === 'string' ? contextData.location : 'Unknown');
+    const sanitizedLocation = sanitizeLocation(
+      typeof contextData?.location === 'string' ? contextData.location : 'Unknown'
+    );
 
     const API_KEY = env.GOOGLE_AI_API_KEY;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
 
     const chatDocRef = adminDb.collection('users').doc(userId).collection('chat').doc('session');
     const chatDoc = await chatDocRef.get();
-    let history: { role: string, parts: { text: string }[] }[] = chatDoc.exists ? chatDoc.data()?.messages || [] : [];
+    let history: { role: string; parts: { text: string }[] }[] = chatDoc.exists
+      ? chatDoc.data()?.messages || []
+      : [];
 
     const systemInstruction = `You are an expert election assistant for Civiq. 
 Location: ${sanitizedLocation}. Mode: ${truncateString(explanationMode, 10)}.`;
@@ -152,7 +163,7 @@ Location: ${sanitizedLocation}. Mode: ${truncateString(explanationMode, 10)}.`;
     history.push({ role: 'user', parts: [{ text: sanitizedMessage }] });
     history.push({ role: 'model', parts: [{ text: finalReply }] });
     if (history.length > 20) history = history.slice(-20);
-    
+
     await chatDocRef.set({ messages: history }, { merge: true });
     await logToBigQuery('assistant_query', { userId, message: sanitizedMessage, explanationMode });
 

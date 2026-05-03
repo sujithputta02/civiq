@@ -65,7 +65,10 @@ export async function validateSessionFingerprint(
 
   // Check if fingerprint matches
   if (storedFingerprint.deviceId !== currentFingerprint) {
-    logger.warn({ userId, expected: storedFingerprint.deviceId, received: currentFingerprint }, 'Potential session hijacking detected');
+    logger.warn(
+      { userId, expected: storedFingerprint.deviceId, received: currentFingerprint },
+      'Potential session hijacking detected'
+    );
     return false;
   }
 
@@ -85,7 +88,11 @@ export async function validateSessionFingerprint(
 /**
  * Middleware to validate session security
  */
-export async function validateSessionSecurity(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function validateSessionSecurity(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const user = (req as any).user as { uid: string } | undefined;
     if (!user) {
@@ -122,7 +129,11 @@ export async function clearSession(userId: string): Promise<void> {
 /**
  * Detect suspicious activity patterns using Redis
  */
-export async function logActivity(userId: string, action: string, ipAddress: string): Promise<void> {
+export async function logActivity(
+  userId: string,
+  action: string,
+  ipAddress: string
+): Promise<void> {
   const key = `activity:${userId}`;
   const log = JSON.stringify({
     userId,
@@ -141,7 +152,7 @@ export async function detectSuspiciousActivity(userId: string): Promise<boolean>
   const logs = await redis.lrange(key, 0, 4);
   if (logs.length < 5) return false;
 
-  const recentLogs = logs.map(l => JSON.parse(l) as ActivityLog);
+  const recentLogs = logs.map((l) => JSON.parse(l) as ActivityLog);
   const now = Date.now();
   const timeWindow = 60 * 1000; // 1 minute
 

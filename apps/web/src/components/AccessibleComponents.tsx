@@ -352,7 +352,7 @@ export const AccessibleModal: React.FC<AccessibleModalProps> = ({
     if (!isOpen) return;
 
     const restoreFocus = focusManagement.saveFocus();
-    
+
     // Focus the modal container initially for screen readers
     modalRef.current?.focus();
 

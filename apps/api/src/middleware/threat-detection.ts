@@ -32,11 +32,21 @@ export function recordAuthFailure(ip: string): void {
   authFailures.set(ip, count);
 }
 
-export function blockIp(ip: string): void { blockedIps.add(ip); }
-export function unblockIp(ip: string): void { blockedIps.delete(ip); }
-export function getAuthFailureCount(ip: string): number { return authFailures.get(ip) || 0; }
-export function getIpRequestCount(ip: string): number { return ipRequests.get(ip) || 0; }
-export function isIpBlocked(ip: string): boolean { return blockedIps.has(ip); }
+export function blockIp(ip: string): void {
+  blockedIps.add(ip);
+}
+export function unblockIp(ip: string): void {
+  blockedIps.delete(ip);
+}
+export function getAuthFailureCount(ip: string): number {
+  return authFailures.get(ip) || 0;
+}
+export function getIpRequestCount(ip: string): number {
+  return ipRequests.get(ip) || 0;
+}
+export function isIpBlocked(ip: string): boolean {
+  return blockedIps.has(ip);
+}
 
 /**
  * Reset all threat detection state
@@ -98,11 +108,7 @@ export function calculateThreatScore(req: Request): { score: number; factors: st
 /**
  * Threat Detection Middleware
  */
-export function threatDetectionMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function threatDetectionMiddleware(req: Request, res: Response, next: NextFunction): void {
   const ip = req.ip || 'unknown';
 
   const { score, factors } = calculateThreatScore(req);
@@ -112,7 +118,7 @@ export function threatDetectionMiddleware(
 
   if (score >= THREAT_BLOCK_THRESHOLD) {
     blockedIps.add(ip);
-    
+
     logSecurityEvent(
       'SUSPICIOUS_ACTIVITY',
       sReq.user?.uid || ip,
@@ -121,16 +127,16 @@ export function threatDetectionMiddleware(
         score,
         factors,
         path: req.originalUrl,
-        userAgent: req.headers['user-agent']
+        userAgent: req.headers['user-agent'],
       },
       'HIGH'
-    ).catch(err => logger.error(err, 'Failed to log threat event'));
+    ).catch((err) => logger.error(err, 'Failed to log threat event'));
 
     // Test expects 429 and "restricted" in error message
-    res.status(429).json({ 
+    res.status(429).json({
       error: 'Access restricted due to high threat score',
       score,
-      factors 
+      factors,
     });
     return;
   }

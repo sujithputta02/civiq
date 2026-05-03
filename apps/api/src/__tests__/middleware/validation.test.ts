@@ -24,7 +24,7 @@ describe('Validation Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
-    
+
     // Silence console.warn during validation tests to keep output clean
     vi.spyOn(console, 'warn').mockImplementation(() => {});
   });

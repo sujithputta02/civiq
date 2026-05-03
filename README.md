@@ -12,7 +12,9 @@ Civiq is an AI-powered election readiness platform that converts complex electio
 ---
 
 ## 🏆 100% Challenge Alignment
+
 Civiq is explicitly mapped to the challenge requirements:
+
 - **Interactive**: Zero static screens; every view requires user input/interaction.
 - **Understandable**: Vertex AI natural language breakdowns of complex processes.
 - **Personalized**: Firestore-driven timelines tailored to user constraints.
@@ -22,6 +24,7 @@ Detailed traceability can be found in the [PRD](docs/PRD.md) and [Judge Evidence
 ---
 
 ## ⚡ Judge Fast-Track (2-Min Demo)
+
 1. **Interactive Timeline**: Dashboard dynamic countdowns.
 2. **Step Simulation**: Poll Day Simulator walkthrough.
 3. **Process Understanding**: "Explain Like I'm Busy" AI summaries.
@@ -30,6 +33,7 @@ Detailed traceability can be found in the [PRD](docs/PRD.md) and [Judge Evidence
 ---
 
 ## ✨ Key Features
+
 1. **Election Readiness Assessment:** Tailors guidance to constraints.
 2. **Personalized Timelines:** Tracks deadlines automatically.
 3. **Information Verification Hub:** Leverages Gemini to address misinformation.
@@ -37,6 +41,7 @@ Detailed traceability can be found in the [PRD](docs/PRD.md) and [Judge Evidence
 ---
 
 ## 🛠️ Technology Ecosystem
+
 - **Frontend**: Next.js 14, Tailwind CSS, Zustand.
 - **Backend**: Node.js, Express, Cloud Run, Vertex AI.
 - **Infrastructure**: Firestore, BigQuery, Pub/Sub.

@@ -43,55 +43,55 @@ jobs:
       - name: Check coverage thresholds
         run: |
           echo "🧪 Checking test coverage thresholds..."
-          
+
           # Extract coverage metrics from coverage-summary.json
           LINES=$(jq '.total.lines.pct' apps/api/coverage/coverage-summary.json)
           FUNCTIONS=$(jq '.total.functions.pct' apps/api/coverage/coverage-summary.json)
           BRANCHES=$(jq '.total.branches.pct' apps/api/coverage/coverage-summary.json)
           STATEMENTS=$(jq '.total.statements.pct' apps/api/coverage/coverage-summary.json)
-          
+
           echo "Coverage Results:"
           echo "  Lines: ${LINES}%"
           echo "  Functions: ${FUNCTIONS}%"
           echo "  Branches: ${BRANCHES}%"
           echo "  Statements: ${STATEMENTS}%"
-          
+
           # Check thresholds
           LINES_THRESHOLD=40
           FUNCTIONS_THRESHOLD=60
           BRANCHES_THRESHOLD=70
           STATEMENTS_THRESHOLD=40
-          
+
           FAILED=0
-          
+
           if (( $(echo "$LINES < $LINES_THRESHOLD" | bc -l) )); then
             echo "❌ Lines coverage ${LINES}% is below threshold ${LINES_THRESHOLD}%"
             FAILED=1
           else
             echo "✅ Lines coverage ${LINES}% meets threshold"
           fi
-          
+
           if (( $(echo "$FUNCTIONS < $FUNCTIONS_THRESHOLD" | bc -l) )); then
             echo "❌ Functions coverage ${FUNCTIONS}% is below threshold ${FUNCTIONS_THRESHOLD}%"
             FAILED=1
           else
             echo "✅ Functions coverage ${FUNCTIONS}% meets threshold"
           fi
-          
+
           if (( $(echo "$BRANCHES < $BRANCHES_THRESHOLD" | bc -l) )); then
             echo "❌ Branches coverage ${BRANCHES}% is below threshold ${BRANCHES_THRESHOLD}%"
             FAILED=1
           else
             echo "✅ Branches coverage ${BRANCHES}% meets threshold"
           fi
-          
+
           if (( $(echo "$STATEMENTS < $STATEMENTS_THRESHOLD" | bc -l) )); then
             echo "❌ Statements coverage ${STATEMENTS}% is below threshold ${STATEMENTS_THRESHOLD}%"
             FAILED=1
           else
             echo "✅ Statements coverage ${STATEMENTS}% meets threshold"
           fi
-          
+
           if [ $FAILED -eq 1 ]; then
             echo ""
             echo "🔴 Coverage thresholds not met!"
@@ -117,22 +117,22 @@ jobs:
             const fs = require('fs');
             const coverage = JSON.parse(fs.readFileSync('apps/api/coverage/coverage-final.json', 'utf8'));
             const total = coverage.total;
-            
+
             const comment = `## 🧪 Test Coverage Report
-            
+
             | Metric | Coverage | Target |
             |--------|----------|--------|
             | Lines | ${total.lines.pct.toFixed(2)}% | 90% |
             | Functions | ${total.functions.pct.toFixed(2)}% | 90% |
             | Branches | ${total.branches.pct.toFixed(2)}% | 85% |
             | Statements | ${total.statements.pct.toFixed(2)}% | 90% |
-            
+
             ${total.lines.pct >= 90 ? '✅' : '❌'} Lines coverage
             ${total.functions.pct >= 90 ? '✅' : '❌'} Functions coverage
             ${total.branches.pct >= 85 ? '✅' : '❌'} Branches coverage
             ${total.statements.pct >= 90 ? '✅' : '❌'} Statements coverage
             `;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

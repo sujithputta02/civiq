@@ -82,7 +82,7 @@ app.post(
       const validated = MythCheckSchema.parse(req.body);
       const userId = (req as { user?: { uid: string } }).user?.uid || 'anonymous';
       const safeClaim = assertSafeForAI(validated.claim, userId);
-      
+
       const { aiService } = await import('./modules/ai/ai.service.js');
       const result = await aiService.verifyClaim(safeClaim);
 
@@ -110,7 +110,12 @@ app.post(
       const safeMessage = assertSafeForAI(message, userId);
 
       const { aiService } = await import('./modules/ai/ai.service.js');
-      const reply = await aiService.chatAssistant(userId, safeMessage, contextData || {}, explanationMode);
+      const reply = await aiService.chatAssistant(
+        userId,
+        safeMessage,
+        contextData || {},
+        explanationMode
+      );
       res.json({ reply });
     } catch (error: unknown) {
       logger.error(error, 'Chat error');
@@ -152,9 +157,9 @@ if (env.NODE_ENV !== 'test') {
       console.log(`🏥 Health Check: http://localhost:${port}/health\n`);
       /* eslint-enable no-console */
     }
-    
+
     logger.info({ port }, 'Civiq API started');
-    
+
     try {
       await startMythVerificationWorker();
     } catch (err) {
