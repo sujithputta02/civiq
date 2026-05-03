@@ -35,8 +35,37 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: npm audit (critical severity gate)
-        run: npm audit --audit-level=critical
-        continue-on-error: false # Hard fail on high/critical vulns
+        run: |
+          # Run audit and capture output (don't fail on exit code)
+          npm audit --json > audit-report.json || true
+          
+          # Parse vulnerability counts
+          CRITICAL=$(cat audit-report.json | jq '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(cat audit-report.json | jq '.metadata.vulnerabilities.high // 0')
+          MODERATE=$(cat audit-report.json | jq '.metadata.vulnerabilities.moderate // 0')
+          
+          echo "📊 npm audit results:"
+          echo "  Critical: $CRITICAL"
+          echo "  High: $HIGH"
+          echo "  Moderate: $MODERATE"
+          echo ""
+          
+          # Only fail on critical vulnerabilities (as per audit-level=critical)
+          if [ "$CRITICAL" -gt 0 ]; then
+            echo "❌ Found $CRITICAL critical vulnerabilities - FAILING BUILD"
+            npm audit --audit-level=critical || true
+            exit 1
+          fi
+          
+          if [ "$HIGH" -gt 0 ]; then
+            echo "⚠️  Found $HIGH high vulnerabilities (not failing on critical-only gate)"
+          fi
+          
+          if [ "$MODERATE" -gt 0 ]; then
+            echo "⚠️  Found $MODERATE moderate vulnerabilities (tracked)"
+          fi
+          
+          echo "✅ No critical vulnerabilities found - PASSING"
 
       - name: Trivy filesystem vulnerability scan
         uses: aquasecurity/trivy-action@master

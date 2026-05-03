@@ -144,22 +144,18 @@ describe('Coverage Boost: Final Push', () => {
   });
 
   describe('modules/ai/ai.service', () => {
-    it(
-      'should handle search success (line 80-82)',
-      async () => {
-        const { AIService } = await import('../../modules/ai/ai.service.js');
-        const { tavily } = await import('@tavily/core');
-        const service = new AIService();
-        vi.mocked(tavily).mockReturnValue({
-          search: vi.fn().mockResolvedValue({ results: [{ title: 'T', content: 'C', url: 'U' }] }),
-        } as any);
-        global.fetch = vi.fn().mockResolvedValue({
-          json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] }),
-        } as any);
-        await service.verifyClaim('claim');
-      },
-      10000
-    );
+    it('should handle search success (line 80-82)', async () => {
+      const { AIService } = await import('../../modules/ai/ai.service.js');
+      const { tavily } = await import('@tavily/core');
+      const service = new AIService();
+      vi.mocked(tavily).mockReturnValue({
+        search: vi.fn().mockResolvedValue({ results: [{ title: 'T', content: 'C', url: 'U' }] }),
+      } as any);
+      global.fetch = vi.fn().mockResolvedValue({
+        json: vi.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: '{}' }] } }] }),
+      } as any);
+      await service.verifyClaim('claim');
+    }, 10000);
 
     it('should handle search failure (line 84-85)', async () => {
       const { AIService } = await import('../../modules/ai/ai.service.js');
