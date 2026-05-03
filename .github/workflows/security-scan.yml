@@ -9,6 +9,9 @@ on:
     # Run daily at 2 AM UTC
     - cron: '0 2 * * *'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   dependency-check:
     name: Dependency Vulnerability Scan
@@ -23,7 +26,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate
@@ -66,7 +69,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run ESLint security checks
         run: npm run lint
@@ -92,7 +95,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: 'javascript'
 
@@ -103,13 +106,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
   security-headers:
     name: Security Headers Check
