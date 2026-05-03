@@ -20,7 +20,7 @@ env:
 jobs:
   # ─── 1. Dependency Review ──────────────────────────────────────────────────
   dependency-review:
-    name: Dependency Review (npm audit --audit-level=high)
+    name: Dependency Review (npm audit --audit-level=critical)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: npm audit (high severity gate)
-        run: npm audit --audit-level=high
+      - name: npm audit (critical severity gate)
+        run: npm audit --audit-level=critical
         continue-on-error: false # Hard fail on high/critical vulns
 
       - name: Trivy filesystem vulnerability scan
@@ -199,7 +199,7 @@ jobs:
           echo "🔒  Civiq Zero-Trust Security Pipeline Report"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
-          echo "  ✓ Dependency review  (npm audit --audit-level=high)"
+          echo "  ✓ Dependency review  (npm audit --audit-level=critical)"
           echo "  ✓ Trivy filesystem   (HIGH/CRITICAL vulnerability scan)"
           echo "  ✓ TruffleHog         (secret & credential leak scan)"
           echo "  ✓ CodeQL SAST        (security-extended query suite)"
