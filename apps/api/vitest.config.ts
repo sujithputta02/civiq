@@ -41,7 +41,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@civiq/types': path.resolve(__dirname, '../../packages/types/index.ts'),
-      '@civiq/config-env': path.resolve(__dirname, '../../packages/config-env/src/index.ts'),
+      '@civiq/config-env': path.resolve(__dirname, '../../packages/config-env/dist/index.js'),
     },
   },
 });
