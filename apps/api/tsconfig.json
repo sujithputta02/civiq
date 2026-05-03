@@ -21,7 +21,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@civiq/config-env": ["../../packages/config-env/src"],
+      "@civiq/types": ["../../packages/types"]
     }
   },
   "include": ["src/**/*"],
