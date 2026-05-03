@@ -1,0 +1,43 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidImageUpload() {
+      return request.resource.size < 5 * 1024 * 1024 // 5MB
+             && request.resource.contentType.matches('image/.*');
+    }
+    
+    function isValidDocumentUpload() {
+      return request.resource.size < 10 * 1024 * 1024 // 10MB
+             && request.resource.contentType.matches('(application/pdf|image/.*)');
+    }
+
+    // User profile images
+    match /users/{userId}/profile/{fileName} {
+      allow read: if true; // Public read
+      allow write: if isOwner(userId) && isValidImageUpload();
+      allow delete: if isOwner(userId);
+    }
+
+    // User documents (voter registration, etc.)
+    match /users/{userId}/documents/{fileName} {
+      allow read, write: if isOwner(userId) && isValidDocumentUpload();
+      allow delete: if isOwner(userId);
+    }
+
+    // Public assets
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Only admin via console
+    }
+  }
+}

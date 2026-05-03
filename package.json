@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "concurrently -p \"[{name}]\" -n \"TURBO,LINKS\" -c \"cyan,magenta\" \"turbo dev\" \"sleep 5 && echo '\n🚀 Civiq Platform is ready!\n🌐 Web App: http://localhost:3000\n📡 API Service: http://localhost:3010\n🏥 API Health: http://localhost:3010/health\n'\"",
     "build": "turbo build",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:api": "npm run build --workspace=apps/api",
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
@@ -13,7 +15,13 @@
     "test:run": "turbo test:run",
     "test:coverage": "turbo test:coverage",
     "quality": "turbo typecheck lint test:run",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "predeploy": "npm run build:web && npm run build:api",
+    "deploy": "npm run predeploy && firebase deploy",
+    "deploy:web": "npm run build:web && firebase deploy --only hosting",
+    "deploy:api": "npm run build:api && firebase deploy --only functions",
+    "deploy:rules": "firebase deploy --only firestore:rules,storage",
+    "deploy:indexes": "firebase deploy --only firestore:indexes"
   },
   "workspaces": [
     "apps/*",

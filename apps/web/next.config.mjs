@@ -1,16 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Output configuration for Firebase Hosting
+  output: 'export',
+  distDir: 'out',
+
   // Image optimization
   images: {
+    unoptimized: true, // Required for static export
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
   },
 
   // Compression and optimization
   compress: true,
   productionBrowserSourceMaps: false,
+
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005',
+  },
 
   // Headers for caching
   async headers() {
@@ -32,16 +41,6 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
         ],
-      },
-    ];
-  },
-
-  // API rewrites
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'http://127.0.0.1:3005/api/:path*',
       },
     ];
   },
