@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodSchema } from 'zod';
+import logger from '../utils/logger.js';
 
 /**
  * Input Validation Middleware
@@ -17,8 +18,7 @@ export function validateBody(schema: ZodSchema) {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // eslint-disable-next-line no-console
-        console.warn(`Validation error: ${JSON.stringify(error.errors)}`);
+        logger.warn({ errors: error.errors }, 'Validation error');
         res.status(400).json({
           error: 'Invalid request format',
           details: error.errors.map((e) => ({
@@ -28,6 +28,7 @@ export function validateBody(schema: ZodSchema) {
         });
         return;
       }
+      logger.error({ error }, 'Validation failed');
       res.status(400).json({ error: 'Validation failed' });
     }
   };
@@ -46,8 +47,7 @@ export function validateQuery(schema: ZodSchema) {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // eslint-disable-next-line no-console
-        console.warn(`Query validation error: ${JSON.stringify(error.errors)}`);
+        logger.warn({ errors: error.errors }, 'Query validation error');
         res.status(400).json({
           error: 'Invalid query parameters',
           details: error.errors.map((e) => ({
@@ -57,6 +57,7 @@ export function validateQuery(schema: ZodSchema) {
         });
         return;
       }
+      logger.error({ error }, 'Query validation failed');
       res.status(400).json({ error: 'Query validation failed' });
     }
   };
@@ -73,8 +74,7 @@ export function validateParams(schema: ZodSchema) {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        // eslint-disable-next-line no-console
-        console.warn(`Params validation error: ${JSON.stringify(error.errors)}`);
+        logger.warn({ errors: error.errors }, 'Params validation error');
         res.status(400).json({
           error: 'Invalid URL parameters',
           details: error.errors.map((e) => ({
@@ -84,6 +84,7 @@ export function validateParams(schema: ZodSchema) {
         });
         return;
       }
+      logger.error({ error }, 'Params validation failed');
       res.status(400).json({ error: 'Params validation failed' });
     }
   };

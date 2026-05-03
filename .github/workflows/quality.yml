@@ -66,11 +66,11 @@ jobs:
           echo "  Branches: ${BRANCHES}%"
           echo "  Statements: ${STATEMENTS}%"
 
-          # Check thresholds
-          LINES_THRESHOLD=40
-          FUNCTIONS_THRESHOLD=60
-          BRANCHES_THRESHOLD=70
-          STATEMENTS_THRESHOLD=40
+          # Strict thresholds for production-ready code
+          LINES_THRESHOLD=95
+          FUNCTIONS_THRESHOLD=95
+          BRANCHES_THRESHOLD=90
+          STATEMENTS_THRESHOLD=95
 
           FAILED=0
 

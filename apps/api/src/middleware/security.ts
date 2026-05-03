@@ -23,6 +23,7 @@ interface ActivityLog {
 }
 
 const SESSION_TTL = 3600; // 1 hour
+const CSRF_TOKEN_TTL = 3600; // 1 hour
 
 /**
  * Generate a device fingerprint based on request characteristics
@@ -78,8 +79,19 @@ export async function validateSessionFingerprint(
     return false;
   }
 
+  // Check if IP address changed significantly (optional but recommended)
+  const currentIp = (req.ip || req.socket?.remoteAddress || '').toString();
+  if (storedFingerprint.ipAddress !== currentIp) {
+    logger.warn(
+      { userId, storedIp: storedFingerprint.ipAddress, currentIp },
+      'IP address changed for user session'
+    );
+    // Don't fail immediately, but log for monitoring
+  }
+
   // Update timestamp and extend TTL
   storedFingerprint.timestamp = Date.now();
+  storedFingerprint.ipAddress = currentIp; // Update IP for tracking
   await redis.set(sessionKey, JSON.stringify(storedFingerprint), 'EX', SESSION_TTL);
 
   return true;
@@ -104,7 +116,7 @@ export async function validateSessionSecurity(
     const isValid = await validateSessionFingerprint(req, user.uid, deviceFingerprint);
 
     if (!isValid) {
-      logger.error({ userId: user.uid }, 'Session hijacking attempt blocked');
+      logger.error({ userId: user.uid, ip: req.ip }, 'Session hijacking attempt blocked');
       res.status(401).json({ error: 'Session invalid. Please log in again.' });
       return;
     }
@@ -112,7 +124,7 @@ export async function validateSessionSecurity(
     (req as any).deviceFingerprint = deviceFingerprint;
     next();
   } catch (error) {
-    logger.error(error, 'Session security validation error');
+    logger.error({ error, userId: (req as any).user?.uid }, 'Session security validation error');
     res.status(500).json({ error: 'Security validation failed' });
   }
 }
@@ -161,7 +173,7 @@ export async function detectSuspiciousActivity(userId: string): Promise<boolean>
 
   const uniqueIps = new Set(recentInWindow.map((log) => log.ipAddress));
   if (uniqueIps.size > 1) {
-    logger.warn({ userId }, 'Suspicious activity detected: Multiple IPs in short time');
+    logger.warn({ userId, uniqueIps: Array.from(uniqueIps) }, 'Suspicious activity detected: Multiple IPs in short time');
     return true;
   }
 
@@ -183,14 +195,14 @@ export async function detectSuspiciousActivityMiddleware(
     await logActivity(user.uid, `${req.method} ${req.path}`, req.ip || '');
 
     if (await detectSuspiciousActivity(user.uid)) {
-      logger.error({ userId: user.uid }, 'Blocking suspicious activity');
+      logger.error({ userId: user.uid, ip: req.ip, path: req.path }, 'Blocking suspicious activity');
       res.status(403).json({ error: 'Suspicious activity detected. Please verify your identity.' });
       return;
     }
 
     next();
   } catch (error) {
-    logger.error(error, 'Suspicious activity detection error');
+    logger.error({ error }, 'Suspicious activity detection error');
     next();
   }
 }
@@ -203,6 +215,9 @@ export async function clearActivityLogs(userId: string): Promise<void> {
   await redis.del(key);
 }
 
+/**
+ * Generate a cryptographically signed session token
+ */
 export function generateSecureSessionToken(userId: string, expiresIn: number = 3600): string {
   const payload = {
     userId,
@@ -210,22 +225,127 @@ export function generateSecureSessionToken(userId: string, expiresIn: number = 3
     expiresAt: Date.now() + expiresIn * 1000,
     nonce: crypto.randomBytes(16).toString('hex'),
   };
-  return Buffer.from(JSON.stringify(payload)).toString('base64');
+  
+  const payloadStr = JSON.stringify(payload);
+  const signature = crypto
+    .createHmac('sha256', process.env.SESSION_SECRET || 'fallback-secret-change-in-production')
+    .update(payloadStr)
+    .digest('hex');
+  
+  const token = {
+    payload,
+    signature,
+  };
+  
+  return Buffer.from(JSON.stringify(token)).toString('base64');
 }
 
-export function validateSessionTokenExpiration(token: string): boolean {
+/**
+ * Validate session token signature and expiration
+ */
+export function validateSessionToken(token: string): { valid: boolean; userId?: string } {
   try {
-    const payload = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
-    return payload.expiresAt > Date.now();
+    const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+    const { payload, signature } = decoded;
+    
+    // Verify signature
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.SESSION_SECRET || 'fallback-secret-change-in-production')
+      .update(JSON.stringify(payload))
+      .digest('hex');
+    
+    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+      return { valid: false };
+    }
+    
+    // Check expiration
+    if (payload.expiresAt <= Date.now()) {
+      return { valid: false };
+    }
+    
+    return { valid: true, userId: payload.userId };
+  } catch {
+    return { valid: false };
+  }
+}
+
+/**
+ * Validate session token expiration (legacy - kept for backward compatibility)
+ */
+export function validateSessionTokenExpiration(token: string): boolean {
+  return validateSessionToken(token).valid;
+}
+
+/**
+ * Generate CSRF token
+ */
+export function generateCsrfToken(): string {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+/**
+ * Store CSRF token in Redis for a user session
+ */
+export async function storeCsrfToken(userId: string, token: string): Promise<void> {
+  const key = `csrf:${userId}`;
+  await redis.set(key, token, 'EX', CSRF_TOKEN_TTL);
+}
+
+/**
+ * Validate CSRF token against stored value
+ */
+export async function validateCsrfToken(userId: string, token: string): Promise<boolean> {
+  try {
+    const key = `csrf:${userId}`;
+    const storedToken = await redis.get(key);
+    
+    if (!storedToken || !token) {
+      return false;
+    }
+    
+    return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(storedToken));
   } catch {
     return false;
   }
 }
 
-export function generateCsrfToken(): string {
-  return crypto.randomBytes(32).toString('hex');
-}
+/**
+ * CSRF protection middleware
+ */
+export async function csrfProtection(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  // Only apply to state-changing methods
+  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+    next();
+    return;
+  }
 
-export function validateCsrfToken(token: string, storedToken: string): boolean {
-  return crypto.timingSafeEqual(Buffer.from(token), Buffer.from(storedToken));
+  try {
+    const user = (req as any).user as { uid: string } | undefined;
+    if (!user) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return;
+    }
+
+    const csrfToken = req.headers['x-csrf-token'] as string;
+    if (!csrfToken) {
+      res.status(403).json({ error: 'CSRF token missing' });
+      return;
+    }
+
+    const isValid = await validateCsrfToken(user.uid, csrfToken);
+    if (!isValid) {
+      logger.warn({ userId: user.uid }, 'Invalid CSRF token');
+      res.status(403).json({ error: 'Invalid CSRF token' });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    logger.error({ error }, 'CSRF validation error');
+    res.status(500).json({ error: 'CSRF validation failed' });
+  }
 }
