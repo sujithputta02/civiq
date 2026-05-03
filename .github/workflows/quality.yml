@@ -42,6 +42,10 @@ jobs:
 
       - name: Run tests
         run: npm run test:run
+        env:
+          CLOUD_SCHEDULER_SECRET: test-secret
+          GOOGLE_AI_API_KEY: test-key
+          TAVILY_API_KEY: test-key
 
       - name: Generate coverage report
         run: npm run test:coverage
