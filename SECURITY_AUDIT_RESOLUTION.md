@@ -11,6 +11,7 @@ Successfully resolved all **critical** and **high** severity vulnerabilities in 
 ### 1. Updated Direct Dependencies
 
 #### Root Package (`package.json`)
+
 - ✅ Already on latest versions:
   - `@google-cloud/bigquery`: ^8.3.0
   - `@google-cloud/firestore`: ^8.5.0
@@ -18,6 +19,7 @@ Successfully resolved all **critical** and **high** severity vulnerabilities in 
   - `next`: ^16.2.4
 
 #### API Package (`apps/api/package.json`)
+
 - ✅ Updated `@typescript-eslint/eslint-plugin`: ^6.0.0 → ^8.0.0
 - ✅ Updated `@typescript-eslint/parser`: ^6.0.0 → ^8.0.0
 - ✅ Updated `@vitest/ui`: ^1.6.1 → ^2.1.9
@@ -25,6 +27,7 @@ Successfully resolved all **critical** and **high** severity vulnerabilities in 
 - ✅ Updated `@google-cloud/bigquery`: ^7.3.0 → ^8.3.0
 
 #### Web Package (`apps/web/package.json`)
+
 - ✅ Updated `firebase`: ^10.14.1 → ^11.9.1
 - ✅ Updated `postcss`: ^8 → ^8.5.10
 
@@ -58,6 +61,7 @@ Added the following overrides in root `package.json` to force secure versions of
 ### 3. Updated GitHub Workflows
 
 Modified security workflows to:
+
 - ✅ Only fail on **critical** and **high** severity vulnerabilities
 - ✅ Report moderate vulnerabilities without failing the build
 - ✅ Provide clear security audit summaries
@@ -65,16 +69,16 @@ Modified security workflows to:
 ## Vulnerability Status
 
 ### ✅ Resolved (High Severity)
+
 1. **minimatch** - ReDoS vulnerabilities
    - Fixed by updating TypeScript ESLint to v8.x
-   
 2. **undici** - Multiple security issues
    - Fixed by updating firebase to v11.x
 
 ### ✅ Resolved (Moderate Severity)
+
 1. **esbuild** - Development server vulnerability
    - Fixed via override to v0.28.0
-   
 2. **postcss** - XSS vulnerability
    - Fixed by updating to v8.5.10+
 
@@ -85,6 +89,7 @@ Modified security workflows to:
    - Fixed by aligning versions to v2.1.9
 
 ### ⚠️ Tracked (Moderate Severity)
+
 1. **uuid** - Buffer bounds check issue (GHSA-w5hq-g745-h8pq)
    - **Status**: Transitive dependency in firebase-admin
    - **Actual Version Installed**: 11.1.1 (secure)
@@ -96,6 +101,7 @@ Modified security workflows to:
 ## Verification
 
 ### Build Status
+
 ```bash
 ✓ npm run build - All packages build successfully
 ✓ npm run typecheck - No TypeScript errors
@@ -103,6 +109,7 @@ Modified security workflows to:
 ```
 
 ### Dependency Tree
+
 ```bash
 $ npm ls uuid
 └─┬ firebase-admin@13.8.0
@@ -126,11 +133,13 @@ All uuid instances are now v11.1.1 (secure version).
 ## GitHub Workflow Changes
 
 ### `.github/workflows/security-scan.yml`
+
 - Now checks for critical AND high vulnerabilities
 - Provides detailed reporting
 - Continues on moderate vulnerabilities with tracking message
 
 ### `.github/workflows/security.yml`
+
 - Enhanced audit report generation
 - Severity-based failure logic
 - Improved logging and artifact upload
