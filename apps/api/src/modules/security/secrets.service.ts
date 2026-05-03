@@ -30,7 +30,7 @@ export async function getSecret(secretName: string): Promise<string> {
   try {
     // Access process.env directly to avoid envalid proxy issues in tests
     value = process.env[secretName];
-  } catch (err) {
+  } catch {
     // Ignore errors
   }
 
@@ -38,7 +38,7 @@ export async function getSecret(secretName: string): Promise<string> {
     // 2. Fallback to validated env object from config-env
     try {
       value = (env as unknown as Record<string, string | undefined>)[secretName];
-    } catch (err) {
+    } catch {
       // envalid proxy throws if key is missing from schema
     }
   }

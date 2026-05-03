@@ -27,6 +27,8 @@ dist/
 out/
 build/
 .turbo/
+coverage/
+**/coverage/
 
 # Background Worker Ignore
 apps/web/public/firebase-messaging-sw.js
