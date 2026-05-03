@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
+import logger from '../utils/logger.js';
 
 /**
  * Role-Based Access Control (RBAC) Middleware
@@ -27,8 +28,7 @@ export function requireRole(...allowedRoles: UserRole[]) {
       const user = req.user;
 
       if (!user) {
-        // eslint-disable-next-line no-console
-        console.warn('RBAC: Access denied - no user');
+        logger.warn('RBAC: Access denied - no user');
         res.status(401).json({ error: 'Unauthorized' });
         return;
       }
@@ -36,9 +36,7 @@ export function requireRole(...allowedRoles: UserRole[]) {
       const userRole = (user.customClaims?.role as UserRole) || UserRole.USER;
 
       if (!allowedRoles.includes(userRole)) {
-        // eslint-disable-next-line no-console
-        console.warn(`RBAC: Access denied for user ${user.uid} with role ${userRole}`);
-
+        logger.warn({ uid: user.uid, userRole, allowedRoles }, 'RBAC: Access denied');
         res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
         return;
       }
@@ -47,8 +45,7 @@ export function requireRole(...allowedRoles: UserRole[]) {
       req.userId = user.uid;
       next();
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('RBAC middleware error:', error);
+      logger.error(error, 'RBAC middleware error');
       res.status(500).json({ error: 'Authorization error' });
     }
   };
@@ -81,17 +78,5 @@ export function requireAuth(req: AuthenticatedRequest, res: Response, next: Next
     return;
   }
   req.userId = req.user.uid;
-  next();
-}
-
-/**
- * Audit middleware to log all sensitive operations
- */
-export function auditMiddleware(
-  _req: AuthenticatedRequest,
-  _res: Response,
-  next: NextFunction
-): void {
-  // Audit middleware is now handled in index.ts with proper async handling
   next();
 }

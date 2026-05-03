@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getSecret,
   validateSecrets,
@@ -6,12 +6,14 @@ import {
   maskSecret,
   isValidApiKey,
   isValidConnectionString,
-} from '../../services/secrets';
+} from '../../modules/security/secrets.service.js';
 
 describe('Secrets Service', () => {
   beforeEach(() => {
     clearSecretCache();
     process.env.TEST_SECRET = 'test-secret-value-12345678901234567890';
+    // Silence console error during secrets validation tests to keep output clean
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {

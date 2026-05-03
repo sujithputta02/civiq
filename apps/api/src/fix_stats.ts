@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { adminDb } from './services/admin';
+import { adminDb } from './modules/identity/admin.service.js';
 
 async function fixStats() {
   const statsRef = adminDb.collection('aggregates').doc('myth_stats');

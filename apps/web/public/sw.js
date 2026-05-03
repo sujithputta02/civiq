@@ -1,5 +1,5 @@
 // Service Worker for offline support and caching
-const CACHE_NAME = 'civiq-v1';
+const CACHE_NAME = 'civiq-v2.1'; // Incremented version to force update
 const STATIC_ASSETS = ['/', '/globals.css', '/next.svg', '/vercel.svg'];
 
 // Install event - cache static assets
@@ -35,8 +35,8 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
+  // Skip non-GET requests and chrome-extension:// or other protocols
+  if (request.method !== 'GET' || !url.protocol.startsWith('http')) {
     return;
   }
 
@@ -45,10 +45,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // Cache successful responses
-          if (response.status === 200) {
-            const cache = caches.open(CACHE_NAME);
-            cache.then((c) => c.put(request, response.clone()));
+          // Only cache successful, non-opaque responses to avoid body usage issues
+          if (response && response.status === 200 && response.type === 'basic') {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
           }
           return response;
         })
@@ -62,18 +64,23 @@ self.addEventListener('fetch', (event) => {
 
   // Static assets - cache first
   event.respondWith(
-    caches.match(request).then((response) => {
-      if (response) {
-        return response;
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
       }
 
-      return fetch(request).then((response) => {
-        // Cache successful responses
-        if (response.status === 200) {
-          const cache = caches.open(CACHE_NAME);
-          cache.then((c) => c.put(request, response.clone()));
+      return fetch(request).then((networkResponse) => {
+        // Only cache successful, non-opaque responses
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
         }
-        return response;
+        return networkResponse;
+      }).catch(() => {
+        // Final fallback for images or other assets
+        return new Response('Network error occurred', { status: 408, headers: { 'Content-Type': 'text/plain' } });
       });
     })
   );

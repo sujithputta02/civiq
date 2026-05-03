@@ -8,11 +8,11 @@ import {
   getAllAuditLogs,
   getSecurityEvents,
   AuditEvent,
-} from '../../services/audit';
-import { adminDb } from '../../services/admin';
+} from '../../modules/security/audit.service.js';
+import { adminDb } from '../../modules/identity/admin.service.js';
 
 // Mock Firebase Admin
-vi.mock('../../services/admin', () => ({
+vi.mock('../../modules/identity/admin.service.js', () => ({
   adminDb: {
     collection: vi.fn().mockReturnThis(),
     add: vi.fn().mockResolvedValue({ id: 'doc123' }),
@@ -28,6 +28,10 @@ vi.mock('../../services/admin', () => ({
 describe('Audit Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Silence console logs, warnings, and errors during audit tests to keep output clean
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   describe('logAuditEvent', () => {

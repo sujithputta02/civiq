@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import logger from '../utils/logger.js';
 
 /**
  * Output Encoding & Sanitization Middleware
@@ -9,23 +11,17 @@ import { Request, Response, NextFunction } from 'express';
  * Encode HTML special characters
  */
 export function encodeHtml(str: string): string {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  /* eslint-disable @typescript-eslint/naming-convention */
   const map: Record<string, string> = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '&': '&amp;',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '<': '&lt;',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '>': '&gt;',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '"': '&quot;',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     "'": '&#39;',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '/': '&#x2F;',
   };
-  // eslint-disable-next-line no-useless-escape
-  return str.replace(/[&<>"'\/]/g, (char) => map[char]);
+  /* eslint-enable @typescript-eslint/naming-convention */
+  return str.replace(/[&<>"'/]/g, (char) => map[char]);
 }
 
 /**
@@ -37,108 +33,102 @@ export function encodeJson(obj: unknown): string {
 }
 
 /**
- * Sanitize response data recursively
+ * Recursively sanitize data structures
  */
-export function sanitizeResponseData(data: unknown, visited = new WeakSet()): unknown {
+export function sanitizeResponseData(data: unknown, seen = new WeakSet()): unknown {
   if (typeof data === 'string') {
     return encodeHtml(data);
   }
 
+  if (typeof data !== 'object' || data === null) {
+    return data;
+  }
+
+  if (seen.has(data)) {
+    return '[Circular]';
+  }
+  seen.add(data);
+
   if (Array.isArray(data)) {
-    return data.map((item) => sanitizeResponseData(item, visited));
+    return data.map((item) => sanitizeResponseData(item, seen));
   }
 
-  if (data !== null && typeof data === 'object') {
-    // Check for circular references
-    if (visited.has(data as object)) {
-      return '[Circular]';
-    }
-
-    visited.add(data as object);
-
-    const sanitized: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(data)) {
-      // Sanitize key and value
-      const sanitizedKey = encodeHtml(key);
-      sanitized[sanitizedKey] = sanitizeResponseData(value, visited);
-    }
-    return sanitized;
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(data)) {
+    const sanitizedKey = encodeHtml(key);
+    sanitized[sanitizedKey] = sanitizeResponseData(value, seen);
   }
-
-  return data;
-}
-
-/**
- * Middleware to set secure response headers
- */
-export function secureResponseHeaders(_req: Request, res: Response, next: NextFunction): void {
-  // Prevent MIME type sniffing
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-
-  // Prevent clickjacking
-  res.setHeader('X-Frame-Options', 'DENY');
-
-  // Enable XSS protection
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-
-  // Strict Transport Security
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-
-  // Content Security Policy - Strict
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com https://api.tavily.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-  );
-
-  // Referrer Policy
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-
-  // Permissions Policy
-  res.setHeader(
-    'Permissions-Policy',
-    'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
-  );
-
-  // Remove server header
-  res.removeHeader('Server');
-  res.removeHeader('X-Powered-By');
-
-  next();
+  return sanitized;
 }
 
 /**
  * Middleware to sanitize JSON responses
  */
-export function sanitizeJsonResponse(_req: Request, res: Response, next: NextFunction): void {
+export function sanitizeJsonResponse(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   const originalJson = res.json;
 
-  res.json = function (data: unknown) {
-    // Sanitize the response data
-    const sanitized = sanitizeResponseData(data);
-
-    // Call original json with sanitized data
-    return originalJson.call(this, sanitized);
+  res.json = function (body: unknown): Response {
+    const sanitizedBody = sanitizeResponseData(body);
+    return originalJson.call(this, sanitizedBody);
   };
 
   next();
 }
 
 /**
- * Prevent response splitting attacks
+ * Middleware to prevent Response Splitting
  */
-export function preventResponseSplitting(_req: Request, res: Response, next: NextFunction): void {
+export function preventResponseSplitting(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   const originalSetHeader = res.setHeader;
 
-  res.setHeader = function (name: string, value: string | number | readonly string[]) {
-    // Check for CRLF injection
+  res.setHeader = function (name: string, value: string | number | readonly string[]): Response {
     if (typeof value === 'string' && /[\r\n]/.test(value)) {
-      // eslint-disable-next-line no-console
-      console.warn(`Potential response splitting attack detected in header: ${name}`);
-      throw new Error('Invalid header value');
+      logger.error({ name, value }, 'Response splitting attempt blocked');
+      throw new Error('CRLF Injection detected');
     }
-
-    return originalSetHeader.call(this, name, value);
+    return originalSetHeader.call(this, name, value) as unknown as Response;
   };
 
   next();
+}
+
+/**
+ * Security headers for response integrity
+ */
+export function secureResponseHeaders(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Content-Security-Policy', "default-src 'self'");
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=()');
+  res.removeHeader('Server');
+  res.removeHeader('X-Powered-By');
+  next();
+}
+
+/**
+ * Utility to encode redirect URLs
+ */
+export function safeRedirect(res: Response, url: string): void {
+  const sanitizedUrl = url.replace(/[\r\n]/g, '');
+  if (!sanitizedUrl.startsWith('/') && !sanitizedUrl.startsWith(process.env.FRONTEND_URL || '')) {
+    logger.warn({ url }, 'Potentially unsafe redirect blocked');
+    res.redirect('/');
+    return;
+  }
+  res.redirect(sanitizedUrl);
 }

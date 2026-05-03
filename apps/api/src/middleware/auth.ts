@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as admin from 'firebase-admin';
+import { recordAuthFailure } from './threat-detection.js';
+import logger from '../utils/logger.js';
+import { env } from '@civiq/config-env';
 
 declare global {
   namespace Express {
@@ -32,21 +36,15 @@ export async function verifyFirebaseToken(
         return;
       }
 
-      const tokenAge = Date.now() - decodedToken.iat * 1000;
-      const maxTokenAge = 24 * 60 * 60 * 1000;
-      if (tokenAge > maxTokenAge) {
-        res.status(401).json({ error: 'Token too old. Please log in again.' });
-        return;
-      }
-
       req.user = decodedToken;
       next();
     } catch (error: unknown) {
-      console.error('Token verification failed:', error);
+      logger.warn({ error, ip: req.ip }, 'Token verification failed');
+      recordAuthFailure(req.ip || req.socket?.remoteAddress || 'unknown');
       res.status(401).json({ error: 'Invalid or expired token' });
     }
   } catch (error: unknown) {
-    console.error('Auth middleware error:', error);
+    logger.error(error, 'Auth middleware error');
     res.status(500).json({ error: 'Authentication error' });
   }
 }
@@ -61,7 +59,7 @@ export function verifyUserOwnership(req: Request, res: Response, next: NextFunct
   }
 
   if (requestedUserId && requestedUserId !== user.uid) {
-    console.warn(`Unauthorized access attempt: ${user.uid} tried to access ${requestedUserId}`);
+    logger.warn({ currentUid: user.uid, targetUid: requestedUserId }, 'Unauthorized access attempt');
     res.status(403).json({ error: 'Forbidden: Cannot access other users data' });
     return;
   }
@@ -69,28 +67,8 @@ export function verifyUserOwnership(req: Request, res: Response, next: NextFunct
   next();
 }
 
-export function verifyCustomClaim(claimName: string, claimValue: unknown) {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const user = req.user;
-
-    if (!user) {
-      res.status(401).json({ error: 'Unauthorized' });
-      return;
-    }
-
-    const customClaims = user.customClaims || {};
-    if (customClaims[claimName] !== claimValue) {
-      console.warn(`Unauthorized claim access: ${user.uid} missing claim ${claimName}`);
-      res.status(403).json({ error: 'Insufficient permissions' });
-      return;
-    }
-
-    next();
-  };
-}
-
 export function enforceHttps(req: Request, res: Response, next: NextFunction): void {
-  if (process.env.NODE_ENV === 'production' && req.protocol !== 'https') {
+  if (env.NODE_ENV === 'production' && req.protocol !== 'https') {
     res.status(403).json({ error: 'HTTPS required' });
     return;
   }

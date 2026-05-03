@@ -20,6 +20,13 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if isOwner(userId);
 
+      // Admin can read user records ONLY when the user has given explicit consent
+      // (GDPR/CCPA-aligned: Layer 14 – Privacy & Data Ethics)
+      allow read: if isAdmin()
+                  && resource.data.keys().hasAll(['electionData'])
+                  && resource.data.electionData.keys().hasAll(['consentGiven'])
+                  && resource.data.electionData.consentGiven == true;
+
       // Chat history - only owner can access
       match /chat/{document=**} {
         allow read, write: if isOwner(userId);

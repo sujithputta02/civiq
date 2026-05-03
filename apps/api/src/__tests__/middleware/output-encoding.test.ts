@@ -7,7 +7,7 @@ import {
   secureResponseHeaders,
   sanitizeJsonResponse,
   preventResponseSplitting,
-} from '../../middleware/output-encoding';
+} from '../../middleware/output-encoding.js';
 
 describe('Output Encoding Middleware', () => {
   let req: Partial<Request>;

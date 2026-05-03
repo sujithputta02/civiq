@@ -9,7 +9,20 @@ import {
   prefersReducedMotion,
   announceToScreenReader,
   keyboardNavigation,
+  focusManagement,
 } from '@/lib/accessibility';
+
+/**
+ * Skip to Main Content link
+ */
+export const SkipToMain: React.FC<{ targetId: string }> = ({ targetId }) => (
+  <a
+    href={`#${targetId}`}
+    className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[9999] focus:p-4 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+  >
+    Skip to main content
+  </a>
+);
 
 /**
  * Accessible Button Component
@@ -338,6 +351,11 @@ export const AccessibleModal: React.FC<AccessibleModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
+    const restoreFocus = focusManagement.saveFocus();
+    
+    // Focus the modal container initially for screen readers
+    modalRef.current?.focus();
+
     const handleEscape = (e: KeyboardEvent) => {
       if (keyboardNavigation.isEscapeKey(e.key)) {
         onClose();
@@ -347,9 +365,15 @@ export const AccessibleModal: React.FC<AccessibleModalProps> = ({
     document.addEventListener('keydown', handleEscape);
     document.body.style.overflow = 'hidden';
 
+    // Trap focus within the modal
+    if (modalRef.current) {
+      focusManagement.trapFocus(modalRef.current);
+    }
+
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'auto';
+      restoreFocus();
     };
   }, [isOpen, onClose]);
 
@@ -371,7 +395,8 @@ export const AccessibleModal: React.FC<AccessibleModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        tabIndex={-1}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 focus:outline-none"
       >
         <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 space-y-4">
           <div className="flex justify-between items-start">
@@ -428,6 +453,7 @@ export const AccessibleAlert: React.FC<AccessibleAlertProps> = ({
     <div
       id={alertId}
       role="alert"
+      aria-atomic="true"
       className={`${config.bg} border-l-4 ${config.border} p-4 rounded-md ${config.text}`}
     >
       <div className="flex items-start gap-3">

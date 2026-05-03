@@ -6,7 +6,7 @@ import {
   isValidEmail,
   isValidUrl,
   truncateString,
-} from '../../utils/sanitize';
+} from '../../utils/sanitize.js';
 
 describe('Sanitization Utils - Edge Cases', () => {
   describe('sanitizeInput - Edge Cases', () => {

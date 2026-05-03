@@ -6,7 +6,7 @@ import {
   validateQuery,
   validateParams,
   ValidationSchemas,
-} from '../../middleware/validation';
+} from '../../middleware/validation.js';
 
 describe('Validation Middleware', () => {
   let req: Partial<Request>;
@@ -24,6 +24,9 @@ describe('Validation Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
+    
+    // Silence console.warn during validation tests to keep output clean
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
   describe('validateBody', () => {

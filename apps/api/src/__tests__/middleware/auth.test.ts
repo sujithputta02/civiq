@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import * as admin from 'firebase-admin';
-import { verifyUserOwnership } from '../../middleware/auth';
+import { verifyUserOwnership } from '../../middleware/auth.js';
 
 interface MockRequest extends Partial<Request> {
   user?: admin.auth.DecodedIdToken;
@@ -21,6 +21,9 @@ describe('Auth Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
+    
+    // Silence console warnings during auth tests to keep output clean
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
   describe('verifyUserOwnership', () => {

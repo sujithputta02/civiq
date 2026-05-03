@@ -212,3 +212,18 @@ export function updatePageTitle(title: string): void {
   document.title = title;
   announceToScreenReader(title, 'assertive');
 }
+
+/**
+ * Announce AI simulation states (start, completion, error)
+ */
+export const simulationAnnouncer = {
+  start(processName: string): void {
+    announceToScreenReader(`Starting ${processName}. Please wait.`, 'polite');
+  },
+  complete(processName: string): void {
+    announceToScreenReader(`${processName} completed successfully.`, 'assertive');
+  },
+  error(processName: string, errorMessage: string): void {
+    announceToScreenReader(`Error in ${processName}: ${errorMessage}`, 'assertive');
+  },
+};

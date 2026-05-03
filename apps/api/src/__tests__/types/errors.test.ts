@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isZodError, getErrorMessage } from '../../types/errors';
+import { isZodError, getErrorMessage } from '../../types/errors.js';
 import { z } from 'zod';
 
 describe('Error Handling', () => {

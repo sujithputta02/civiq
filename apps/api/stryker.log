@@ -1,0 +1,116 @@
+[36m20:24:30 (21539) DEBUG ConfigReader[39m Loading config from stryker.config.json
+[36m20:24:30 (21539) DEBUG ConfigReader[39m Loaded config: {
+  "$schema": "https://schema.stryker-mutator.io/stryker-config.schema.json",
+  "packageManager": "npm",
+  "reporters": [
+    "html",
+    "clear-text",
+    "progress"
+  ],
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.config.ts"
+  },
+  "coverageAnalysis": "perTest",
+  "typescriptChecker": {
+    "prioritizePerformance": true
+  },
+  "checkers": [
+    "typescript"
+  ],
+  "mutate": [
+    "src/utils/sanitize.ts"
+  ],
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": 50
+  },
+  "logLevel": "debug",
+  "allowConsoleColors": true,
+  "checkerNodeArgs": [],
+  "commandRunner": {
+    "command": "npm test"
+  },
+  "clearTextReporter": {
+    "allowColor": true,
+    "allowEmojis": false,
+    "logTests": true,
+    "maxTestsToLog": 3,
+    "reportTests": true,
+    "reportMutants": true,
+    "reportScoreTable": true,
+    "skipFull": false
+  },
+  "dashboard": {
+    "baseUrl": "https://dashboard.stryker-mutator.io/api/reports",
+    "reportType": "full"
+  },
+  "dryRunOnly": false,
+  "eventReporter": {
+    "baseDir": "reports/mutation/events"
+  },
+  "ignorePatterns": [],
+  "ignoreStatic": false,
+  "incremental": false,
+  "incrementalFile": "reports/stryker-incremental.json",
+  "force": false,
+  "fileLogLevel": "off",
+  "inPlace": false,
+  "maxConcurrentTestRunners": 9007199254740991,
+  "maxTestRunnerReuse": 0,
+  "mutator": {
+    "plugins": null,
+    "excludedMutations": []
+  },
+  "plugins": [
+    "@stryker-mutator/*"
+  ],
+  "appendPlugins": [],
+  "htmlReporter": {
+    "fileName": "reports/mutation/mutation.html"
+  },
+  "jsonReporter": {
+    "fileName": "reports/mutation/mutation.json"
+  },
+  "disableTypeChecks": true,
+  "symlinkNodeModules": true,
+  "tempDirName": ".stryker-tmp",
+  "cleanTempDir": true,
+  "testRunnerNodeArgs": [],
+  "timeoutFactor": 1.5,
+  "timeoutMS": 5000,
+  "dryRunTimeoutMinutes": 5,
+  "tsconfigFile": "tsconfig.json",
+  "warnings": true,
+  "disableBail": false,
+  "allowEmpty": false,
+  "ignorers": [],
+  "testFiles": []
+}
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading @stryker-mutator/* from /Users/sujithputta/Projects/Civiq Challenge-2.1/node_modules/@stryker-mutator
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin "@stryker-mutator/typescript-checker" (matched with expression @stryker-mutator/*)
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin "@stryker-mutator/vitest-runner" (matched with expression @stryker-mutator/*)
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin @stryker-mutator/typescript-checker
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin @stryker-mutator/vitest-runner
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/instrumenter/dist/src/frameworks/index.js
+[36m20:24:30 (21539) DEBUG PluginLoader[39m Loading plugin file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/reporters/index.js
+[36m20:24:30 (21539) DEBUG MetaSchemaBuilder[39m Contributing 2 schemas from plugins to options validation.
+[91m20:24:30 (21539) ERROR OptionsValidator[39m Config option "typescriptChecker" must NOT have additional properties
+[91m20:24:30 (21539) ERROR Stryker[39m Please correct this configuration error and try again.
+file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/config/options-validator.js:166
+            throw new ConfigError(errors.length === 1
+                  ^
+
+ConfigError: Please correct this configuration error and try again.
+    at OptionsValidator.throwErrorIfNeeded (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/config/options-validator.js:166:19)
+    at OptionsValidator.schemaValidate (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/config/options-validator.js:161:18)
+    at OptionsValidator.validate (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/config/options-validator.js:41:14)
+    at PrepareExecutor.execute (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/process/1-prepare-executor.js:50:19)
+    at async Stryker.run (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/stryker.js:45:48)
+    at async Stryker.runMutationTest (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/stryker.js:27:20)
+    at async Command.<anonymous> (file:///Users/sujithputta/Projects/Civiq%20Challenge-2.1/node_modules/@stryker-mutator/core/dist/src/stryker-cli.js:51:13) {
+  innerError: undefined
+}
+
+Node.js v25.9.0

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
 import {
   sanitizeInput,
   sanitizeHtml,
@@ -6,9 +7,29 @@ import {
   isValidEmail,
   isValidUrl,
   truncateString,
-} from '../../utils/sanitize';
+} from '../../utils/sanitize.js';
 
 describe('Sanitization Utils', () => {
+  describe('sanitizeInput (Property-Based)', () => {
+    it('should always return a string and handle random inputs', () => {
+      fc.assert(
+        fc.property(fc.string(), (text) => {
+          const result = sanitizeInput(text);
+          return typeof result === 'string';
+        })
+      );
+    });
+
+    it('should never contain raw newlines or tabs after sanitization', () => {
+      fc.assert(
+        fc.property(fc.string(), (text) => {
+          const result = sanitizeInput(text);
+          return !result.includes('\n') && !result.includes('\t');
+        })
+      );
+    });
+  });
+
   describe('sanitizeInput', () => {
     it('should escape special characters', () => {
       const input = 'Hello "world" with \\backslash';
@@ -93,8 +114,6 @@ describe('Sanitization Utils', () => {
 
     it('should reject invalid URLs', () => {
       expect(isValidUrl('not a url')).toBe(false);
-      // Note: 'htp://invalid' is actually a valid URL format (just with typo in protocol)
-      // The URL constructor accepts it, so we test with truly invalid format
       expect(isValidUrl('ht!tp://invalid')).toBe(false);
     });
   });
@@ -108,6 +127,11 @@ describe('Sanitization Utils', () => {
     it('should not truncate if under max length', () => {
       const result = truncateString('Hi', 5);
       expect(result).toBe('Hi');
+    });
+
+    it('should handle zero or negative length', () => {
+      expect(truncateString('abc', 0)).toBe('');
+      expect(truncateString('abc', -1)).toBe('');
     });
   });
 });

@@ -1,14 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import crypto from 'crypto';
+import redis from '../modules/shared/redis.service.js';
+import logger from '../utils/logger.js';
 
 /**
  * Session security middleware to prevent hijacking
- * Implements:
- * - Device fingerprinting
- * - IP address validation
- * - User-Agent validation
- * - Token rotation
- * - Suspicious activity detection
  */
 
 interface SessionFingerprint {
@@ -18,8 +15,14 @@ interface SessionFingerprint {
   timestamp: number;
 }
 
-// In-memory store for session fingerprints (use Redis in production)
-const sessionStore = new Map<string, SessionFingerprint>();
+interface ActivityLog {
+  userId: string;
+  action: string;
+  timestamp: number;
+  ipAddress: string;
+}
+
+const SESSION_TTL = 3600; // 1 hour
 
 /**
  * Generate a device fingerprint based on request characteristics
@@ -32,58 +35,49 @@ export function generateDeviceFingerprint(req: Request): string {
     req.ip || req.socket?.remoteAddress || '',
   ];
 
-  const fingerprint = crypto.createHash('sha256').update(components.join('|')).digest('hex');
-
-  return fingerprint;
+  return crypto.createHash('sha256').update(components.join('|')).digest('hex');
 }
 
 /**
  * Validate session fingerprint to detect hijacking attempts
  */
-export function validateSessionFingerprint(
+export async function validateSessionFingerprint(
   req: Request,
   userId: string,
   currentFingerprint: string
-): boolean {
-  const sessionKey = `${userId}:fingerprint`;
-  const storedFingerprint = sessionStore.get(sessionKey);
+): Promise<boolean> {
+  const sessionKey = `session:${userId}:fingerprint`;
+  const storedData = await redis.get(sessionKey);
 
-  if (!storedFingerprint) {
+  if (!storedData) {
     // First time - store the fingerprint
-    sessionStore.set(sessionKey, {
+    const fingerprint: SessionFingerprint = {
       deviceId: currentFingerprint,
-      ipAddress: req.ip || '',
+      ipAddress: (req.ip || req.socket?.remoteAddress || '').toString(),
       userAgent: req.headers['user-agent'] || '',
       timestamp: Date.now(),
-    });
+    };
+    await redis.set(sessionKey, JSON.stringify(fingerprint), 'EX', SESSION_TTL);
     return true;
   }
 
+  const storedFingerprint = JSON.parse(storedData) as SessionFingerprint;
+
   // Check if fingerprint matches
   if (storedFingerprint.deviceId !== currentFingerprint) {
-    console.warn(`Potential session hijacking detected for user ${userId}`);
-    console.warn(`Expected fingerprint: ${storedFingerprint.deviceId}`);
-    console.warn(`Received fingerprint: ${currentFingerprint}`);
+    logger.warn({ userId, expected: storedFingerprint.deviceId, received: currentFingerprint }, 'Potential session hijacking detected');
     return false;
-  }
-
-  // Check if IP address changed significantly (allow some variance for mobile users)
-  const ipChanged = storedFingerprint.ipAddress !== (req.ip || '');
-  if (ipChanged) {
-    console.warn(
-      `IP address changed for user ${userId}: ${storedFingerprint.ipAddress} -> ${req.ip}`
-    );
-    // Don't fail immediately, but log for monitoring
   }
 
   // Check if User-Agent changed (strong indicator of hijacking)
   if (storedFingerprint.userAgent !== (req.headers['user-agent'] || '')) {
-    console.warn(`User-Agent changed for user ${userId}`);
+    logger.warn({ userId }, 'User-Agent changed for user');
     return false;
   }
 
-  // Update timestamp
+  // Update timestamp and extend TTL
   storedFingerprint.timestamp = Date.now();
+  await redis.set(sessionKey, JSON.stringify(storedFingerprint), 'EX', SESSION_TTL);
 
   return true;
 }
@@ -91,9 +85,8 @@ export function validateSessionFingerprint(
 /**
  * Middleware to validate session security
  */
-export function validateSessionSecurity(req: Request, res: Response, next: NextFunction): void {
+export async function validateSessionSecurity(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = (req as any).user as { uid: string } | undefined;
     if (!user) {
       res.status(401).json({ error: 'Unauthorized' });
@@ -101,22 +94,18 @@ export function validateSessionSecurity(req: Request, res: Response, next: NextF
     }
 
     const deviceFingerprint = generateDeviceFingerprint(req);
-    const isValid = validateSessionFingerprint(req, user.uid, deviceFingerprint);
+    const isValid = await validateSessionFingerprint(req, user.uid, deviceFingerprint);
 
     if (!isValid) {
-      // eslint-disable-next-line no-console
-      console.error(`Session hijacking attempt detected for user ${user.uid}`);
+      logger.error({ userId: user.uid }, 'Session hijacking attempt blocked');
       res.status(401).json({ error: 'Session invalid. Please log in again.' });
       return;
     }
 
-    // Attach fingerprint to request for logging
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (req as any).deviceFingerprint = deviceFingerprint;
     next();
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Session security validation error:', error);
+    logger.error(error, 'Session security validation error');
     res.status(500).json({ error: 'Security validation failed' });
   }
 }
@@ -124,122 +113,85 @@ export function validateSessionSecurity(req: Request, res: Response, next: NextF
 /**
  * Clear session on logout
  */
-export function clearSession(userId: string): void {
-  const sessionKey = `${userId}:fingerprint`;
-  sessionStore.delete(sessionKey);
-  // eslint-disable-next-line no-console
-  console.log(`Session cleared for user ${userId}`);
+export async function clearSession(userId: string): Promise<void> {
+  const sessionKey = `session:${userId}:fingerprint`;
+  await redis.del(sessionKey);
+  logger.info({ userId }, 'Session cleared');
 }
 
 /**
- * Clear activity logs for user (for testing)
+ * Detect suspicious activity patterns using Redis
  */
-export function clearActivityLogs(userId?: string): void {
-  if (userId) {
-    activityLogs.delete(userId);
-  } else {
-    activityLogs.clear();
-  }
-}
-
-/**
- * Detect suspicious activity patterns
- */
-interface ActivityLog {
-  userId: string;
-  action: string;
-  timestamp: number;
-  ipAddress: string;
-}
-
-const activityLogs = new Map<string, ActivityLog[]>();
-
-export function logActivity(userId: string, action: string, ipAddress: string): void {
-  const key = userId;
-  if (!activityLogs.has(key)) {
-    activityLogs.set(key, []);
-  }
-
-  const logs = activityLogs.get(key)!;
-  logs.push({
+export async function logActivity(userId: string, action: string, ipAddress: string): Promise<void> {
+  const key = `activity:${userId}`;
+  const log = JSON.stringify({
     userId,
     action,
     timestamp: Date.now(),
     ipAddress,
   });
 
-  // Keep only last 100 activities per user
-  if (logs.length > 100) {
-    logs.shift();
-  }
+  await redis.lpush(key, log);
+  await redis.ltrim(key, 0, 99); // Keep only last 100
+  await redis.expire(key, 86400); // 24h retention
 }
 
-/**
- * Detect rapid-fire requests from different IPs (potential account takeover)
- */
-export function detectSuspiciousActivity(userId: string): boolean {
-  const logs = activityLogs.get(userId) || [];
+export async function detectSuspiciousActivity(userId: string): Promise<boolean> {
+  const key = `activity:${userId}`;
+  const logs = await redis.lrange(key, 0, 4);
   if (logs.length < 5) return false;
 
-  // Check last 5 requests
-  const recentLogs = logs.slice(-5);
+  const recentLogs = logs.map(l => JSON.parse(l) as ActivityLog);
   const now = Date.now();
   const timeWindow = 60 * 1000; // 1 minute
 
-  // Get logs within last minute
   const recentInWindow = recentLogs.filter((log) => now - log.timestamp < timeWindow);
-
   if (recentInWindow.length < 5) return false;
 
-  // Check if requests are from different IPs
   const uniqueIps = new Set(recentInWindow.map((log) => log.ipAddress));
   if (uniqueIps.size > 1) {
-    // eslint-disable-next-line no-console
-    console.warn(`Suspicious activity detected for user ${userId}: Multiple IPs in short time`);
+    logger.warn({ userId }, 'Suspicious activity detected: Multiple IPs in short time');
     return true;
   }
 
   return false;
 }
 
-/**
- * Middleware to detect and block suspicious activity
- */
-export function detectSuspiciousActivityMiddleware(
+export async function detectSuspiciousActivityMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+): Promise<void> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = (req as any).user as { uid: string } | undefined;
     if (!user) {
       next();
       return;
     }
 
-    // Log the activity
-    logActivity(user.uid, req.method + ' ' + req.path, req.ip || '');
+    await logActivity(user.uid, `${req.method} ${req.path}`, req.ip || '');
 
-    // Check for suspicious patterns
-    if (detectSuspiciousActivity(user.uid)) {
-      // eslint-disable-next-line no-console
-      console.error(`Blocking suspicious activity for user ${user.uid}`);
+    if (await detectSuspiciousActivity(user.uid)) {
+      logger.error({ userId: user.uid }, 'Blocking suspicious activity');
       res.status(403).json({ error: 'Suspicious activity detected. Please verify your identity.' });
       return;
     }
 
     next();
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Suspicious activity detection error:', error);
+    logger.error(error, 'Suspicious activity detection error');
     next();
   }
 }
 
 /**
- * Generate secure session token with expiration
+ * Clear activity logs for a user (for tests/maintenance)
  */
+export async function clearActivityLogs(userId: string): Promise<void> {
+  const key = `activity:${userId}`;
+  await redis.del(key);
+}
+
 export function generateSecureSessionToken(userId: string, expiresIn: number = 3600): string {
   const payload = {
     userId,
@@ -247,13 +199,9 @@ export function generateSecureSessionToken(userId: string, expiresIn: number = 3
     expiresAt: Date.now() + expiresIn * 1000,
     nonce: crypto.randomBytes(16).toString('hex'),
   };
-
   return Buffer.from(JSON.stringify(payload)).toString('base64');
 }
 
-/**
- * Validate session token expiration
- */
 export function validateSessionTokenExpiration(token: string): boolean {
   try {
     const payload = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
@@ -263,9 +211,6 @@ export function validateSessionTokenExpiration(token: string): boolean {
   }
 }
 
-/**
- * Implement CSRF token validation
- */
 export function generateCsrfToken(): string {
   return crypto.randomBytes(32).toString('hex');
 }

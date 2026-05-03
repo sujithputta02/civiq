@@ -65,10 +65,10 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://api.tavily.com" />
       </head>
       <body className="font-sans bg-[#F5F7FB] text-[#0F172A]">
-        {/* Skip to main content link */}
+        {/* Skip to main content link - enhanced visibility and focus trap safety */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-blue-600 focus:text-white focus:rounded-md"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:p-4 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-400"
         >
           Skip to main content
         </a>
@@ -76,7 +76,9 @@ export default function RootLayout({
         <AuthProvider>
           <AccessibilityProvider>
             <ServiceWorkerClient />
-            {children}
+            <main id="main-content" className="outline-none" tabIndex={-1}>
+              {children}
+            </main>
             <Toaster position="bottom-center" />
           </AccessibilityProvider>
         </AuthProvider>

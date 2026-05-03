@@ -1,0 +1,104 @@
+
+> @civiq/api@0.1.0 lint
+> eslint src --ext .ts,.tsx
+
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/__tests__/alignment.test.ts
+  16:30  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  16:41  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  16:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:31  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:42  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:53  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:24  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:35  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:46  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:28  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:39  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:50  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:35  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:46  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:57  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:46  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:57  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:68  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:33  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:44  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  31:55  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  32:32  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  32:43  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  32:54  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  33:36  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  33:47  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  33:58  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  61:5   warning  Unexpected console statement              no-console
+  84:5   warning  Unexpected console statement              no-console
+  96:28  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  97:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  98:16  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/__tests__/middleware/threat-detection.test.ts
+   32:7   error  Object Literal Property name `user-agent` must match one of the following formats: camelCase       @typescript-eslint/naming-convention
+   33:7   error  Object Literal Property name `accept-language` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+   34:7   error  Object Literal Property name `accept-encoding` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+   35:7   error  Object Literal Property name `content-length` must match one of the following formats: camelCase   @typescript-eslint/naming-convention
+  103:18  error  Object Literal Property name `user-agent` must match one of the following formats: camelCase       @typescript-eslint/naming-convention
+  112:18  error  Object Literal Property name `user-agent` must match one of the following formats: camelCase       @typescript-eslint/naming-convention
+  171:18  error  Object Literal Property name `user-agent` must match one of the following formats: camelCase       @typescript-eslint/naming-convention
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/index.ts
+  81:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/middleware/output-encoding.ts
+  14:5  error  Object Literal Property name `&` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+  15:5  error  Object Literal Property name `<` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+  16:5  error  Object Literal Property name `>` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+  17:5  error  Object Literal Property name `"` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+  18:5  error  Object Literal Property name `'` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+  19:5  error  Object Literal Property name `/` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/middleware/threat-detection.ts
+  87:4  error  Unnecessary escape character: \%  no-useless-escape
+  88:4  error  Unnecessary escape character: \%  no-useless-escape
+  88:8  error  Unnecessary escape character: \%  no-useless-escape
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/modules/ai/ai.service.ts
+    3:8   error  Import name `CircuitBreaker` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+   25:3   error  Missing accessibility modifier on method definition constructor                  @typescript-eslint/explicit-member-accessibility
+   33:54  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+   33:59  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+   40:3   error  Missing accessibility modifier on method definition verifyClaim                  @typescript-eslint/explicit-member-accessibility
+   44:3   error  Missing accessibility modifier on method definition chatAssistant                @typescript-eslint/explicit-member-accessibility
+   67:42  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+  115:18  error  Unexpected any. Specify a different type                                         @typescript-eslint/no-explicit-any
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/modules/security/secrets.service.ts
+  28:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/modules/shared/redis.service.ts
+  1:8  error  Import name `Redis` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/utils/ai-firewall.ts
+  109:14  error  Unexpected joined character sequence in character class  no-misleading-character-class
+
+/Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api/src/utils/pii-redaction.ts
+  31:31  error  Unnecessary escape character: \-  no-useless-escape
+  31:47  error  Unnecessary escape character: \-  no-useless-escape
+  43:25  error  Unnecessary escape character: \-  no-useless-escape
+  49:25  error  Unnecessary escape character: \-  no-useless-escape
+  49:37  error  Unnecessary escape character: \-  no-useless-escape
+  67:39  error  Unnecessary escape character: \/  no-useless-escape
+  67:41  error  Unnecessary escape character: \-  no-useless-escape
+  67:60  error  Unnecessary escape character: \/  no-useless-escape
+  67:62  error  Unnecessary escape character: \-  no-useless-escape
+  79:28  error  Unnecessary escape character: \-  no-useless-escape
+
+✖ 70 problems (68 errors, 2 warnings)
+
+npm error Lifecycle script `lint` failed with error:
+npm error code 1
+npm error path /Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api
+npm error workspace @civiq/api@0.1.0
+npm error location /Users/sujithputta/Projects/Civiq Challenge-2.1/apps/api
+npm error command failed
+npm error command sh -c eslint src --ext .ts,.tsx

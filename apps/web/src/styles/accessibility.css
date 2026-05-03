@@ -16,10 +16,13 @@
   border-width: 0;
 }
 
-/* Focus visible styles - high contrast */
+/* Focus visible styles - high contrast and never obscured */
 :focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 2px;
+  outline: 3px solid #2563eb !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9) !important;
+  z-index: 9999 !important;
+  position: relative;
 }
 
 button:focus-visible,
@@ -27,11 +30,12 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid #2563eb;
-  outline-offset: 2px;
+  outline: 3px solid #2563eb !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9) !important;
 }
 
-/* Reduced motion preferences */
+/* Reduced motion and transparency preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -62,6 +66,24 @@ textarea:focus-visible {
   .scale-110,
   .hover\:scale-\[1\.01\]:hover {
     transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .bg-white\/40,
+  .bg-white\/50,
+  .bg-black\/50,
+  .backdrop-blur-md,
+  .backdrop-blur-lg {
+    background-color: rgb(255, 255, 255) !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+  }
+  
+  .dark .bg-white\/40,
+  .dark .bg-white\/50,
+  .dark .bg-black\/50 {
+    background-color: rgb(26, 26, 26) !important;
   }
 }
 
@@ -171,15 +193,23 @@ textarea:focus-visible {
   }
 }
 
-/* Touch target sizing - minimum 44x44px */
+/* Touch target sizing - minimum 44x44px for all interactive elements */
 button,
-a[role="button"],
-input[type="checkbox"],
-input[type="radio"],
+a,
+input,
 select,
-textarea {
+textarea,
+[role="button"],
+[role="link"],
+[role="checkbox"],
+[role="radio"],
+[role="tab"] {
   min-height: 44px;
   min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px; /* Ensure padding expands hit area for small text links */
 }
 
 /* Ensure proper spacing for touch targets */

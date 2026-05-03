@@ -7,7 +7,8 @@ import {
   requireAdmin,
   requireModerator,
   requireAuth,
-} from '../../middleware/rbac';
+} from '../../middleware/rbac.js';
+import logger from '../../utils/logger.js';
 
 describe('RBAC Middleware', () => {
   let req: AuthenticatedRequest;
@@ -34,6 +35,10 @@ describe('RBAC Middleware', () => {
       json: vi.fn().mockReturnThis(),
     };
     next = vi.fn() as unknown as NextFunction;
+    
+    // Silence console warnings and errors during RBAC tests to keep output clean
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -384,7 +389,7 @@ describe('RBAC Middleware', () => {
     });
 
     it('should log unauthorized access attempts', () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const loggerSpy = vi.spyOn(logger, 'warn');
 
       req.user = {
         ...req.user,
@@ -394,8 +399,8 @@ describe('RBAC Middleware', () => {
       const middleware = requireRole(UserRole.ADMIN);
       middleware(req, res as Response, next);
 
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
+      expect(loggerSpy).toHaveBeenCalled();
+      loggerSpy.mockRestore();
     });
   });
 });
