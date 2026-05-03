@@ -1,8 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 
-const root = '/Users/sujithputta/Projects/Civiq Challenge-2.1';
-
 export default defineConfig({
   test: {
     globals: true,
@@ -42,8 +40,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@civiq/types': path.resolve(root, 'packages/types/index.ts'),
-      '@civiq/config-env': path.resolve(root, 'packages/config-env/src/index.ts'),
+      '@civiq/types': path.resolve(__dirname, '../../packages/types/index.ts'),
+      '@civiq/config-env': path.resolve(__dirname, '../../packages/config-env/src/index.ts'),
     },
   },
 });
