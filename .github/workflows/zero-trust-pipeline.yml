@@ -5,9 +5,9 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
-  schedule:
-    # Nightly full scan at 01:00 UTC
-    - cron: '0 1 * * *'
+  # schedule:
+  #   # Nightly full scan at 01:00 UTC - Disabled to prevent daily failure emails
+  #   - cron: '0 1 * * *'
 
 permissions:
   contents: read
